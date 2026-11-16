@@ -1,6 +1,6 @@
 /**
- * 站点样式单一来源：结构基样式 + 八套模板差异样式 + 主题变量拼装。
- * 模板专属 CSS 只覆盖视觉变量与差异规则，避免八份重复的结构代码。
+ * 站点样式单一来源：结构基样式 + 十二套模板差异样式 + 主题变量拼装。
+ * 模板专属 CSS 只覆盖视觉变量与差异规则，避免十二份重复的结构代码。
  * 注意两条陷阱规则（见行内注释）：:where(a) 与 @container。
  */
 import type { SiteData, TemplateName } from '@/types'
@@ -19,7 +19,7 @@ export const DEFAULT_AVATAR_PATH = '/images/avatar-default.svg'
 export const DEFAULT_AVATAR_DATA_URI = `data:image/svg+xml,${encodeURIComponent(DEFAULT_AVATAR_SVG)}`
 
 /**
- * 八套模板共享的结构基样式：reset、布局骨架、技能条/项目卡/时间线/联系区。
+ * 十二套模板共享的结构基样式：reset、布局骨架、技能条/项目卡/时间线/联系区。
  */
 const BASE_CSS = `
 .site-root{container-type:inline-size;min-height:100%;background:var(--bg);color:var(--fg);font-family:var(--fb);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
@@ -356,6 +356,124 @@ const EDITORIAL_CSS = `
 .site-editorial .s-footer{font-family:var(--fm);font-size:12px;border-top:2px solid var(--fg)}
 `
 
+/* 鎏金：炭黑底 + 金色渐变字 + 发丝金线 + 暗夜项目卡 */
+const GOLD_CSS = `
+.site-gold{--bg:#0d0b08;--fg:#f5efe0;--muted:#a89e88;--line:#2e2a20;--panel:#171410;--track:#262117;--nav-bg:rgba(13,11,8,.86);--shadow:rgba(0,0,0,.5);--fd:${FONT_SERIF};--fb:${FONT_SERIF};--fm:${FONT_MONO};--btn-r:2px;--card-r:6px;--avatar-r:50%}
+.site-gold .s-mark{background:linear-gradient(135deg,#f3d97c,var(--sp) 60%,#9c7a1e);color:#171204;font-weight:800}
+.site-gold .s-nav{border-bottom:1px solid var(--line)}
+.site-gold .s-hero{padding:104px 0 84px}
+.site-gold .s-name{font-weight:700;letter-spacing:.03em;background:linear-gradient(100deg,#f7f0dd 12%,var(--sp) 52%,#f7f0dd 88%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.site-gold .s-title{color:var(--sp)}
+.site-gold .s-avatar-img{border:2px solid var(--sp);box-shadow:0 0 0 1px var(--line),0 0 26px var(--sp-glow)}
+.site-gold .s-kicker{color:var(--sp);letter-spacing:.3em}
+.site-gold .s-h2{font-weight:700;position:relative;padding-bottom:12px}
+.site-gold .s-h2::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:linear-gradient(90deg,var(--sp),transparent 72%)}
+.site-gold .s-h2::before{content:'';position:absolute;left:0;bottom:-2px;width:48px;height:3px;background:var(--sp);z-index:1}
+.site-gold .skill-track{height:6px;border-radius:3px}
+.site-gold .skill-fill{background:linear-gradient(90deg,var(--sp),#f3d97c);box-shadow:0 0 12px var(--sp-glow)}
+.site-gold .project{background:var(--panel);border:1px solid var(--line);position:relative;overflow:hidden}
+.site-gold .project::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--sp),transparent 82%)}
+.site-gold .project:hover{border-color:var(--sp);box-shadow:0 16px 40px var(--shadow),0 0 0 1px var(--sp-glow)}
+.site-gold .project-index{color:var(--sp)}
+.site-gold .project-tags li{background:rgba(212,175,55,.1);color:var(--sp)}
+.site-gold .exp{position:relative;padding-left:28px;border-bottom:none}
+.site-gold .exp::before{content:'';position:absolute;left:0;top:10px;width:9px;height:9px;border-radius:50%;background:var(--sp);box-shadow:0 0 0 4px rgba(212,175,55,.15)}
+.site-gold .exp::after{content:'';position:absolute;left:4px;top:26px;bottom:-4px;width:1px;background:linear-gradient(rgba(212,175,55,.3),transparent)}
+.site-gold .exp:last-child::after{display:none}
+.site-gold .s-contact{border-top:none;padding-bottom:72px}
+.site-gold .s-contact .wrap{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:52px 32px}
+.site-gold .s-footer{font-family:var(--fm);font-size:12.5px;border-top:1px solid var(--line)}
+`
+
+/* 蒸汽波：紫夜底 + 条纹落日 + 透视网格地板 + 粉青霓虹 */
+const VAPOR_CSS = `
+.site-vapor{--bg:#12071f;--fg:#fdf4ff;--muted:#b6a3d9;--line:#37205a;--panel:rgba(55,32,90,.45);--track:#2a1a3e;--nav-bg:rgba(18,7,31,.8);--shadow:rgba(0,0,0,.5);--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO};--btn-r:999px;--card-r:14px;--avatar-r:16px;background-image:linear-gradient(180deg,#1a0b2e 0%,#12071f 55%,#0d0518 100%)}
+.site-vapor .s-nav{border-bottom:1px solid rgba(255,113,206,.3)}
+.site-vapor .s-mark{background:linear-gradient(135deg,var(--sp),#01cdfe);color:#12071f;font-weight:800}
+.site-vapor .s-hero::before{content:'';position:absolute;left:50%;top:4%;width:360px;height:360px;transform:translateX(-50%);border-radius:50%;background:repeating-linear-gradient(180deg,transparent 0 16px,rgba(18,7,31,.85) 16px 22px),radial-gradient(circle at 50% 42%,#fffb96 0%,#ff6e27 36%,var(--sp) 68%,transparent 74%);opacity:.38;pointer-events:none}
+.site-vapor .s-hero::after{content:'';position:absolute;left:-20%;right:-20%;bottom:-46px;height:320px;z-index:-1;background:repeating-linear-gradient(transparent 0 22px,rgba(1,205,254,.35) 22px 24px),repeating-linear-gradient(90deg,transparent 0 44px,rgba(255,113,206,.28) 44px 46px);transform:perspective(340px) rotateX(58deg);transform-origin:top;pointer-events:none}
+.site-vapor .s-name{background:linear-gradient(95deg,#01cdfe,var(--sp) 55%,#b967ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.site-vapor .s-title{color:#01cdfe}
+.site-vapor .s-status{border:1px solid rgba(1,205,254,.4);color:#01cdfe;background:rgba(1,205,254,.08)}
+.site-vapor .s-dot{background:#01cdfe}
+.site-vapor .s-chip{background:var(--panel);border:1px solid var(--line)}
+.site-vapor .s-btn-primary{background:linear-gradient(95deg,var(--sp),#b967ff);color:#fff;box-shadow:0 0 24px rgba(255,113,206,.4)}
+.site-vapor .s-btn-ghost{border:1px solid #01cdfe;color:#01cdfe;background:transparent}
+.site-vapor .s-btn-ghost:hover{box-shadow:0 0 16px rgba(1,205,254,.5);color:#01cdfe;border-color:#01cdfe}
+.site-vapor .s-avatar-img{border:3px solid #01cdfe;box-shadow:0 0 28px rgba(1,205,254,.45)}
+.site-vapor .s-monogram{border:3px solid var(--sp);box-shadow:0 0 28px rgba(255,113,206,.4)}
+.site-vapor .s-kicker{color:#01cdfe;letter-spacing:.3em}
+.site-vapor .s-h2{background:linear-gradient(90deg,#fdf4ff,var(--sp));-webkit-background-clip:text;background-clip:text;color:transparent}
+.site-vapor .skill-track{height:10px;border:1px solid var(--line);background:#1c1030}
+.site-vapor .skill-fill{background:repeating-linear-gradient(90deg,#01cdfe 0 10px,var(--sp) 10px 20px);box-shadow:0 0 12px rgba(1,205,254,.4)}
+.site-vapor .project{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(8px)}
+.site-vapor .project:hover{border-color:var(--sp);box-shadow:0 0 0 1px var(--sp),0 14px 40px rgba(0,0,0,.5)}
+.site-vapor .project-index{color:#01cdfe}
+.site-vapor .project-tags li{background:rgba(1,205,254,.1);color:#01cdfe;border:1px solid rgba(1,205,254,.25)}
+.site-vapor .exp{border-bottom:none;border-left:2px solid var(--line);padding-left:24px;position:relative}
+.site-vapor .exp::before{content:'';position:absolute;left:-6px;top:28px;width:8px;height:8px;border-radius:50%;background:var(--sp);box-shadow:0 0 10px var(--sp)}
+.site-vapor .s-contact{border-top:none;padding-bottom:72px}
+.site-vapor .s-contact .wrap{background:linear-gradient(160deg,rgba(255,113,206,.12),rgba(1,205,254,.08));border:1px solid rgba(255,113,206,.35);border-radius:18px;padding:56px 32px}
+.site-vapor .s-footer{border-top:1px solid var(--line);font-size:12.5px}
+`
+
+/* 瑞士：纯白底 + 黑色规则线 + 红色强调条 + 无衬线大标题 */
+const SWISS_CSS = `
+.site-swiss{--bg:#ffffff;--fg:#111111;--muted:#666666;--line:#d6d6d6;--panel:#ffffff;--track:#e9e9e9;--nav-bg:rgba(255,255,255,.95);--shadow:rgba(17,17,17,.08);--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO};--btn-r:0px;--card-r:0px;--avatar-r:0px}
+.site-swiss .s-nav{border-bottom:1px solid var(--fg)}
+.site-swiss .s-mark{border-radius:0;background:var(--sp);color:#fff;font-weight:800}
+.site-swiss .s-name{font-weight:800;letter-spacing:-.03em}
+.site-swiss .s-title{color:var(--sp);font-weight:700}
+.site-swiss .s-status{border:1px solid var(--fg);border-radius:0;background:var(--panel)}
+.site-swiss .s-dot{background:var(--sp)}
+.site-swiss .s-avatar-img{border:2px solid var(--fg);border-radius:0}
+.site-swiss .s-kicker{color:var(--fg);font-weight:800;letter-spacing:.28em}
+.site-swiss .s-section{border-top:1px solid var(--fg)}
+.site-swiss .s-h2{font-weight:800;letter-spacing:-.02em;position:relative;padding-left:20px}
+.site-swiss .s-h2::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:8px;background:var(--sp)}
+.site-swiss .skill-track{height:6px;border-radius:0}
+.site-swiss .skill-fill{border-radius:0;background:var(--sp)}
+.site-swiss .skill-pct{color:var(--fg)}
+.site-swiss .project{background:transparent;border:none;border-top:2px solid var(--fg);border-radius:0;padding:22px 0}
+.site-swiss .project:hover{transform:none;box-shadow:none;border-color:var(--sp)}
+.site-swiss .project-index{color:var(--fg);font-weight:800}
+.site-swiss .project-badge{border-radius:0}
+.site-swiss .project-tags li{background:transparent;border:1px solid var(--fg);color:var(--fg);border-radius:0}
+.site-swiss .exp-period{color:var(--sp);font-weight:800}
+.site-swiss .s-btn{border-radius:0}
+.site-swiss .s-btn-primary{background:var(--fg);color:var(--bg)}
+.site-swiss .s-btn-primary:hover{background:var(--sp);color:#fff;transform:none;box-shadow:none}
+.site-swiss .s-btn-ghost{border:1px solid var(--fg);background:var(--panel);border-radius:0}
+.site-swiss .s-contact .s-h2{font-size:clamp(34px,5.5cqw,56px)}
+.site-swiss .s-footer{border-top:2px solid var(--fg);font-family:var(--fm);font-size:12px}
+`
+
+/* 手账：牛皮纸底 + 胶带贴纸 + 虚线手作边框 + 便签式经历 */
+const KRAFT_CSS = `
+.site-kraft{--bg:#f6ecdd;--fg:#3d2f22;--muted:#8a7a66;--line:#e0d2bc;--panel:#fffbf2;--track:#ecdcbc;--nav-bg:rgba(246,236,221,.92);--shadow:rgba(61,47,34,.12);--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO};--btn-r:999px;--card-r:16px;--avatar-r:50%;background-image:radial-gradient(rgba(61,47,34,.04) 1px,transparent 1px);background-size:14px 14px}
+.site-kraft .s-mark{border-radius:12px;transform:rotate(-4deg)}
+.site-kraft .s-status{border:1.5px dashed var(--muted);background:var(--panel);border-radius:999px}
+.site-kraft .s-hero-avatar::before{content:'';position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(-3deg);width:92px;height:26px;background:rgba(255,252,240,.68);border:1px solid rgba(61,47,34,.08);box-shadow:0 2px 6px var(--shadow);z-index:2}
+.site-kraft .s-avatar-img{border:4px solid var(--panel);box-shadow:0 8px 20px var(--shadow)}
+.site-kraft .s-kicker{color:var(--sp)}
+.site-kraft .s-h2{position:relative;display:inline-block;isolation:isolate}
+.site-kraft .s-h2::after{content:'';position:absolute;left:-4px;bottom:4px;width:70%;height:12px;background:var(--sp-soft);border-radius:4px;transform:rotate(-1deg);z-index:-1}
+.site-kraft .skill{background:var(--panel);border:1.5px dashed #c9b691;border-radius:14px;padding:14px 16px}
+.site-kraft .skill-fill{background:linear-gradient(90deg,var(--sp),var(--sp2))}
+.site-kraft .project{background:var(--panel);border:1.5px dashed #c9b691;border-radius:16px;box-shadow:0 6px 16px var(--shadow)}
+.site-kraft .project:nth-child(even){transform:rotate(.4deg)}
+.site-kraft .project:hover{transform:translateY(-3px) rotate(0deg);box-shadow:0 12px 24px var(--shadow);border-color:var(--sp)}
+.site-kraft .project-tags li{background:#f3e7cd;color:#6b5636;border-radius:999px}
+.site-kraft .exp{grid-template-columns:1fr;gap:8px;background:var(--panel);border:1.5px dashed #c9b691;border-radius:14px;padding:18px;position:relative}
+.site-kraft .exp:nth-child(even){transform:rotate(-.35deg)}
+.site-kraft .exp::before{content:'';position:absolute;top:-10px;left:24px;width:70px;height:22px;background:rgba(255,252,240,.7);border:1px solid rgba(61,47,34,.06);transform:rotate(-2deg)}
+.site-kraft .exp-period{display:inline-block;background:var(--sp-soft);padding:4px 12px;border-radius:999px;font-weight:700;width:max-content}
+.site-kraft .s-contact{border-top:none;padding-bottom:72px}
+.site-kraft .s-contact .wrap{background:var(--panel);border:1.5px dashed #c9b691;border-radius:20px;padding:52px 32px;position:relative}
+.site-kraft .s-contact .wrap::before{content:'';position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(2deg);width:96px;height:26px;background:rgba(255,252,240,.68);border:1px solid rgba(61,47,34,.08);box-shadow:0 2px 6px var(--shadow)}
+.site-kraft .s-footer{font-family:var(--fm);font-size:12px}
+`
+
 const TEMPLATE_CSS: Record<TemplateName, string> = {
   minimal: MINIMAL_CSS,
   tech: TECH_CSS,
@@ -365,6 +483,10 @@ const TEMPLATE_CSS: Record<TemplateName, string> = {
   brutal: BRUTAL_CSS,
   aurora: AURORA_CSS,
   editorial: EDITORIAL_CSS,
+  gold: GOLD_CSS,
+  vapor: VAPOR_CSS,
+  swiss: SWISS_CSS,
+  kraft: KRAFT_CSS,
 }
 
 export const TEMPLATE_BG: Record<TemplateName, string> = {
@@ -376,6 +498,10 @@ export const TEMPLATE_BG: Record<TemplateName, string> = {
   brutal: '#f4f4f3',
   aurora: '#070b16',
   editorial: '#fafaf6',
+  gold: '#0d0b08',
+  vapor: '#12071f',
+  swiss: '#ffffff',
+  kraft: '#f6ecdd',
 }
 
 /**

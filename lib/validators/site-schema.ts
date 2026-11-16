@@ -101,6 +101,10 @@ export const templateNameSchema = z.enum([
   'brutal',
   'aurora',
   'editorial',
+  'gold',
+  'vapor',
+  'swiss',
+  'kraft',
 ])
 
 export const siteStatusSchema = z.enum(['draft', 'published'])

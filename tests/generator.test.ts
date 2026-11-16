@@ -1,7 +1,7 @@
 /**
  * 生成器行为特征测试（重构安全网）。
  * 断言的是「用户可见产物」：转义是否挡住注入、空区块是否消失、
- * 主题色是否派生正确、八套模板完整 HTML 是否与黄金快照逐字节一致。
+ * 主题色是否派生正确、十二套模板完整 HTML 是否与黄金快照逐字节一致。
  * 黄金快照由 scripts/snapshot-generator.mjs 在重构前生成，重构后必须不变。
  * 运行：pnpm test:unit（Node 内置测试运行器 + tsx，零新增依赖）。
  */
@@ -23,6 +23,10 @@ const TEMPLATES: TemplateName[] = [
   'brutal',
   'aurora',
   'editorial',
+  'gold',
+  'vapor',
+  'swiss',
+  'kraft',
 ]
 const snapshotDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '__snapshots__')
 
@@ -31,7 +35,7 @@ function emptySite(): SiteData {
   return { ...data, skills: [], projects: [], experience: [] }
 }
 
-describe('黄金快照：八套模板完整 HTML 逐字节一致', () => {
+describe('黄金快照：十二套模板完整 HTML 逐字节一致', () => {
   for (const template of TEMPLATES) {
     it(`${template} 模板输出与重构前快照一致`, () => {
       const expected = readFileSync(path.join(snapshotDir, `${template}.html`), 'utf-8')

@@ -98,7 +98,7 @@ export function TemplateGallery() {
       <div className="reveal mb-10 max-w-xl">
         <p className="font-mono text-xs uppercase tracking-[0.25em] text-brand-cyan">Templates</p>
         <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          八套模板，八种人格
+          十二套模板，十二种人格
         </h2>
         <p className="mt-3 text-muted-foreground">
           每一套都是完整的视觉系统：版式、字体、配色与动效。下方卡片为真实渲染效果，所见即所得。

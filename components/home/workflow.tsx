@@ -16,7 +16,7 @@ const STEPS = [
   {
     icon: LayoutTemplate,
     title: '挑选模板',
-    description: '八套完整视觉系统一键切换，主题色随模板联动，也可自定义。',
+    description: '十二套完整视觉系统一键切换，主题色随模板联动，也可自定义。',
     accent: 'text-brand-cyan',
     ring: 'border-brand-cyan/40 bg-brand-cyan/10',
   },

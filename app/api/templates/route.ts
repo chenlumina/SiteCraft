@@ -1,5 +1,5 @@
 /**
- * GET /api/templates：返回八套模板元数据（数据库 Template 表）。
+ * GET /api/templates：返回十二套模板元数据（数据库 Template 表）。
  * config 字段存的是 lib/templates.ts 元数据的 JSON 快照，
  * 前端画廊/编辑器也可直接 import 元数据；此接口供外部消费者与二期管理端使用。
  */

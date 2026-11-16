@@ -1,5 +1,5 @@
 /**
- * 八套模板的元数据「单一来源」：首页画廊、编辑器模板选择器、主题色板、
+ * 十二套模板的元数据「单一来源」：首页画廊、编辑器模板选择器、主题色板、
  * 数据库种子（prisma/seed.ts）都读这里，新增模板只需改这一处 + 生成器 CSS + 类型联合。
  * defaultColor 同时是切模板时自动应用的主题色（见 editor-store.setTemplate）。
  */
@@ -85,6 +85,46 @@ export const TEMPLATES: TemplateMeta[] = [
     defaultColor: '#c2410c',
     swatches: ['#c2410c', '#181511', '#1d4ed8', '#9f1239', '#166534', '#a16207'],
     features: ['首字下沉', '刊物双线', '衬线大标题'],
+  },
+  {
+    name: 'gold',
+    displayName: '鎏金 Gold',
+    tagline: '黑金质感的沉静奢华',
+    description: '炭黑底色上的鎏金线条与衬线标题，克制而贵气。适合作品集展示与个人品牌。',
+    mood: 'dark',
+    defaultColor: '#d4af37',
+    swatches: ['#d4af37', '#e8c46a', '#c0a060', '#d97706', '#fbbf24', '#b45309'],
+    features: ['鎏金线条', '衬线标题', '暗夜质感'],
+  },
+  {
+    name: 'vapor',
+    displayName: '蒸汽波 Vapor',
+    tagline: '落日网格上的复古未来',
+    description: '紫罗兰夜空、粉青霓虹与透视网格，把主页变成一张 80 年代合成器海报。适合追求强烈风格的创作者。',
+    mood: 'dark',
+    defaultColor: '#ff71ce',
+    swatches: ['#ff71ce', '#01cdfe', '#b967ff', '#05ffa1', '#fffb96', '#ff6e27'],
+    features: ['透视网格', '霓虹渐变', '合成器美学'],
+  },
+  {
+    name: 'swiss',
+    displayName: '瑞士 Swiss',
+    tagline: '网格与留白的秩序之美',
+    description: '国际主义排版风格：细黑规则线、大号无衬线与一点红色强调。适合设计师与工程师的冷静表达。',
+    mood: 'light',
+    defaultColor: '#dc2626',
+    swatches: ['#dc2626', '#111111', '#0f766e', '#1d4ed8', '#ea580c', '#065f46'],
+    features: ['规则线网格', '红色强调', '无衬线大标题'],
+  },
+  {
+    name: 'kraft',
+    displayName: '手账 Kraft',
+    tagline: '牛皮纸上的拼贴日常',
+    description: '牛皮纸底色、胶带贴纸与虚线手作边框，温暖亲切像一本手工手账。适合学生与生活记录者。',
+    mood: 'light',
+    defaultColor: '#0f766e',
+    swatches: ['#0f766e', '#b45309', '#7c3aed', '#dc2626', '#0369a1', '#4d7c0f'],
+    features: ['胶带拼贴', '虚线手作', '牛皮纸质感'],
   },
 ]
 

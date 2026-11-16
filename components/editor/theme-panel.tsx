@@ -111,7 +111,7 @@ export function ThemePanel() {
         {hexError && <p className="mt-1 text-xs text-danger">{hexError}</p>}
       </FormSection>
 
-      <FormSection title="模板风格" description="八套模板各自拥有独立的版式与气质">
+      <FormSection title="模板风格" description="十二套模板各自拥有独立的版式与气质">
         <div className="grid grid-cols-2 gap-2">
           {TEMPLATES.map((t) => {
             const active = template === t.name

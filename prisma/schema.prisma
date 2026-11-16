@@ -28,7 +28,7 @@ model User {
 model Site {
   id           String   @id @default(uuid())
   name         String
-  template     String // minimal | tech | creative | professional | ink | brutal | aurora | editorial
+  template     String // minimal | tech | creative | professional | ink | brutal | aurora | editorial | gold | vapor | swiss | kraft
   content      String // JSON 字符串，存储网站内容
   status       String   @default("draft") // draft | published
   customDomain String?  @unique
@@ -38,7 +38,7 @@ model Site {
   updatedAt    DateTime @updatedAt
 }
 
-// 模板注册表：seed 写入八套模板元数据（config 为 lib/templates.ts 的 JSON 快照），
+// 模板注册表：seed 写入十二套模板元数据（config 为 lib/templates.ts 的 JSON 快照），
 // 供 /api/templates 与二期模板管理端消费；isDefault 标记新建站点的默认模板。
 model Template {
   id          String   @id @default(uuid())

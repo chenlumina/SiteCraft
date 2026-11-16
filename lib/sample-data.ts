@@ -52,7 +52,7 @@ export const SAMPLE_SITE_DATA: SiteData = {
       id: 'pr-builder',
       name: '个人官网生成器',
       description:
-        'Next.js 14 全栈应用：可视化编辑、八套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。',
+        'Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。',
       tags: ['Next.js', 'TypeScript', 'Prisma', 'Tailwind'],
       link: '',
       repo: '',

@@ -7,7 +7,7 @@
  */
 
 /**
- * 八套官网模板的标识符，与 components/templates/ 目录、数据库 Site.template 取值一一对应。
+ * 十二套官网模板的标识符，与 components/templates/ 目录、数据库 Site.template 取值一一对应。
  * 新增模板：改这里 + lib/templates.ts 元数据 + lib/generators/styles.ts 差异 CSS
  * + lib/validators/site-schema.ts 的 z.enum，四处保持同名。
  */
@@ -20,6 +20,10 @@ export type TemplateName =
   | 'brutal'
   | 'aurora'
   | 'editorial'
+  | 'gold'
+  | 'vapor'
+  | 'swiss'
+  | 'kraft'
 
 export type SiteStatus = 'draft' | 'published'
 

@@ -1,6 +1,6 @@
 /**
  * 黄金快照录制脚本（重构前运行一次）：
- * 用示例数据渲染八套模板的完整 HTML，写入 tests/__snapshots__/。
+ * 用示例数据渲染十二套模板的完整 HTML，写入 tests/__snapshots__/。
  * 页脚年份取运行当年，快照与测试在同一年份内逐字节可比；
  * 跨年后重录一次即可（node --import tsx scripts/snapshot-generator.mjs）。
  */
@@ -20,6 +20,10 @@ for (const template of [
   'brutal',
   'aurora',
   'editorial',
+  'gold',
+  'vapor',
+  'swiss',
+  'kraft',
 ]) {
   const html = generateSiteHTML(createSampleData(), template)
   writeFileSync(path.join(outDir, `${template}.html`), html, 'utf-8')

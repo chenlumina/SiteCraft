@@ -47,7 +47,7 @@ await step('首页加载与关键内容', async () => {
   await page.goto(BASE, { waitUntil: 'networkidle' })
   await page.waitForSelector('text=把你自己，')
   const cards = await page.locator('#templates > div > article').count()
-  if (cards !== 8) throw new Error(`模板卡片数量 ${cards} != 8`)
+  if (cards !== 12) throw new Error(`模板卡片数量 ${cards} != 12`)
   await page.waitForSelector('#sites article')
   const sites = await page.locator('#sites article').count()
   if (sites < 2) throw new Error(`种子站点数量 ${sites} < 2`)
@@ -69,7 +69,7 @@ await step('首页 API 数据', async () => {
     const res = await fetch('/api/templates')
     return res.json()
   })
-  if (!templates.success || templates.data.length !== 8) throw new Error('templates API 异常')
+  if (!templates.success || templates.data.length !== 12) throw new Error('templates API 异常')
   const sites = await page.evaluate(async () => {
     const res = await fetch('/api/sites')
     return res.json()
