@@ -1,0 +1,9 @@
+node_modules
+.next
+pnpm-lock.yaml
+prisma/migrations
+prisma/dev.db
+public
+screenshots
+test-results
+*.md
