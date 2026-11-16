@@ -12,125 +12,90 @@
 .site-root{container-type:inline-size;min-height:100%;background:var(--bg);color:var(--fg);font-family:var(--fb);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
 .site-root *,.site-root *::before,.site-root *::after{box-sizing:border-box;margin:0;padding:0}
 .site-root img{display:block;max-width:100%}
-/* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过
-   .s-btn-primary (0,1,0) 的 color，导致深色按钮继承深色文字而「隐形」 */
+/* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过各版式按钮的 color */
 .site-root :where(a){color:inherit;text-decoration:none}
 .site-root ul,.site-root ol{list-style:none}
+/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，
+   默认会撑到 300×150 把按钮擑爆；基样式统一收敛到 16px，
+   各版式需要不同尺寸时在自己的 CSS 里覆盖（后加载胜出） */
+.site-root svg{width:16px;height:16px;flex:none}
 .site-root ::selection{background:var(--sp);color:var(--on-sp)}
 .site-root ::-webkit-scrollbar{width:10px;height:10px}
 .site-root ::-webkit-scrollbar-track{background:var(--bg)}
 .site-root ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:2px solid var(--bg)}
 .site-root ::-webkit-scrollbar-thumb:hover{background:var(--sp)}
-.wrap{width:min(1060px,100% - 48px);margin-inline:auto}
-.s-nav{position:sticky;top:0;z-index:50;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.s-nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
-.s-brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
-.s-mark{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--sp);color:var(--on-sp);font-size:15px;font-weight:800;flex:none}
-.s-links{display:flex;align-items:center;gap:22px;font-size:14px}
-.s-links a{color:var(--muted);transition:color .2s}
-.s-links a:hover{color:var(--sp)}
-.s-hero{padding:88px 0 72px;position:relative;overflow:hidden}
-.s-hero-in{display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;position:relative}
-.s-status{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);border:1px solid var(--line);padding:6px 14px;border-radius:999px;margin-bottom:22px;background:var(--panel)}
-.s-dot{width:8px;height:8px;border-radius:50%;background:#34d399;flex:none;animation:sp-pulse 2.4s infinite}
+.s-name{overflow-wrap:anywhere}
 @keyframes sp-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.45)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
-.s-name{font-family:var(--fd);font-size:clamp(40px,6cqw,64px);line-height:1.1;font-weight:800;letter-spacing:-.02em;overflow-wrap:anywhere}
-.s-title{margin-top:12px;font-size:clamp(17px,2.2cqw,21px);color:var(--sp);font-weight:600}
-.s-bio{margin-top:18px;max-width:56ch;color:var(--muted);font-size:15.5px}
-.s-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.s-chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 13px;background:var(--panel)}
-.s-chip svg{width:14px;height:14px;flex:none}
-.s-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.s-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:var(--btn-r);font-size:14.5px;font-weight:600;border:1.5px solid transparent;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,color .18s;cursor:pointer}
-.s-btn svg{width:16px;height:16px;flex:none}
-.s-btn-primary{background:var(--sp);color:var(--on-sp)}
-.s-btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px var(--sp-glow)}
-.s-btn-ghost{border-color:var(--line);color:var(--fg);background:var(--panel)}
-.s-btn-ghost:hover{border-color:var(--sp);color:var(--sp)}
-.s-btn-lg{padding:14px 30px;font-size:16px}
-.s-socials{display:flex;gap:10px;margin-top:26px}
-.s-social{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);color:var(--muted);background:var(--panel);transition:color .2s,border-color .2s,transform .2s}
-.s-social:hover{color:var(--sp);border-color:var(--sp);transform:translateY(-2px)}
-.s-social svg{width:17px;height:17px}
-.s-hero-avatar{position:relative;width:220px;height:220px;flex:none}
-.s-avatar-img{width:100%;height:100%;object-fit:cover;border-radius:var(--avatar-r);border:3px solid var(--line);background:var(--panel)}
-.s-monogram{width:100%;height:100%;display:grid;place-items:center;font-family:var(--fd);font-size:76px;font-weight:800;color:var(--on-sp);background:linear-gradient(135deg,var(--sp),var(--sp2));border-radius:var(--avatar-r)}
-.s-section{padding:64px 0;border-top:1px solid var(--line)}
-.s-kicker{font-family:var(--fm);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--sp);margin-bottom:10px}
-.s-h2{font-family:var(--fd);font-size:clamp(26px,3.6cqw,36px);font-weight:800;letter-spacing:-.01em;margin-bottom:34px}
-.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 40px}
-.skill-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:10px}
-.skill-name{font-weight:600;font-size:15px}
-.skill-pct{font-family:var(--fm);font-size:12.5px;color:var(--muted)}
-.skill-track{height:6px;border-radius:99px;background:var(--track);overflow:hidden}
-.skill-fill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--sp),var(--sp2))}
-.skill-dots{display:none}
-.project-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.project{background:var(--panel);border:1px solid var(--line);border-radius:var(--card-r);padding:26px;display:flex;flex-direction:column;gap:12px;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
-.project:hover{transform:translateY(-4px);border-color:var(--sp);box-shadow:0 16px 36px var(--shadow)}
-.project-head{display:flex;justify-content:space-between;align-items:center}
-.project-index{font-family:var(--fm);font-size:13px;color:var(--sp);font-weight:700}
-.project-badge{font-size:11.5px;font-weight:700;color:var(--on-sp);background:var(--sp);padding:3px 10px;border-radius:999px}
-.project-name{font-family:var(--fd);font-size:19px;font-weight:700;overflow-wrap:anywhere}
-.project-desc{font-size:14px;color:var(--muted);flex:1}
-.project-tags{display:flex;flex-wrap:wrap;gap:7px}
-.project-tags li{font-family:var(--fm);font-size:11.5px;color:var(--sp);background:var(--sp-soft);padding:4px 10px;border-radius:6px}
-.project-links{display:flex;gap:16px;font-size:13.5px;font-weight:600}
-.project-links a{display:inline-flex;align-items:center;gap:5px;color:var(--sp)}
-.project-links a:hover{text-decoration:underline}
-.project-links svg{width:14px;height:14px}
-.exp-list{display:flex;flex-direction:column}
-.exp{display:grid;grid-template-columns:170px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line)}
-.exp:last-child{border-bottom:none}
-.exp-period{font-family:var(--fm);font-size:13px;color:var(--sp);padding-top:3px}
-.exp-role{font-size:17px;font-weight:700;font-family:var(--fd)}
-.exp-org{font-size:14px;color:var(--muted);margin-top:2px}
-.exp-desc{font-size:14px;color:var(--muted);margin-top:10px;max-width:64ch}
-.s-contact{text-align:center}
-.contact-lead{color:var(--muted);max-width:52ch;margin:0 auto 28px;font-size:15px}
-.s-contact .s-socials{justify-content:center;margin-top:30px}
-.s-footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--muted)}
-.s-footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-/* 容器查询：按站点根容器自身宽度切换移动版式（预览容器≠视口，媒体查询会误判） */
-@container (max-width: 760px){
-.s-hero{padding:56px 0 48px}
-.s-hero-in{grid-template-columns:1fr;gap:32px}
-.s-hero-avatar{width:150px;height:150px;order:-1}
-.s-monogram{font-size:52px}
-.skill-grid{grid-template-columns:1fr}
-.project-grid{grid-template-columns:1fr}
-.exp{grid-template-columns:1fr;gap:6px}
-.s-links{gap:14px;font-size:13px}
-.s-links a:not(.s-cta-link){display:none}
-.s-section{padding:48px 0}
+
+
+.site-ink{--bg:#f7f3ea;--fg:#1c1a17;--muted:#6f6656;--line:#ddd3c2;--panel:#fbf8f1;--fd:Georgia,'Times New Roman','Songti SC','SimSun',serif;--fb:Georgia,'Times New Roman','Songti SC','SimSun',serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace}
+.i-layout{display:grid;grid-template-columns:1fr auto}
+.i-side{writing-mode:vertical-rl;display:flex;align-items:center;gap:18px;padding:26px 14px;border-left:1px solid var(--line);align-self:stretch}
+.i-side nav{display:flex;gap:16px}
+.i-side nav a{letter-spacing:.42em;font-size:13.5px;color:var(--muted);transition:color .2s}
+.i-side nav a:hover{color:var(--sp)}
+.i-seal{width:34px;height:34px;border-radius:6px;background:var(--sp);color:#fbf8f1;display:grid;place-items:center;font-family:var(--fd);font-weight:700;font-size:16px;box-shadow:0 0 0 1px var(--sp-glow),0 2px 10px var(--sp-glow)}
+.i-main{min-width:0}
+.i-hero{display:grid;grid-template-columns:1fr auto;gap:44px;align-items:start;padding:88px clamp(20px,5cqw,72px) 68px;border-bottom:1px solid var(--line)}
+.i-name{font-family:var(--fd);font-size:clamp(46px,7cqw,72px);font-weight:700;letter-spacing:.04em;font-style:normal;line-height:1.15}
+.i-role{margin-top:14px;font-style:italic;color:var(--muted);font-size:17px;font-weight:400}
+.i-role::before{content:'「';color:var(--sp)}
+.i-role::after{content:'」';color:var(--sp)}
+.i-status{display:inline-flex;align-items:center;gap:9px;margin-top:22px;font-family:var(--fm);font-size:12px;color:var(--muted)}
+.i-status::before{content:'';width:7px;height:7px;border-radius:50%;background:#34d399;animation:sp-pulse 2.4s infinite}
+.i-bio{margin-top:18px;color:var(--muted);font-size:15px;line-height:1.95;max-width:54ch}
+.i-fig{display:flex;align-items:flex-start;gap:16px}
+.i-figbox{position:relative}
+.i-face,.i-monogram{width:150px;height:150px;border-radius:50%;object-fit:cover;border:2px solid var(--line);box-shadow:0 0 0 7px var(--panel),0 0 0 8px var(--line)}
+.i-monogram{display:grid;place-items:center;font-family:var(--fd);font-weight:700;font-size:52px;background:linear-gradient(135deg,var(--sp),var(--sp2));color:var(--on-sp)}
+.i-vsign{writing-mode:vertical-rl;font-size:12.5px;letter-spacing:.5em;color:var(--muted);padding-top:6px}
+.i-sec{padding:60px clamp(20px,5cqw,72px);border-bottom:1px solid var(--line)}
+.i-h2{font-family:var(--fd);font-size:clamp(26px,3.6cqw,34px);font-weight:700;position:relative;padding-bottom:16px;margin-bottom:34px;font-style:normal}
+.i-h2::after{content:'';position:absolute;left:0;bottom:0;width:76px;height:10px;background:radial-gradient(ellipse 58px 8px at 38% 50%,var(--sp-soft),transparent 75%),radial-gradient(ellipse 26px 5px at 80% 55%,var(--sp-glow),transparent 72%)}
+.i-h2 .i-kick{position:absolute;right:0;bottom:18px;font-family:var(--fm);font-size:11px;letter-spacing:.34em;color:var(--sp)}
+.i-skills{display:flex;flex-direction:column;gap:14px}
+.i-skill{display:grid;grid-template-columns:120px 1fr 46px;gap:16px;align-items:center}
+.i-sname{font-family:var(--fd);font-size:15.5px;font-weight:700}
+.i-bar{height:12px;background:var(--track);border-radius:6px 3px 3px 6px;overflow:hidden}
+.i-brush{display:block;height:100%;background:linear-gradient(90deg,var(--sp),var(--sp2) 72%,transparent 98%);-webkit-mask:linear-gradient(90deg,#000 80%,transparent 99%);mask:linear-gradient(90deg,#000 80%,transparent 99%);border-radius:8px 3px 3px 8px}
+.i-spct{font-family:var(--fm);font-size:11.5px;color:var(--muted);text-align:right}
+.i-hangs{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.i-hang{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;transition:transform .2s,box-shadow .2s}
+.i-hang:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(28,26,23,.12)}
+.i-brocade{height:9px;background:linear-gradient(90deg,var(--sp),var(--sp2) 46%,transparent 94%)}
+.i-hangin{padding:18px 20px 20px}
+.i-hname{font-family:var(--fd);font-size:18px;font-weight:700;overflow-wrap:anywhere}
+.i-hdesc{margin-top:8px;color:var(--muted);font-size:13.5px;line-height:1.8}
+.i-htags{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px;list-style:none}
+.i-htag{border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:3px 11px;font-family:var(--fm);font-size:11px}
+.i-hlinks{margin-top:12px;display:flex;gap:16px;font-size:13px}
+.i-hlinks a{color:var(--sp)}
+.i-hlinks a:hover{text-decoration:underline}
+.i-scroll{position:relative;padding-left:30px;max-width:760px}
+.i-scroll::before{content:'';position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:linear-gradient(var(--sp-soft),transparent)}
+.i-era{position:relative;padding-bottom:30px}
+.i-era:last-child{padding-bottom:0}
+.i-era::before{content:'';position:absolute;left:-28px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--sp);box-shadow:0 0 0 4px var(--sp-soft)}
+.i-ewhen{font-family:var(--fm);font-size:12px;color:var(--sp)}
+.i-erole{font-family:var(--fd);font-size:18px;font-weight:700;margin-top:4px}
+.i-eorg{font-size:13px;color:var(--muted);margin-top:2px}
+.i-edesc{margin-top:8px;font-size:13.5px;color:var(--muted);line-height:1.85;max-width:58ch}
+.i-letter{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:48px 34px;text-align:center;position:relative;margin:0 clamp(20px,5cqw,72px)}
+.i-letter::after{content:'';position:absolute;right:24px;top:22px;width:26px;height:26px;background:var(--sp);border-radius:4px;opacity:.9;box-shadow:0 0 0 3px var(--sp-soft)}
+.i-lead{color:var(--muted);font-size:14.5px;max-width:46ch;margin:0 auto}
+.i-mail{display:inline-block;margin-top:20px;font-family:var(--fd);font-size:19px;color:var(--fg);border-bottom:2px solid var(--sp);padding-bottom:3px}
+.i-mail:hover{color:var(--sp)}
+.i-soc{margin-top:24px;display:flex;justify-content:center;gap:12px}
+.i-soc a{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;color:var(--muted);background:#fff}
+.i-soc a:hover{color:var(--sp);border-color:var(--sp)}
+.i-foot{padding:22px clamp(20px,5cqw,72px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--fm);font-size:11.5px;color:var(--muted)}
+@container (max-width:860px){
+.i-side{display:none}
+.i-hero{grid-template-columns:1fr}
+.i-fig{order:-1}
+.i-hangs{grid-template-columns:1fr}
+.i-skill{grid-template-columns:92px 1fr 42px;gap:10px}
 }
-
-
-.site-ink{--bg:#f7f3ea;--fg:#1c1a17;--muted:#6f6656;--line:#ddd3c2;--panel:#fbf8f1;--track:#e9e1d1;--nav-bg:rgba(247,243,234,.9);--shadow:rgba(28,26,23,.1);--fd:Georgia,'Times New Roman','Songti SC','SimSun',serif;--fb:Georgia,'Times New Roman','Songti SC','SimSun',serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace;--btn-r:3px;--card-r:6px;--avatar-r:50%;background-image:radial-gradient(rgba(28,26,23,.035) 1px,transparent 1px);background-size:18px 18px}
-.site-ink .s-mark{border-radius:6px;background:var(--sp);color:#fbf8f1;box-shadow:0 0 0 1px var(--sp-glow),0 2px 10px var(--sp-glow)}
-.site-ink .s-hero{padding:96px 0 80px}
-.site-ink .s-name{font-weight:700;letter-spacing:.04em}
-.site-ink .s-title{color:var(--muted);font-style:italic}
-.site-ink .s-title::before{content:'「';color:var(--sp)}
-.site-ink .s-title::after{content:'」';color:var(--sp)}
-.site-ink .s-avatar-img{border:2px solid var(--line);box-shadow:0 0 0 6px var(--panel),0 0 0 7px var(--line)}
-.site-ink .s-kicker{color:var(--sp);letter-spacing:.35em}
-.site-ink .s-h2{font-weight:700;position:relative;padding-bottom:14px}
-.site-ink .s-h2::after{content:'';position:absolute;left:0;bottom:0;width:76px;height:10px;background:radial-gradient(ellipse 58px 8px at 38% 50%,var(--sp-soft),transparent 75%),radial-gradient(ellipse 26px 5px at 80% 55%,var(--sp-glow),transparent 72%)}
-.site-ink .skill-track{height:8px;border-radius:4px}
-.site-ink .skill-fill{background:linear-gradient(90deg,var(--sp),var(--sp2) 78%,transparent);border-radius:4px 2px 2px 4px}
-.site-ink .project{background:linear-gradient(180deg,var(--panel),#f3ede0);border:1px solid var(--line);position:relative;overflow:hidden}
-.site-ink .project::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--sp),var(--sp2) 45%,transparent 92%);opacity:.85}
-.site-ink .project-name{font-weight:700}
-.site-ink .project-index{color:var(--sp)}
-.site-ink .exp{position:relative;padding-left:28px;border-bottom:none}
-.site-ink .exp::before{content:'';position:absolute;left:0;top:10px;width:9px;height:9px;border-radius:50%;background:var(--sp);box-shadow:0 0 0 4px var(--sp-soft)}
-.site-ink .exp::after{content:'';position:absolute;left:4px;top:26px;bottom:-4px;width:1px;background:linear-gradient(var(--sp-soft),transparent)}
-.site-ink .exp:last-child::after{display:none}
-.site-ink .s-contact{border-top:none;padding-bottom:72px}
-.site-ink .s-contact .wrap{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:52px 32px;position:relative}
-.site-ink .s-contact .wrap::before{content:'';position:absolute;right:22px;top:20px;width:26px;height:26px;background:var(--sp);border-radius:4px;opacity:.9;box-shadow:0 0 0 3px var(--sp-soft)}
-.site-ink .s-footer{font-family:var(--fm);font-size:12.5px}
 
 .site-ink{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;}
 html{scroll-behavior:smooth;scrollbar-color:#f7f3ea auto}
@@ -139,198 +104,84 @@ body{margin:0;background:#f7f3ea}
 </head>
 <body>
 <div class="site-root site-ink">
-  <header class="s-nav">
-    <div class="wrap s-nav-in">
-      <a class="s-brand" href="#top"><span class="s-mark">张</span><span class="s-brand-name">张亮</span></a>
-      <nav class="s-links" aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact" class="s-cta-link">联系</a></nav>
-    </div>
-  </header>
-  <main>
+  <div class="i-layout">
+    <main class="i-main">
+      <section class="i-hero">
+        <div>
+          <h1 class="s-name i-name">张亮</h1>
+          <p class="i-role">全栈开发学习者 · Java / Web</p>
+          <p class="i-status">正在寻找 2027 届实习机会</p>
+          <p class="i-bio">计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。</p>
+        </div>
+        <div class="i-fig">
+          <div class="i-figbox"><img class="i-face" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="张亮的头像"></div>
+          <p class="i-vsign">张亮 · 印</p>
+        </div>
+      </section>
+      <section class="i-sec" id="skills"><h2 class="i-h2">技能栈<span class="i-kick">INK</span></h2><div class="i-skills"><div class="i-skill"><span class="i-sname">Java</span>
+  <span class="i-bar"><span class="i-brush" style="width:85%"></span></span>
+  <span class="i-spct">85%</span></div><div class="i-skill"><span class="i-sname">Spring Boot</span>
+  <span class="i-bar"><span class="i-brush" style="width:75%"></span></span>
+  <span class="i-spct">75%</span></div><div class="i-skill"><span class="i-sname">MySQL</span>
+  <span class="i-bar"><span class="i-brush" style="width:72%"></span></span>
+  <span class="i-spct">72%</span></div><div class="i-skill"><span class="i-sname">HTML / CSS</span>
+  <span class="i-bar"><span class="i-brush" style="width:82%"></span></span>
+  <span class="i-spct">82%</span></div><div class="i-skill"><span class="i-sname">JavaScript</span>
+  <span class="i-bar"><span class="i-brush" style="width:74%"></span></span>
+  <span class="i-spct">74%</span></div><div class="i-skill"><span class="i-sname">Vue 3</span>
+  <span class="i-bar"><span class="i-brush" style="width:65%"></span></span>
+  <span class="i-spct">65%</span></div><div class="i-skill"><span class="i-sname">Next.js</span>
+  <span class="i-bar"><span class="i-brush" style="width:62%"></span></span>
+  <span class="i-spct">62%</span></div><div class="i-skill"><span class="i-sname">Linux</span>
+  <span class="i-bar"><span class="i-brush" style="width:68%"></span></span>
+  <span class="i-spct">68%</span></div></div></section>
+      <section class="i-sec" id="projects"><h2 class="i-h2">项目作品<span class="i-kick">SCROLLS</span></h2><div class="i-hangs"><article class="i-hang"><div class="i-brocade"></div>
+  <div class="i-hangin">
+    <h3 class="i-hname">音乐网站 music-web</h3>
+    <p class="i-hdesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
+    <ul class="i-htags"><li class="i-htag">Java</li><li class="i-htag">Jakarta EE</li><li class="i-htag">Tomcat</li><li class="i-htag">MySQL</li></ul>
     
-  <section class="s-hero" id="top">
-    <div class="wrap s-hero-in">
-      <div class="s-hero-text">
-        <p class="s-status"><span class="s-dot"></span>正在寻找 2027 届实习机会</p>
-        <h1 class="s-name">张亮</h1>
-        <p class="s-title">全栈开发学习者 · Java / Web</p>
-        <p class="s-bio">计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。</p>
-        <div class="s-meta"><span class="s-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span><span class="s-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</span></div>
-        <div class="s-actions"><a class="s-btn s-btn-primary" href="#projects">查看项目<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m-7-7 7 7 7-7"/></svg></a><a class="s-btn s-btn-ghost" href="mailto:zhangliang@example.com">联系我<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a></div>
-        <div class="s-socials"><a class="s-social" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="s-social" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
-      </div>
-      
-    <div class="s-hero-avatar" data-badge="正在寻找 2027 届实">
-      <img class="s-avatar-img" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="张亮的头像">
-    </div>
-    </div>
-  </section>
+  </div></article><article class="i-hang"><div class="i-brocade"></div>
+  <div class="i-hangin">
+    <h3 class="i-hname">教室预约系统</h3>
+    <p class="i-hdesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
+    <ul class="i-htags"><li class="i-htag">Servlet</li><li class="i-htag">JSP</li><li class="i-htag">MySQL</li></ul>
     
-  <section class="s-section" id="skills">
-    <div class="wrap">
-      <p class="s-kicker">01 / SKILLS</p>
-      <h2 class="s-h2">技能栈</h2>
-      <ul class="skill-grid">
-        
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Java</span>
-            <span class="skill-pct">85%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:85%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Spring Boot</span>
-            <span class="skill-pct">75%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:75%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">MySQL</span>
-            <span class="skill-pct">72%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:72%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">HTML / CSS</span>
-            <span class="skill-pct">82%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:82%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">JavaScript</span>
-            <span class="skill-pct">74%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:74%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Vue 3</span>
-            <span class="skill-pct">65%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:65%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Next.js</span>
-            <span class="skill-pct">62%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:62%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Linux</span>
-            <span class="skill-pct">68%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:68%"></span></div>
-        </li>
-      </ul>
-    </div>
-  </section>
+  </div></article><article class="i-hang"><div class="i-brocade"></div>
+  <div class="i-hangin">
+    <h3 class="i-hname">个人官网生成器</h3>
+    <p class="i-hdesc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+    <ul class="i-htags"><li class="i-htag">Next.js</li><li class="i-htag">TypeScript</li><li class="i-htag">Prisma</li><li class="i-htag">Tailwind</li></ul>
     
-  <section class="s-section" id="projects">
-    <div class="wrap">
-      <p class="s-kicker">02 / PROJECTS</p>
-      <h2 class="s-h2">项目作品</h2>
-      <div class="project-grid">
-        
-        <article class="project is-highlight">
-          <div class="project-head">
-            <span class="project-index">01</span>
-            <span class="project-badge">精选</span>
-          </div>
-          <h3 class="project-name">音乐网站 music-web</h3>
-          <p class="project-desc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
-          <ul class="project-tags"><li>Java</li><li>Jakarta EE</li><li>Tomcat</li><li>MySQL</li></ul>
-          
-        </article>
-        <article class="project">
-          <div class="project-head">
-            <span class="project-index">02</span>
-            
-          </div>
-          <h3 class="project-name">教室预约系统</h3>
-          <p class="project-desc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
-          <ul class="project-tags"><li>Servlet</li><li>JSP</li><li>MySQL</li></ul>
-          
-        </article>
-        <article class="project is-highlight">
-          <div class="project-head">
-            <span class="project-index">03</span>
-            <span class="project-badge">精选</span>
-          </div>
-          <h3 class="project-name">个人官网生成器</h3>
-          <p class="project-desc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
-          <ul class="project-tags"><li>Next.js</li><li>TypeScript</li><li>Prisma</li><li>Tailwind</li></ul>
-          
-        </article>
-        <article class="project">
-          <div class="project-head">
-            <span class="project-index">04</span>
-            
-          </div>
-          <h3 class="project-name">操作系统实验笔记</h3>
-          <p class="project-desc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
-          <ul class="project-tags"><li>C</li><li>Assembly</li><li>Linux</li></ul>
-          
-        </article>
-      </div>
-    </div>
-  </section>
+  </div></article><article class="i-hang"><div class="i-brocade"></div>
+  <div class="i-hangin">
+    <h3 class="i-hname">操作系统实验笔记</h3>
+    <p class="i-hdesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
+    <ul class="i-htags"><li class="i-htag">C</li><li class="i-htag">Assembly</li><li class="i-htag">Linux</li></ul>
     
-  <section class="s-section" id="experience">
-    <div class="wrap">
-      <p class="s-kicker">03 / EXPERIENCE</p>
-      <h2 class="s-h2">经历</h2>
-      <ul class="exp-list">
-        
-        <li class="exp">
-          <div class="exp-period">2024.09 - 至今</div>
-          <div class="exp-body">
-            <h3 class="exp-role">本科生 · 计算机科学与技术</h3>
-            <p class="exp-org">计算机学院</p>
-            <p class="exp-desc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p>
-          </div>
-        </li>
-        <li class="exp">
-          <div class="exp-period">2025.03 - 至今</div>
-          <div class="exp-body">
-            <h3 class="exp-role">独立开发者</h3>
-            <p class="exp-org">个人项目</p>
-            <p class="exp-desc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </section>
-    
-  <section class="s-section s-contact" id="contact">
-    <div class="wrap">
-      <p class="s-kicker">04 / CONTACT</p>
-      <h2 class="s-h2">一起聊聊？</h2>
-      <p class="contact-lead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
-      <a class="s-btn s-btn-primary s-btn-lg" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</a>
-      <div class="s-socials"><a class="s-social" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="s-social" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
-    </div>
-  </section>
-  </main>
-  <footer class="s-footer">
-    <div class="wrap">
-      <span>© 2026 张亮</span>
-      <span>由 SiteCraft 个人官网生成器构建</span>
-    </div>
-  </footer>
+  </div></article></div></section>
+      <section class="i-sec" id="experience"><h2 class="i-h2">经历<span class="i-kick">TIMELINE</span></h2><div class="i-scroll"><div class="i-era"><span class="i-ewhen">2024.09 - 至今</span>
+  <h3 class="i-erole">本科生 · 计算机科学与技术</h3>
+  <p class="i-eorg">计算机学院</p>
+  <p class="i-edesc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p></div><div class="i-era"><span class="i-ewhen">2025.03 - 至今</span>
+  <h3 class="i-erole">独立开发者</h3>
+  <p class="i-eorg">个人项目</p>
+  <p class="i-edesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></div></div></section>
+      <section class="i-sec" id="contact" style="border-bottom:none;padding-bottom:72px">
+        <div class="i-letter">
+          <h2 class="i-h2" style="margin-bottom:12px">一起聊聊？</h2>
+          <p class="i-lead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
+          <a class="i-mail" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</a>
+          <div class="i-soc"><a class="i-soc-a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="i-soc-a" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
+        </div>
+      </section>
+      <footer class="i-foot"><span>© 2026 张亮</span><span>由 SiteCraft 个人官网生成器构建</span></footer>
+    </main>
+    <aside class="i-side">
+      <nav aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact">联系</a></nav>
+      <span class="i-seal">张</span>
+    </aside>
+  </div>
 </div>
 </body>
 </html>

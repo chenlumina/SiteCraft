@@ -12,139 +12,78 @@
 .site-root{container-type:inline-size;min-height:100%;background:var(--bg);color:var(--fg);font-family:var(--fb);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
 .site-root *,.site-root *::before,.site-root *::after{box-sizing:border-box;margin:0;padding:0}
 .site-root img{display:block;max-width:100%}
-/* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过
-   .s-btn-primary (0,1,0) 的 color，导致深色按钮继承深色文字而「隐形」 */
+/* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过各版式按钮的 color */
 .site-root :where(a){color:inherit;text-decoration:none}
 .site-root ul,.site-root ol{list-style:none}
+/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，
+   默认会撑到 300×150 把按钮擑爆；基样式统一收敛到 16px，
+   各版式需要不同尺寸时在自己的 CSS 里覆盖（后加载胜出） */
+.site-root svg{width:16px;height:16px;flex:none}
 .site-root ::selection{background:var(--sp);color:var(--on-sp)}
 .site-root ::-webkit-scrollbar{width:10px;height:10px}
 .site-root ::-webkit-scrollbar-track{background:var(--bg)}
 .site-root ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:2px solid var(--bg)}
 .site-root ::-webkit-scrollbar-thumb:hover{background:var(--sp)}
-.wrap{width:min(1060px,100% - 48px);margin-inline:auto}
-.s-nav{position:sticky;top:0;z-index:50;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.s-nav-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
-.s-brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
-.s-mark{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--sp);color:var(--on-sp);font-size:15px;font-weight:800;flex:none}
-.s-links{display:flex;align-items:center;gap:22px;font-size:14px}
-.s-links a{color:var(--muted);transition:color .2s}
-.s-links a:hover{color:var(--sp)}
-.s-hero{padding:88px 0 72px;position:relative;overflow:hidden}
-.s-hero-in{display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;position:relative}
-.s-status{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);border:1px solid var(--line);padding:6px 14px;border-radius:999px;margin-bottom:22px;background:var(--panel)}
-.s-dot{width:8px;height:8px;border-radius:50%;background:#34d399;flex:none;animation:sp-pulse 2.4s infinite}
+.s-name{overflow-wrap:anywhere}
 @keyframes sp-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.45)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
-.s-name{font-family:var(--fd);font-size:clamp(40px,6cqw,64px);line-height:1.1;font-weight:800;letter-spacing:-.02em;overflow-wrap:anywhere}
-.s-title{margin-top:12px;font-size:clamp(17px,2.2cqw,21px);color:var(--sp);font-weight:600}
-.s-bio{margin-top:18px;max-width:56ch;color:var(--muted);font-size:15.5px}
-.s-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-.s-chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 13px;background:var(--panel)}
-.s-chip svg{width:14px;height:14px;flex:none}
-.s-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.s-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:var(--btn-r);font-size:14.5px;font-weight:600;border:1.5px solid transparent;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,color .18s;cursor:pointer}
-.s-btn svg{width:16px;height:16px;flex:none}
-.s-btn-primary{background:var(--sp);color:var(--on-sp)}
-.s-btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px var(--sp-glow)}
-.s-btn-ghost{border-color:var(--line);color:var(--fg);background:var(--panel)}
-.s-btn-ghost:hover{border-color:var(--sp);color:var(--sp)}
-.s-btn-lg{padding:14px 30px;font-size:16px}
-.s-socials{display:flex;gap:10px;margin-top:26px}
-.s-social{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);color:var(--muted);background:var(--panel);transition:color .2s,border-color .2s,transform .2s}
-.s-social:hover{color:var(--sp);border-color:var(--sp);transform:translateY(-2px)}
-.s-social svg{width:17px;height:17px}
-.s-hero-avatar{position:relative;width:220px;height:220px;flex:none}
-.s-avatar-img{width:100%;height:100%;object-fit:cover;border-radius:var(--avatar-r);border:3px solid var(--line);background:var(--panel)}
-.s-monogram{width:100%;height:100%;display:grid;place-items:center;font-family:var(--fd);font-size:76px;font-weight:800;color:var(--on-sp);background:linear-gradient(135deg,var(--sp),var(--sp2));border-radius:var(--avatar-r)}
-.s-section{padding:64px 0;border-top:1px solid var(--line)}
-.s-kicker{font-family:var(--fm);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--sp);margin-bottom:10px}
-.s-h2{font-family:var(--fd);font-size:clamp(26px,3.6cqw,36px);font-weight:800;letter-spacing:-.01em;margin-bottom:34px}
-.skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 40px}
-.skill-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:10px}
-.skill-name{font-weight:600;font-size:15px}
-.skill-pct{font-family:var(--fm);font-size:12.5px;color:var(--muted)}
-.skill-track{height:6px;border-radius:99px;background:var(--track);overflow:hidden}
-.skill-fill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--sp),var(--sp2))}
-.skill-dots{display:none}
-.project-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.project{background:var(--panel);border:1px solid var(--line);border-radius:var(--card-r);padding:26px;display:flex;flex-direction:column;gap:12px;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
-.project:hover{transform:translateY(-4px);border-color:var(--sp);box-shadow:0 16px 36px var(--shadow)}
-.project-head{display:flex;justify-content:space-between;align-items:center}
-.project-index{font-family:var(--fm);font-size:13px;color:var(--sp);font-weight:700}
-.project-badge{font-size:11.5px;font-weight:700;color:var(--on-sp);background:var(--sp);padding:3px 10px;border-radius:999px}
-.project-name{font-family:var(--fd);font-size:19px;font-weight:700;overflow-wrap:anywhere}
-.project-desc{font-size:14px;color:var(--muted);flex:1}
-.project-tags{display:flex;flex-wrap:wrap;gap:7px}
-.project-tags li{font-family:var(--fm);font-size:11.5px;color:var(--sp);background:var(--sp-soft);padding:4px 10px;border-radius:6px}
-.project-links{display:flex;gap:16px;font-size:13.5px;font-weight:600}
-.project-links a{display:inline-flex;align-items:center;gap:5px;color:var(--sp)}
-.project-links a:hover{text-decoration:underline}
-.project-links svg{width:14px;height:14px}
-.exp-list{display:flex;flex-direction:column}
-.exp{display:grid;grid-template-columns:170px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line)}
-.exp:last-child{border-bottom:none}
-.exp-period{font-family:var(--fm);font-size:13px;color:var(--sp);padding-top:3px}
-.exp-role{font-size:17px;font-weight:700;font-family:var(--fd)}
-.exp-org{font-size:14px;color:var(--muted);margin-top:2px}
-.exp-desc{font-size:14px;color:var(--muted);margin-top:10px;max-width:64ch}
-.s-contact{text-align:center}
-.contact-lead{color:var(--muted);max-width:52ch;margin:0 auto 28px;font-size:15px}
-.s-contact .s-socials{justify-content:center;margin-top:30px}
-.s-footer{border-top:1px solid var(--line);padding:26px 0;font-size:13px;color:var(--muted)}
-.s-footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-/* 容器查询：按站点根容器自身宽度切换移动版式（预览容器≠视口，媒体查询会误判） */
-@container (max-width: 760px){
-.s-hero{padding:56px 0 48px}
-.s-hero-in{grid-template-columns:1fr;gap:32px}
-.s-hero-avatar{width:150px;height:150px;order:-1}
-.s-monogram{font-size:52px}
-.skill-grid{grid-template-columns:1fr}
-.project-grid{grid-template-columns:1fr}
-.exp{grid-template-columns:1fr;gap:6px}
-.s-links{gap:14px;font-size:13px}
-.s-links a:not(.s-cta-link){display:none}
-.s-section{padding:48px 0}
+
+
+.site-creative{--bg:#fff8f0;--fg:#292524;--muted:#78716c;--line:#292524;--panel:#ffffff;--shadow:rgba(41,37,36,.16);--fd:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fb:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace}
+.c-nav{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:18px 20px;border-bottom:3px solid var(--fg)}
+.c-nav a{border:2px solid var(--fg);background:#fff;padding:7px 16px;border-radius:999px;font-weight:800;font-size:13px;box-shadow:3px 3px 0 var(--fg);transition:transform .15s,box-shadow .15s}
+.c-nav a:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--fg)}
+.c-hero{position:relative;text-align:center;padding:76px 24px 60px;border-bottom:3px solid var(--fg);background-image:radial-gradient(rgba(41,37,36,.08) 1.5px,transparent 1.5px);background-size:22px 22px;overflow:hidden}
+.c-hero::before{content:'';position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,var(--sp-soft),transparent 70%);pointer-events:none}
+.c-status{display:inline-block;transform:rotate(-2deg);border:2px solid var(--fg);background:var(--sp);color:var(--on-sp);font-weight:800;padding:8px 18px;border-radius:12px;box-shadow:4px 4px 0 var(--fg);font-size:14px}
+.c-name{margin-top:26px;font-size:clamp(46px,8cqw,78px);font-weight:900;letter-spacing:-.02em;transform:rotate(-1.5deg);background:linear-gradient(100deg,var(--sp),var(--sp2));-webkit-background-clip:text;background-clip:text;color:transparent;font-style:normal}
+.c-role{display:inline-block;margin-top:16px;border:2px solid var(--fg);background:#fff;padding:7px 18px;border-radius:999px;font-weight:700;transform:rotate(1deg);box-shadow:3px 3px 0 var(--sp-soft);font-size:15px}
+.c-face,.c-monogram{width:150px;height:150px;margin:36px auto 0;border-radius:42% 58% 55% 45%/52% 44% 56% 48%;border:3px solid var(--fg);box-shadow:8px 8px 0 var(--sp-soft);object-fit:cover;transform:rotate(2deg)}
+.c-monogram{display:grid;place-items:center;font-weight:900;font-size:52px;background:linear-gradient(135deg,var(--sp),var(--sp2));color:var(--on-sp)}
+.c-chips{margin-top:24px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.c-chip{display:inline-flex;align-items:center;gap:7px;border:2px solid var(--fg);background:#fff;padding:6px 14px;border-radius:999px;font-weight:700;font-size:13px;box-shadow:3px 3px 0 var(--shadow)}
+.c-chip svg{width:14px;height:14px}
+.c-wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+.c-h2{display:inline-block;margin:60px 0 26px;font-size:clamp(28px,4cqw,38px);font-weight:900;transform:rotate(-1deg);position:relative;isolation:isolate;font-style:normal}
+.c-h2::after{content:'';position:absolute;left:-6px;right:-6px;bottom:4px;height:14px;background:var(--sp-soft);border-radius:99px;z-index:-1;transform:rotate(-.6deg)}
+.c-rings{display:flex;flex-wrap:wrap;gap:28px;justify-content:center}
+.c-ring{width:126px;text-align:center;transform:rotate(-2deg)}
+.c-ring:nth-child(even){transform:rotate(2deg)}
+.c-disc{width:92px;height:92px;margin:0 auto;border-radius:50%;background:conic-gradient(var(--sp) calc(var(--p)*1%),#f5e9dc 0);border:2.5px solid var(--fg);box-shadow:4px 4px 0 var(--shadow);display:grid;place-items:center}
+.c-disc i{width:62px;height:62px;border-radius:50%;background:#fff;border:2.5px solid var(--fg);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:14.5px}
+.c-ring b{display:block;margin-top:12px;font-size:14px;font-weight:800}
+.c-polos{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px}
+.c-polo{background:#fff;border:2.5px solid var(--fg);border-radius:14px;padding:16px;box-shadow:6px 6px 0 var(--shadow);transform:rotate(-1deg);transition:transform .2s,box-shadow .2s}
+.c-polo:nth-child(even){transform:rotate(1.2deg)}
+.c-polo:hover{transform:translate(-3px,-3px) rotate(0deg);box-shadow:9px 9px 0 var(--sp)}
+.c-polo-head{height:12px;border-radius:8px;background:linear-gradient(90deg,var(--sp),var(--sp2));border:2px solid var(--fg);margin-bottom:14px}
+.c-pname{font-weight:900;font-size:19px;overflow-wrap:anywhere}
+.c-pdesc{color:var(--muted);font-size:14px;margin-top:7px;line-height:1.75}
+.c-ptags{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;list-style:none}
+.c-ptag{border:2px solid var(--fg);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700;background:#fff}
+.c-plinks{margin-top:12px;display:flex;gap:16px;font-weight:800;font-size:13.5px}
+.c-plinks a{color:var(--sp)}
+.c-plinks a:hover{text-decoration:underline}
+.c-notes{display:flex;flex-direction:column;gap:20px;margin-top:8px;max-width:560px}
+.c-note{position:relative;background:#fff;border:2.5px solid var(--fg);border-radius:16px;padding:18px 20px;box-shadow:5px 5px 0 var(--shadow);transform:rotate(-1deg)}
+.c-note:nth-child(even){margin-left:auto;transform:rotate(1deg)}
+.c-note::before{content:'';position:absolute;top:-12px;left:38px;width:76px;height:24px;background:rgba(255,252,240,.7);border:1px solid rgba(41,37,36,.15);transform:rotate(-3deg)}
+.c-nwhen{display:inline-block;background:var(--sp-soft);border:2px solid var(--fg);border-radius:999px;padding:3px 13px;font-size:12.5px;font-weight:800}
+.c-nrole{margin-top:9px;font-weight:900;font-size:17px}
+.c-norg{color:var(--muted);font-size:13px;margin-top:2px}
+.c-ndesc{margin-top:8px;font-size:14px;color:var(--muted);line-height:1.75}
+.c-big{margin-top:64px;background:var(--fg);color:#fff8f0;border-radius:24px;padding:52px 32px;text-align:center;box-shadow:8px 8px 0 var(--sp)}
+.c-big .c-h2{margin:0 0 10px;color:#fff8f0}
+.c-big .c-h2::after{background:rgba(255,255,255,.16)}
+.c-blead{color:#d6d3d1;max-width:46ch;margin:0 auto}
+.c-bmail{display:inline-flex;align-items:center;gap:9px;margin-top:22px;background:var(--sp);color:var(--on-sp);border:2px solid #fff8f0;font-weight:800;padding:13px 28px;border-radius:999px;font-size:15px}
+.c-bmail svg{width:16px;height:16px}
+.c-soc{margin-top:24px;display:flex;justify-content:center;gap:12px}
+.c-soc a{width:42px;height:42px;display:grid;place-items:center;border:2px solid #fff8f0;border-radius:12px;color:#fff8f0;background:rgba(255,255,255,.08)}
+.c-foot{padding:24px;text-align:center;font-family:var(--fm);font-size:12px;color:var(--muted)}
+@container (max-width:760px){
+.c-polos{grid-template-columns:1fr}
+.c-note{max-width:none}
 }
-
-
-.site-creative{--bg:#fff8f0;--fg:#292524;--muted:#78716c;--line:#292524;--panel:#ffffff;--track:#f5e9dc;--nav-bg:rgba(255,248,240,.9);--shadow:rgba(41,37,36,.16);--fd:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fb:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace;--btn-r:999px;--card-r:18px;--avatar-r:58% 42% 55% 45% / 48% 55% 45% 52%}
-.site-creative .s-nav{border-bottom:2px solid var(--fg)}
-.site-creative .s-mark{border-radius:12px;transform:rotate(-6deg);border:2px solid var(--fg);box-shadow:3px 3px 0 var(--fg)}
-.site-creative .s-hero{background-image:radial-gradient(rgba(41,37,36,.08) 1.5px,transparent 1.5px);background-size:22px 22px}
-.site-creative .s-hero::before{content:'';position:absolute;right:-90px;top:-90px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,var(--sp-soft),transparent 70%);pointer-events:none}
-.site-creative .s-name{font-weight:900;letter-spacing:-.03em;background:linear-gradient(100deg,var(--sp),var(--sp2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.site-creative .s-status{border:2px solid var(--fg);background:#fff;box-shadow:3px 3px 0 var(--fg);font-weight:700;color:var(--fg);transform:rotate(-1.5deg)}
-.site-creative .s-avatar-img{border:3px solid var(--fg);box-shadow:8px 8px 0 var(--sp-soft)}
-.site-creative .s-monogram{border:3px solid var(--fg)}
-.site-creative .s-btn{border:2px solid var(--fg);font-weight:800}
-.site-creative .s-btn-primary{box-shadow:4px 4px 0 var(--fg)}
-.site-creative .s-btn-primary:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--fg)}
-.site-creative .s-btn-ghost{box-shadow:4px 4px 0 var(--fg);background:#fff}
-.site-creative .s-btn-ghost:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--fg);color:var(--fg)}
-.site-creative .s-social{border:2px solid var(--fg);border-radius:12px;background:#fff;color:var(--fg);box-shadow:3px 3px 0 var(--shadow)}
-.site-creative .s-h2{position:relative;display:inline-block;isolation:isolate}
-.site-creative .s-h2::after{content:'';position:absolute;left:-4px;right:-4px;bottom:2px;height:12px;background:var(--sp-soft);border-radius:99px;z-index:-1}
-.site-creative .skill{background:#fff;border:2px solid var(--fg);border-radius:14px;padding:14px 16px;box-shadow:4px 4px 0 var(--shadow)}
-.site-creative .skill-grid{gap:16px}
-.site-creative .skill-track,.site-creative .skill-pct{display:none}
-.site-creative .skill-dots{display:inline-flex;gap:5px}
-.site-creative .skill-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--fg);background:#fff}
-.site-creative .skill-dot.on{background:var(--sp)}
-.site-creative .project{border:2px solid var(--fg);box-shadow:6px 6px 0 var(--shadow)}
-.site-creative .project:nth-child(even){transform:rotate(.5deg)}
-.site-creative .project:hover{transform:translate(-3px,-3px) rotate(0deg);box-shadow:9px 9px 0 var(--sp);border-color:var(--fg)}
-.site-creative .project-badge{border:2px solid var(--fg);box-shadow:2px 2px 0 var(--fg);transform:rotate(3deg);border-radius:8px}
-.site-creative .project-tags li{border:1.5px solid var(--fg);background:#fff;color:var(--fg);border-radius:999px;font-weight:700}
-.site-creative .project-tags li:nth-child(3n+1){background:var(--sp-soft)}
-.site-creative .exp-list{gap:16px}
-.site-creative .exp{grid-template-columns:1fr;gap:8px;border:2px solid var(--fg);border-radius:16px;background:#fff;padding:20px;box-shadow:5px 5px 0 var(--shadow)}
-.site-creative .exp-period{display:inline-block;background:var(--sp);color:var(--on-sp);border:2px solid var(--fg);padding:4px 12px;border-radius:999px;font-weight:800;width:max-content}
-.site-creative .s-contact{border-top:none;padding-bottom:72px}
-.site-creative .s-contact .wrap{background:var(--fg);color:#fff8f0;border-radius:24px;padding:56px 32px;border:2px solid var(--fg);box-shadow:8px 8px 0 var(--sp)}
-.site-creative .s-contact .s-kicker{color:var(--sp2)}
-.site-creative .s-contact .contact-lead{color:#d6d3d1}
-.site-creative .s-contact .s-h2{font-size:clamp(30px,5cqw,48px);font-weight:900}
-.site-creative .s-contact .s-h2::after{background:rgba(255,255,255,.16)}
-.site-creative .s-contact .s-social{background:rgba(255,255,255,.08);border-color:#fff8f0;color:#fff8f0;box-shadow:none}
 
 .site-creative{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;}
 html{scroll-behavior:smooth;scrollbar-color:#fff8f0 auto}
@@ -153,198 +92,50 @@ body{margin:0;background:#fff8f0}
 </head>
 <body>
 <div class="site-root site-creative">
-  <header class="s-nav">
-    <div class="wrap s-nav-in">
-      <a class="s-brand" href="#top"><span class="s-mark">张</span><span class="s-brand-name">张亮</span></a>
-      <nav class="s-links" aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact" class="s-cta-link">联系</a></nav>
-    </div>
-  </header>
+  <nav class="c-nav" aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact">联系</a></nav>
   <main>
-    
-  <section class="s-hero" id="top">
-    <div class="wrap s-hero-in">
-      <div class="s-hero-text">
-        <p class="s-status"><span class="s-dot"></span>正在寻找 2027 届实习机会</p>
-        <h1 class="s-name">张亮</h1>
-        <p class="s-title">全栈开发学习者 · Java / Web</p>
-        <p class="s-bio">计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。</p>
-        <div class="s-meta"><span class="s-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span><span class="s-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</span></div>
-        <div class="s-actions"><a class="s-btn s-btn-primary" href="#projects">查看项目<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14m-7-7 7 7 7-7"/></svg></a><a class="s-btn s-btn-ghost" href="mailto:zhangliang@example.com">联系我<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></a></div>
-        <div class="s-socials"><a class="s-social" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="s-social" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
-      </div>
-      
-    <div class="s-hero-avatar" data-badge="正在寻找 2027 届实">
-      <img class="s-avatar-img" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="张亮的头像">
+    <section class="c-hero">
+      <p class="c-status">正在寻找 2027 届实习机会</p>
+      <h1 class="s-name c-name">张亮</h1>
+      <p class="c-role">全栈开发学习者 · Java / Web</p>
+      <img class="c-face" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="张亮的头像">
+      <div class="c-chips"><span class="c-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span><span class="c-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</span></div>
+    </section>
+    <div class="c-wrap">
+      <section id="skills"><h2 class="c-h2">技能贴纸</h2><div class="c-rings"><div class="c-ring"><span class="c-disc" style="--p:85"><i>85</i></span><b>Java</b></div><div class="c-ring"><span class="c-disc" style="--p:75"><i>75</i></span><b>Spring Boot</b></div><div class="c-ring"><span class="c-disc" style="--p:72"><i>72</i></span><b>MySQL</b></div><div class="c-ring"><span class="c-disc" style="--p:82"><i>82</i></span><b>HTML / CSS</b></div><div class="c-ring"><span class="c-disc" style="--p:74"><i>74</i></span><b>JavaScript</b></div><div class="c-ring"><span class="c-disc" style="--p:65"><i>65</i></span><b>Vue 3</b></div><div class="c-ring"><span class="c-disc" style="--p:62"><i>62</i></span><b>Next.js</b></div><div class="c-ring"><span class="c-disc" style="--p:68"><i>68</i></span><b>Linux</b></div></div></section>
+      <section id="projects"><h2 class="c-h2">作品拍立得</h2><div class="c-polos"><article class="c-polo"><div class="c-polo-head"></div>
+  <h3 class="c-pname">音乐网站 music-web</h3>
+  <p class="c-pdesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
+  <ul class="c-ptags"><li class="c-ptag">Java</li><li class="c-ptag">Jakarta EE</li><li class="c-ptag">Tomcat</li><li class="c-ptag">MySQL</li></ul>
+  </article><article class="c-polo"><div class="c-polo-head"></div>
+  <h3 class="c-pname">教室预约系统</h3>
+  <p class="c-pdesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
+  <ul class="c-ptags"><li class="c-ptag">Servlet</li><li class="c-ptag">JSP</li><li class="c-ptag">MySQL</li></ul>
+  </article><article class="c-polo"><div class="c-polo-head"></div>
+  <h3 class="c-pname">个人官网生成器</h3>
+  <p class="c-pdesc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+  <ul class="c-ptags"><li class="c-ptag">Next.js</li><li class="c-ptag">TypeScript</li><li class="c-ptag">Prisma</li><li class="c-ptag">Tailwind</li></ul>
+  </article><article class="c-polo"><div class="c-polo-head"></div>
+  <h3 class="c-pname">操作系统实验笔记</h3>
+  <p class="c-pdesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
+  <ul class="c-ptags"><li class="c-ptag">C</li><li class="c-ptag">Assembly</li><li class="c-ptag">Linux</li></ul>
+  </article></div></section>
+      <section id="experience"><h2 class="c-h2">足迹便签</h2><div class="c-notes"><article class="c-note"><span class="c-nwhen">2024.09 - 至今</span>
+  <h3 class="c-nrole">本科生 · 计算机科学与技术</h3>
+  <p class="c-norg">计算机学院</p>
+  <p class="c-ndesc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p></article><article class="c-note"><span class="c-nwhen">2025.03 - 至今</span>
+  <h3 class="c-nrole">独立开发者</h3>
+  <p class="c-norg">个人项目</p>
+  <p class="c-ndesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></article></div></section>
+      <section class="c-big" id="contact">
+        <h2 class="c-h2">一起聊聊？</h2>
+        <p class="c-blead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
+        <a class="c-bmail" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>发邮件给我</a>
+        <div class="c-soc"><a class="c-soc-a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="c-soc-a" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
+      </section>
     </div>
-    </div>
-  </section>
-    
-  <section class="s-section" id="skills">
-    <div class="wrap">
-      <p class="s-kicker">01 / SKILLS</p>
-      <h2 class="s-h2">技能栈</h2>
-      <ul class="skill-grid">
-        
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Java</span>
-            <span class="skill-pct">85%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:85%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Spring Boot</span>
-            <span class="skill-pct">75%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:75%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">MySQL</span>
-            <span class="skill-pct">72%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:72%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">HTML / CSS</span>
-            <span class="skill-pct">82%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:82%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">JavaScript</span>
-            <span class="skill-pct">74%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:74%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Vue 3</span>
-            <span class="skill-pct">65%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:65%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Next.js</span>
-            <span class="skill-pct">62%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:62%"></span></div>
-        </li>
-        <li class="skill">
-          <div class="skill-top">
-            <span class="skill-name">Linux</span>
-            <span class="skill-pct">68%</span>
-            <span class="skill-dots"><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot on"></span><span class="skill-dot"></span><span class="skill-dot"></span></span>
-          </div>
-          <div class="skill-track"><span class="skill-fill" style="width:68%"></span></div>
-        </li>
-      </ul>
-    </div>
-  </section>
-    
-  <section class="s-section" id="projects">
-    <div class="wrap">
-      <p class="s-kicker">02 / PROJECTS</p>
-      <h2 class="s-h2">项目作品</h2>
-      <div class="project-grid">
-        
-        <article class="project is-highlight">
-          <div class="project-head">
-            <span class="project-index">01</span>
-            <span class="project-badge">精选</span>
-          </div>
-          <h3 class="project-name">音乐网站 music-web</h3>
-          <p class="project-desc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
-          <ul class="project-tags"><li>Java</li><li>Jakarta EE</li><li>Tomcat</li><li>MySQL</li></ul>
-          
-        </article>
-        <article class="project">
-          <div class="project-head">
-            <span class="project-index">02</span>
-            
-          </div>
-          <h3 class="project-name">教室预约系统</h3>
-          <p class="project-desc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
-          <ul class="project-tags"><li>Servlet</li><li>JSP</li><li>MySQL</li></ul>
-          
-        </article>
-        <article class="project is-highlight">
-          <div class="project-head">
-            <span class="project-index">03</span>
-            <span class="project-badge">精选</span>
-          </div>
-          <h3 class="project-name">个人官网生成器</h3>
-          <p class="project-desc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
-          <ul class="project-tags"><li>Next.js</li><li>TypeScript</li><li>Prisma</li><li>Tailwind</li></ul>
-          
-        </article>
-        <article class="project">
-          <div class="project-head">
-            <span class="project-index">04</span>
-            
-          </div>
-          <h3 class="project-name">操作系统实验笔记</h3>
-          <p class="project-desc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
-          <ul class="project-tags"><li>C</li><li>Assembly</li><li>Linux</li></ul>
-          
-        </article>
-      </div>
-    </div>
-  </section>
-    
-  <section class="s-section" id="experience">
-    <div class="wrap">
-      <p class="s-kicker">03 / EXPERIENCE</p>
-      <h2 class="s-h2">经历</h2>
-      <ul class="exp-list">
-        
-        <li class="exp">
-          <div class="exp-period">2024.09 - 至今</div>
-          <div class="exp-body">
-            <h3 class="exp-role">本科生 · 计算机科学与技术</h3>
-            <p class="exp-org">计算机学院</p>
-            <p class="exp-desc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p>
-          </div>
-        </li>
-        <li class="exp">
-          <div class="exp-period">2025.03 - 至今</div>
-          <div class="exp-body">
-            <h3 class="exp-role">独立开发者</h3>
-            <p class="exp-org">个人项目</p>
-            <p class="exp-desc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </section>
-    
-  <section class="s-section s-contact" id="contact">
-    <div class="wrap">
-      <p class="s-kicker">04 / CONTACT</p>
-      <h2 class="s-h2">一起聊聊？</h2>
-      <p class="contact-lead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
-      <a class="s-btn s-btn-primary s-btn-lg" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</a>
-      <div class="s-socials"><a class="s-social" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="s-social" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
-    </div>
-  </section>
   </main>
-  <footer class="s-footer">
-    <div class="wrap">
-      <span>© 2026 张亮</span>
-      <span>由 SiteCraft 个人官网生成器构建</span>
-    </div>
-  </footer>
+  <footer class="c-foot">© 2026 张亮 · 由 SiteCraft 个人官网生成器构建</footer>
 </div>
 </body>
 </html>

@@ -37,11 +37,11 @@ const SOCIAL_DEFS: { key: keyof SiteData['socials']; label: string; icon: IconNa
   { key: 'bilibili', label: '哔哩哔哩', icon: 'bilibili' },
 ]
 
-export function socialLinks(data: SiteData, className: string): string {
+export function socialLinks(data: SiteData, wrapperCls: string, anchorCls: string): string {
   const items = SOCIAL_DEFS.map(({ key, label, icon: iconName }) => {
     const url = safeUrl(data.socials[key])
     if (!url) return ''
-    return `<a class="${className}" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="${label}" title="${label}">${icon(iconName)}</a>`
+    return `<a class="${anchorCls}" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="${label}" title="${label}">${icon(iconName)}</a>`
   }).join('')
-  return items ? `<div class="s-socials">${items}</div>` : ''
+  return items ? `<div class="${wrapperCls}">${items}</div>` : ''
 }

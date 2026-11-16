@@ -77,22 +77,32 @@ describe('XSS 防护：用户输入不能逃逸出标签与属性', () => {
 })
 
 describe('动态区块：没有内容的区块与锚点不出现', () => {
-  it('技能/项目/经历全空时只保留联系区块', () => {
+  it('minimal：技能/项目/经历全空时只保留联系区块，且技能锚点不出现', () => {
     const { body } = renderSiteFragment(emptySite(), 'minimal')
     assert.ok(!body.includes('id="skills"'))
     assert.ok(!body.includes('id="projects"'))
     assert.ok(!body.includes('id="experience"'))
     assert.ok(body.includes('id="contact"'))
-    assert.ok(body.includes('01 / CONTACT'))
+    assert.ok(body.includes('CONTACT'))
+    assert.ok(!body.includes('href="#skills"'))
   })
 
-  it('只有项目时导航编号从 01 开始且不含技能锚点', () => {
+  it('creative：只有项目时项目区块出现且技能锚点不出现', () => {
     const data = emptySite()
     data.projects = createSampleData().projects.slice(0, 1)
     const { body } = renderSiteFragment(data, 'creative')
-    assert.ok(body.includes('01 / PROJECTS'))
-    assert.ok(body.includes('02 / CONTACT'))
+    assert.ok(body.includes('id="projects"'))
+    assert.ok(!body.includes('id="skills"'))
     assert.ok(!body.includes('href="#skills"'))
+    assert.ok(body.includes('id="contact"'))
+  })
+
+  it('十二套版式根容器都携带 site-root 与 site-<name> 双类', () => {
+    for (const template of TEMPLATES) {
+      const { body } = renderSiteFragment(createSampleData(), template)
+      assert.ok(body.includes(`class="site-root site-${template}"`), template)
+      assert.ok(body.includes('class="s-name'), template)
+    }
   })
 })
 
