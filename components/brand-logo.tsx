@@ -9,27 +9,20 @@ export function BrandLogo({ className, withText = true }: { className?: string; 
   return (
     <span className={cn('inline-flex items-center gap-2.5', className)}>
       <svg viewBox="0 0 40 40" className="h-8 w-8 flex-none" aria-hidden="true">
-        <defs>
-          <linearGradient id="brand-g" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#7c6cff" />
-            <stop offset="55%" stopColor="#22d3ee" />
-            <stop offset="100%" stopColor="#f472b6" />
-          </linearGradient>
-        </defs>
-        <rect x="2" y="2" width="36" height="36" rx="11" fill="url(#brand-g)" />
+        <rect x="2" y="2" width="36" height="36" rx="10" fill="currentColor" />
         <path
+          className="stroke-background"
           d="M15 14l-6 6 6 6M25 14l6 6-6 6"
-          stroke="#0b0f1e"
           strokeWidth="2.6"
           strokeLinecap="round"
           strokeLinejoin="round"
           fill="none"
         />
-        <circle cx="20" cy="20" r="2.2" fill="#0b0f1e" />
+        <circle cx="20" cy="20" r="2.2" className="fill-background" />
       </svg>
       {withText && (
-        <span className="font-display text-lg font-extrabold tracking-tight text-foreground">
-          Site<span className="text-brand-cyan">Craft</span>
+        <span className="font-display text-lg font-bold tracking-tight text-foreground">
+          SiteCraft
         </span>
       )}
     </span>

@@ -206,7 +206,7 @@ export function MySites() {
     <section id="sites" className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-20">
       <div className="reveal mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.25em] text-brand-amber">My Sites</p>
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">My Sites</p>
           <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             我的站点
           </h2>
@@ -294,7 +294,7 @@ export function MySites() {
       {loading ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-40 animate-pulse rounded-xl border bg-ink-850" />
+            <div key={i} className="h-40 animate-pulse rounded-xl border bg-muted" />
           ))}
         </div>
       ) : loadError ? (
@@ -330,7 +330,7 @@ export function MySites() {
               <article
                 key={site.id}
                 className={cn(
-                  'group relative rounded-xl border bg-card/70 p-4 transition-all hover:border-brand-violet/40 hover:shadow-lg hover:shadow-ink-950/40',
+                  'group relative rounded-xl border bg-card p-4 transition-all hover:border-foreground/50 hover:shadow-lg',
                   isSelected && 'border-primary/60 bg-primary/5'
                 )}
               >
@@ -345,7 +345,7 @@ export function MySites() {
                   <div className="min-w-0 flex-1">
                     <Link
                       href={`/editor?id=${site.id}`}
-                      className="block truncate font-semibold hover:text-brand-cyan"
+                      className="block truncate font-semibold hover:underline"
                     >
                       {site.name}
                     </Link>

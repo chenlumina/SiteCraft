@@ -72,29 +72,63 @@
 }
 
 @layer components {
-  .text-gradient-brand {
-    background: linear-gradient(96deg, #a78bfa 0%, #7c6cff 30%, #22d3ee 68%, #f472b6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  /*
+   * 首页「纸面」作用域：暖纸底 + 墨字 + 发丝线，排版向印刷品看齐。
+   * 只覆盖 shadcn 语义变量——编辑器等深色界面不受影响；
+   * 首页组件继续用 bg-card / text-muted-foreground 等语义类，自动切换到纸面配色。
+   */
+  .paper {
+    --background: 45 36% 96%;
+    --foreground: 40 10% 12%;
+    --card: 45 42% 99%;
+    --card-foreground: 40 10% 12%;
+    --popover: 45 42% 99%;
+    --popover-foreground: 40 10% 12%;
+    --primary: 40 10% 12%;
+    --primary-foreground: 45 36% 97%;
+    --secondary: 45 20% 90%;
+    --secondary-foreground: 40 10% 12%;
+    --muted: 45 24% 90%;
+    --muted-foreground: 40 7% 42%;
+    --accent: 45 24% 90%;
+    --accent-foreground: 40 10% 12%;
+    --destructive: 350 89% 72%;
+    --destructive-foreground: 230 45% 8%;
+    --border: 42 18% 82%;
+    --input: 42 18% 78%;
+    --ring: 40 10% 12%;
+    scrollbar-color: hsl(42 12% 72%) hsl(45 36% 96%);
   }
 
-  /* 颗粒噪点：SVG feTurbulence data URI 叠在背景上，消除纯色大面积的「塑料感」 */
-  .bg-grain::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.05;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  /* 标题衬线：纸面作用域内的 font-display 换成印刷体栈 */
+  .paper .font-display {
+    font-family:
+      Georgia,
+      'Times New Roman',
+      'Songti SC',
+      'SimSun',
+      serif;
   }
 
-  .aurora-orb {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(90px);
-    pointer-events: none;
-    will-change: transform;
+  /* 单一强调色（印泥红）：只用于极少量标记，拒绝彩色堆砌 */
+  .accent-mark {
+    color: #9e2b25;
+  }
+
+  .paper ::selection {
+    background: rgba(27, 25, 23, 0.9);
+    color: hsl(45 36% 96%);
+  }
+
+  .paper *::-webkit-scrollbar-track {
+    background: hsl(45 36% 96%);
+  }
+  .paper *::-webkit-scrollbar-thumb {
+    background: hsl(42 12% 72%);
+    border: 2px solid hsl(45 36% 96%);
+  }
+  .paper *::-webkit-scrollbar-thumb:hover {
+    background: hsl(40 10% 40%);
   }
 
   /* 滚动显现初始态：useReveal 进入视口后加 .reveal-visible 触发过渡 */

@@ -42,7 +42,7 @@ export function SiteNav() {
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
-        scrolled ? 'border-b bg-ink-900/85 backdrop-blur-xl' : 'bg-transparent'
+        scrolled ? 'border-b border-border bg-background/95 backdrop-blur-sm' : 'bg-transparent'
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
@@ -57,7 +57,7 @@ export function SiteNav() {
               className={cn(
                 'rounded-md px-3 py-2 text-sm transition-colors',
                 active === link.href
-                  ? 'text-brand-cyan'
+                  ? 'text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >

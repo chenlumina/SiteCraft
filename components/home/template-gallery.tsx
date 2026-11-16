@@ -42,7 +42,7 @@ function TemplateCard({ index }: { index: number }) {
 
   return (
     <article
-      className="reveal group flex flex-col overflow-hidden rounded-2xl border bg-card/70 transition-all duration-300 hover:-translate-y-1 hover:border-brand-violet/50 hover:shadow-2xl hover:shadow-brand-violet/10"
+      className="reveal group flex flex-col overflow-hidden rounded-xl border bg-card transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/50 hover:shadow-lg"
       style={{ transitionDelay: `${index * 80}ms` }}
     >
       <div
@@ -63,7 +63,7 @@ function TemplateCard({ index }: { index: number }) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-card/80 to-transparent" />
         <Badge
           variant="secondary"
-          className="absolute right-3 top-3 bg-ink-900/80 backdrop-blur"
+          className="absolute right-3 top-3 border border-border bg-background/90"
         >
           {meta.mood === 'dark' ? '深色' : '浅色'}
         </Badge>
@@ -73,7 +73,7 @@ function TemplateCard({ index }: { index: number }) {
           <span className="h-3 w-3 rounded-full" style={{ backgroundColor: meta.defaultColor }} />
           <h3 className="font-display text-lg font-bold">{meta.displayName}</h3>
         </div>
-        <p className="mt-1 text-sm font-medium text-brand-cyan">{meta.tagline}</p>
+        <p className="mt-1 font-display text-sm italic text-muted-foreground">{meta.tagline}</p>
         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{meta.description}</p>
         <div className="mb-4 mt-3 flex flex-wrap gap-1.5">
           {meta.features.map((feature) => (
@@ -96,12 +96,12 @@ export function TemplateGallery() {
   return (
     <section id="templates" className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-20">
       <div className="reveal mb-10 max-w-xl">
-        <p className="font-mono text-xs uppercase tracking-[0.25em] text-brand-cyan">Templates</p>
-        <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          十二套模板，十二种人格
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">Templates</p>
+        <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+          十二套版式，十二种性格
         </h2>
         <p className="mt-3 text-muted-foreground">
-          每一套都是完整的视觉系统：版式、字体、配色与动效。下方卡片为真实渲染效果，所见即所得。
+          每一套都是独立的版式骨架与视觉系统：结构、字体、配色各不相同。下方卡片为真实渲染，所见即所得。
         </p>
       </div>
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">

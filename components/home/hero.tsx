@@ -9,7 +9,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, LayoutTemplate, Smartphone, Sparkles } from 'lucide-react'
+import { ArrowRight, LayoutTemplate, Smartphone } from 'lucide-react'
 import type { SiteData, TemplateName } from '@/types'
 import { SAMPLE_SITE_DATA } from '@/lib/sample-data'
 import { TEMPLATES } from '@/lib/templates'
@@ -99,7 +99,7 @@ function HeroShowcase() {
     <div ref={parallaxRef} className="relative will-change-transform">
       <div
         ref={cardRef}
-        className="relative overflow-hidden rounded-2xl border border-ink-600/60 bg-ink-850 shadow-2xl shadow-ink-950/70"
+        className="relative overflow-hidden rounded-xl border border-border bg-card shadow-xl shadow-black/5"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => {
           setPaused(false)
@@ -107,13 +107,13 @@ function HeroShowcase() {
         }}
         onMouseMove={onTilt}
       >
-        <div className="flex items-center gap-2 border-b border-ink-700 bg-ink-800 px-4 py-2.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-danger/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-warning/80" />
-          <span className="h-2.5 w-2.5 rounded-full bg-success/80" />
+        <div className="flex items-center gap-2 border-b border-border bg-muted px-4 py-2.5">
+          <span className="h-2.5 w-2.5 rounded-full border border-foreground/40 bg-transparent" />
+          <span className="h-2.5 w-2.5 rounded-full border border-foreground/40 bg-transparent" />
+          <span className="h-2.5 w-2.5 rounded-full border border-foreground/40 bg-transparent" />
           <span
             key={current.template}
-            className="ml-3 flex-1 truncate rounded-md bg-ink-900 px-3 py-1 font-mono text-[11px] text-muted-foreground animate-fade-in"
+            className="ml-3 flex-1 truncate rounded-sm bg-background px-3 py-1 font-mono text-[11px] text-muted-foreground animate-fade-in"
           >
             https://zhangliang.site/{current.template}
           </span>
@@ -127,10 +127,10 @@ function HeroShowcase() {
           >
             <SiteFrame data={current} template={current.template} />
           </div>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink-850 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-card to-transparent" />
         </div>
 
-        <div className="flex items-center gap-2 border-t border-ink-700 bg-ink-800 px-4 py-2.5">
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-border bg-muted px-4 py-2.5">
           {TEMPLATES.map((t, index) => (
             <button
               key={t.name}
@@ -139,7 +139,7 @@ function HeroShowcase() {
               aria-label={`预览 ${t.displayName}`}
               aria-pressed={index === active}
               className={cn(
-                'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all',
+                'flex flex-none items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-medium transition-all',
                 index === active
                   ? 'bg-primary/20 text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
@@ -149,10 +149,10 @@ function HeroShowcase() {
               {t.displayName.split(' ')[0]}
             </button>
           ))}
-          <div className="ml-auto h-1 w-16 overflow-hidden rounded-full bg-ink-600">
+          <div className="ml-auto h-1 w-16 overflow-hidden rounded-full bg-border">
             <div
               key={`${active}-${paused}`}
-              className="h-full rounded-full bg-brand-cyan"
+              className="h-full rounded-full bg-foreground"
               style={{
                 animation: paused ? 'none' : `shimmer-progress ${ROTATE_MS}ms linear forwards`,
                 width: paused ? '100%' : undefined,
@@ -162,13 +162,13 @@ function HeroShowcase() {
         </div>
       </div>
 
-      <div className="absolute -right-3 top-10 animate-float rounded-xl border border-ink-600/60 bg-ink-800/95 px-3 py-2 text-xs font-semibold shadow-xl backdrop-blur">
+      <div className="absolute -right-3 top-10 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold shadow-sm">
         <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-success align-middle" />
         实时预览 · 所见即所得
       </div>
       <p className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-        <Smartphone className="h-3.5 w-3.5 text-brand-cyan" />
-        桌面 / 移动端全响应式 · 容器查询驱动 · 每 5 秒自动轮换模板
+        <Smartphone className="h-3.5 w-3.5" />
+        桌面 / 移动端全响应式 · 容器查询驱动 · 每 5 秒自动轮换版式
       </p>
 
       <style>{`@keyframes shimmer-progress{from{width:0}to{width:100%}}`}</style>
@@ -181,18 +181,19 @@ export function Hero() {
     <section className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-24 pt-32 lg:grid-cols-[1fr_1.05fr] lg:gap-12 lg:pt-40">
       <div>
         <p
-          className="inline-flex animate-fade-up items-center gap-2 rounded-full border border-brand-violet/30 bg-brand-violet/10 px-3.5 py-1.5 text-xs font-medium text-brand-violet"
+          className="inline-flex animate-fade-up items-center gap-3 font-mono text-[11px] uppercase tracking-[0.32em] text-muted-foreground"
           style={{ animationDelay: '0.05s' }}
         >
-          <Sparkles className="h-3.5 w-3.5" /> 可视化建站 · 无需代码 · 开源可控
+          SiteCraft — 个人官网生成器
+          <span aria-hidden="true" className="inline-block h-px w-12 bg-foreground/40" />
         </p>
         <h1
-          className="mt-6 animate-fade-up font-display text-4xl font-extrabold leading-[1.15] tracking-tight sm:text-5xl xl:text-[3.4rem]"
+          className="mt-6 animate-fade-up font-display text-4xl font-bold leading-[1.18] tracking-tight sm:text-5xl xl:text-[3.5rem]"
           style={{ animationDelay: '0.15s' }}
         >
           把你自己，
           <br />
-          <span className="text-gradient-brand">部署到全世界。</span>
+          部署到<span className="accent-mark">全世界</span>。
         </h1>
         <p
           className="mt-6 max-w-md animate-fade-up text-base leading-relaxed text-muted-foreground"
@@ -202,7 +203,7 @@ export function Hero() {
           一键导出静态 HTML，或直接部署到 GitHub Pages。往下滚，试衣间可以直接玩。
         </p>
         <div className="mt-8 flex animate-fade-up flex-wrap gap-3" style={{ animationDelay: '0.35s' }}>
-          <Button asChild size="lg" className="gap-2 shadow-lg shadow-primary/25">
+          <Button asChild size="lg" className="gap-2">
             <Link href="/editor">
               立即创建官网 <ArrowRight />
             </Link>
@@ -276,10 +277,10 @@ function StatItem({
   }, [value])
 
   return (
-    <div ref={ref} className={cn('flex items-center gap-6', !first && 'border-l border-ink-600 pl-6')}>
+    <div ref={ref} className={cn('flex items-center gap-6', !first && 'border-l border-border pl-6')}>
       <div>
         <dt className="sr-only">{label}</dt>
-        <dd className="font-mono text-xl font-bold text-brand-cyan">
+        <dd className="font-mono text-xl font-bold text-foreground">
           {display}
           {suffix}
         </dd>

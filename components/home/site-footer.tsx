@@ -6,7 +6,7 @@ const TECH_CHIPS = ['Next.js 14', 'TypeScript', 'TailwindCSS', 'shadcn/ui', 'Zus
 
 export function SiteFooter() {
   return (
-    <footer className="relative border-t bg-ink-950/60">
+    <footer className="relative border-t bg-card">
       <div className="mx-auto max-w-6xl px-5 py-12">
         <div className="flex flex-wrap items-start justify-between gap-8">
           <div className="max-w-xs">
@@ -37,7 +37,7 @@ export function SiteFooter() {
           {TECH_CHIPS.map((chip) => (
             <span
               key={chip}
-              className="rounded-full border border-ink-600/60 bg-ink-850 px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
+              className="rounded-full border border-border bg-muted px-2.5 py-1 font-mono text-[11px] text-muted-foreground"
             >
               {chip}
             </span>

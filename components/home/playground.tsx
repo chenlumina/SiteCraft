@@ -74,10 +74,8 @@ export function Playground() {
   return (
     <section id="playground" className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-20">
       <div className="reveal mb-10 max-w-xl">
-        <p className="font-mono text-xs uppercase tracking-[0.25em] text-brand-magenta">
-          Playground
-        </p>
-        <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">Playground</p>
+        <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
           先试后建 · 模板试衣间
         </h2>
         <p className="mt-3 text-muted-foreground">
@@ -87,7 +85,7 @@ export function Playground() {
 
       <div className="reveal grid gap-6 lg:grid-cols-[320px_1fr]">
         {/* 控制台 */}
-        <div className="space-y-5 rounded-2xl border bg-card/70 p-5 backdrop-blur">
+        <div className="space-y-5 rounded-xl border bg-card p-5">
           <div>
             <p className="mb-2 text-xs font-semibold text-muted-foreground">① 版式（{TEMPLATES.length} 套）</p>
             <div className="grid grid-cols-3 gap-2">
@@ -101,7 +99,7 @@ export function Playground() {
                     'flex items-center gap-1.5 rounded-lg border px-2 py-2 text-left text-[11px] font-semibold transition-all',
                     template === t.name
                       ? 'border-primary/60 bg-primary/10 text-foreground'
-                      : 'border-border bg-ink-850 text-muted-foreground hover:border-muted-foreground/40 hover:text-foreground'
+                      : 'border-border bg-background text-muted-foreground hover:border-muted-foreground/40 hover:text-foreground'
                   )}
                 >
                   <span
@@ -121,7 +119,7 @@ export function Playground() {
               onChange={(e) => setName(e.target.value.slice(0, 12))}
               placeholder="输入名字，实时生效"
               maxLength={12}
-              className="bg-ink-850"
+              className="bg-background"
               aria-label="试穿姓名"
             />
           </div>
@@ -160,7 +158,7 @@ export function Playground() {
                   'flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-all',
                   device === 'desktop'
                     ? 'border-primary/60 bg-primary/10 text-foreground'
-                    : 'border-border bg-ink-850 text-muted-foreground hover:text-foreground'
+                    : 'border-border bg-background text-muted-foreground hover:text-foreground'
                 )}
               >
                 <Monitor className="h-3.5 w-3.5" /> 桌面
@@ -173,7 +171,7 @@ export function Playground() {
                   'flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-all',
                   device === 'mobile'
                     ? 'border-primary/60 bg-primary/10 text-foreground'
-                    : 'border-border bg-ink-850 text-muted-foreground hover:text-foreground'
+                    : 'border-border bg-background text-muted-foreground hover:text-foreground'
                 )}
               >
                 <Smartphone className="h-3.5 w-3.5" /> 手机
@@ -192,7 +190,7 @@ export function Playground() {
         <div>
           <div
             ref={boxRef}
-            className="relative w-full overflow-hidden rounded-2xl border border-ink-600/60 bg-ink-850 shadow-2xl shadow-ink-950/50"
+            className="relative w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl shadow-black/5"
             style={{ height: boxH }}
           >
             <div
@@ -209,7 +207,7 @@ export function Playground() {
             {device === 'mobile' && (
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute top-[-8px] rounded-[30px] border-2 border-ink-600/70 shadow-[0_0_0_6px_rgba(23,23,28,.55)]"
+                className="pointer-events-none absolute top-[-8px] rounded-[30px] border-2 border-foreground/50"
                 style={{
                   left: '50%',
                   width: MOBILE_W * scale + 18,
@@ -218,7 +216,7 @@ export function Playground() {
                 }}
               />
             )}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-ink-850 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-card to-transparent" />
           </div>
           <p className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <SparkleHint /> 与编辑器/导出同一渲染源——试衣间里看到什么，建站后就是什么
@@ -230,5 +228,5 @@ export function Playground() {
 }
 
 function SparkleHint() {
-  return <span className="inline-block h-1.5 w-1.5 rounded-full bg-brand-magenta" />
+  return <span className="inline-block h-1.5 w-1.5 rounded-full bg-foreground" />
 }
