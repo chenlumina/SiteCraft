@@ -9,75 +9,8 @@
 
 @layer base {
   :root {
-    --background: 228 45% 8%;
-    --foreground: 226 60% 94%;
-    --card: 229 41% 11%;
-    --card-foreground: 226 60% 94%;
-    --popover: 228 38% 12%;
-    --popover-foreground: 226 60% 94%;
-    --primary: 248 100% 71%;
-    --primary-foreground: 230 45% 8%;
-    --secondary: 228 32% 16%;
-    --secondary-foreground: 226 50% 90%;
-    --muted: 228 30% 15%;
-    --muted-foreground: 226 22% 66%;
-    --accent: 228 32% 18%;
-    --accent-foreground: 226 60% 94%;
-    --destructive: 350 89% 72%;
-    --destructive-foreground: 230 45% 8%;
-    --border: 228 28% 20%;
-    --input: 228 28% 22%;
-    --ring: 248 100% 71%;
-    --radius: 0.6rem;
-  }
-
-  * {
-    @apply border-border;
-    scrollbar-width: thin;
-    scrollbar-color: hsl(228 24% 28%) hsl(228 45% 8%);
-  }
-
-  /* 自定义滚动条（构建器 UI）：轨道=背景色、拇指=中性蓝、悬停=品牌紫，
-     与站点模板内的滚动条（生成器 CSS）各自独立但同一设计语言 */
-  *::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  *::-webkit-scrollbar-track {
-    background: hsl(228 45% 8%);
-  }
-  *::-webkit-scrollbar-thumb {
-    background: hsl(228 24% 26%);
-    border-radius: 99px;
-    border: 2px solid hsl(228 45% 8%);
-  }
-  *::-webkit-scrollbar-thumb:hover {
-    background: #7c6cff;
-  }
-
-  /* 锚点跳转落点下移固定导航高度，标题不被遮挡（配合 site-nav 的 fixed h-16） */
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 92px;
-  }
-
-  body {
-    @apply bg-background font-sans text-foreground antialiased;
-  }
-
-  ::selection {
-    background: rgba(124, 108, 255, 0.4);
-    color: #fff;
-  }
-}
-
-@layer components {
-  /*
-   * 首页「纸面」作用域：暖纸底 + 墨字 + 发丝线，排版向印刷品看齐。
-   * 只覆盖 shadcn 语义变量——编辑器等深色界面不受影响；
-   * 首页组件继续用 bg-card / text-muted-foreground 等语义类，自动切换到纸面配色。
-   */
-  .paper {
+    /* 纸面设计系统：暖纸底 + 墨字 + 发丝线，全站统一（首页/编辑器/预览）。
+       印刷品式的克制：唯一强调色是印泥红，仅以 .accent-mark 极少量使用。 */
     --background: 45 36% 96%;
     --foreground: 40 10% 12%;
     --card: 45 42% 99%;
@@ -97,38 +30,52 @@
     --border: 42 18% 82%;
     --input: 42 18% 78%;
     --ring: 40 10% 12%;
+    --radius: 0.6rem;
+  }
+
+  * {
+    @apply border-border;
+    scrollbar-width: thin;
     scrollbar-color: hsl(42 12% 72%) hsl(45 36% 96%);
   }
 
-  /* 标题衬线：纸面作用域内的 font-display 换成印刷体栈 */
-  .paper .font-display {
-    font-family:
-      Georgia,
-      'Times New Roman',
-      'Songti SC',
-      'SimSun',
-      serif;
+  /* 自定义滚动条（全站纸面）：轨道=纸底、拇指=中性灰 */
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: hsl(45 36% 96%);
+  }
+  *::-webkit-scrollbar-thumb {
+    background: hsl(42 12% 72%);
+    border-radius: 99px;
+    border: 2px solid hsl(45 36% 96%);
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(40 10% 40%);
   }
 
-  /* 单一强调色（印泥红）：只用于极少量标记，拒绝彩色堆砌 */
-  .accent-mark {
-    color: #9e2b25;
+  /* 锚点跳转落点下移固定导航高度，标题不被遮挡（配合 site-nav 的 fixed h-16） */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 92px;
   }
 
-  .paper ::selection {
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  ::selection {
     background: rgba(27, 25, 23, 0.9);
     color: hsl(45 36% 96%);
   }
+}
 
-  .paper *::-webkit-scrollbar-track {
-    background: hsl(45 36% 96%);
-  }
-  .paper *::-webkit-scrollbar-thumb {
-    background: hsl(42 12% 72%);
-    border: 2px solid hsl(45 36% 96%);
-  }
-  .paper *::-webkit-scrollbar-thumb:hover {
-    background: hsl(40 10% 40%);
+@layer components {
+  /* 单一强调色（印泥红）：只用于极少量标记，拒绝彩色堆砌 */
+  .accent-mark {
+    color: #9e2b25;
   }
 
   /* 滚动显现初始态：useReveal 进入视口后加 .reveal-visible 触发过渡 */
@@ -149,7 +96,7 @@
   }
 
   .panel-scroll {
-    scrollbar-color: hsl(228 24% 30%) transparent;
+    scrollbar-color: hsl(42 12% 68%) transparent;
   }
   .panel-scroll::-webkit-scrollbar-track {
     background: transparent;

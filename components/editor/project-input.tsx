@@ -164,7 +164,7 @@ function ProjectDialog({
               <FieldError message={errors.repo?.message} />
             </div>
           </div>
-          <div className="flex items-center justify-between rounded-lg border bg-ink-850 px-3 py-2.5">
+          <div className="flex items-center justify-between rounded-lg border bg-background px-3 py-2.5">
             <Label htmlFor="project-highlight" className="flex items-center gap-2 text-sm">
               <Star className="h-4 w-4 text-warning" /> 标记为精选项目
             </Label>
@@ -241,13 +241,13 @@ export function ProjectInput() {
               setDragOver(null)
             }}
             className={cn(
-              'rounded-lg border bg-ink-850 p-3 transition-colors',
+              'rounded-lg border bg-background p-3 transition-colors',
               dragOver === index && 'border-primary bg-primary/10'
             )}
           >
             <div className="flex items-center gap-2">
               <GripVertical className="h-4 w-4 shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing" />
-              <FolderGit2 className="h-4 w-4 shrink-0 text-brand-cyan" />
+              <FolderGit2 className="h-4 w-4 shrink-0 text-muted-foreground" />
               <span className="min-w-0 flex-1 truncate text-sm font-medium">{project.name}</span>
               <button
                 type="button"

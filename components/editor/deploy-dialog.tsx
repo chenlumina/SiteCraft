@@ -86,7 +86,7 @@ export function DeployDialog({ open, onOpenChange }: { open: boolean; onOpenChan
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Rocket className="h-5 w-5 text-brand-cyan" /> 部署到 GitHub Pages
+            <Rocket className="h-5 w-5 text-muted-foreground" /> 部署到 GitHub Pages
           </DialogTitle>
           <DialogDescription>
             自动创建公开仓库、推送生成的静态首页并开启 Pages。需要服务端配置 GITHUB_TOKEN。
@@ -103,7 +103,7 @@ export function DeployDialog({ open, onOpenChange }: { open: boolean; onOpenChan
             </div>
             <div className="space-y-2 text-sm">
               <a
-                className="flex items-center gap-2 text-brand-cyan hover:underline"
+                className="flex items-center gap-2 font-medium text-foreground underline underline-offset-2 hover:no-underline"
                 href={state.result.repoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -112,7 +112,7 @@ export function DeployDialog({ open, onOpenChange }: { open: boolean; onOpenChan
               </a>
               {state.result.pagesUrl && (
                 <a
-                  className="flex items-center gap-2 text-brand-cyan hover:underline"
+                  className="flex items-center gap-2 font-medium text-foreground underline underline-offset-2 hover:no-underline"
                   href={state.result.pagesUrl}
                   target="_blank"
                   rel="noopener noreferrer"

@@ -41,7 +41,7 @@ export function LivePreview() {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex items-center justify-between gap-3 border-b bg-ink-900/80 px-4 py-2">
+      <div className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-2">
         <div className="flex items-center gap-2">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
@@ -53,7 +53,7 @@ export function LivePreview() {
             {meta.displayName}
           </Badge>
         </div>
-        <div className="flex items-center gap-1 rounded-lg bg-ink-850 p-1">
+        <div className="flex items-center gap-1 rounded-lg bg-background p-1">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -98,13 +98,13 @@ export function LivePreview() {
         {device === 'desktop' ? (
           <div
             ref={paneRef}
-            className="panel-scroll h-full w-full max-w-[1100px] overflow-y-auto rounded-lg border shadow-2xl shadow-ink-950/60"
+            className="panel-scroll h-full w-full max-w-[1100px] overflow-y-auto rounded-lg border bg-card shadow-xl shadow-black/10"
           >
             <SiteFrame data={data} template={template} />
           </div>
         ) : (
-          <div className="flex h-full max-h-[780px] w-[390px] max-w-full flex-col rounded-[2.2rem] border-4 border-ink-600 bg-ink-950 p-1.5 shadow-2xl shadow-ink-950/60">
-            <div className="mx-auto mb-1 h-1 w-16 rounded-full bg-ink-600" />
+          <div className="flex h-full max-h-[780px] w-[390px] max-w-full flex-col rounded-[2.2rem] border-4 border-foreground/80 bg-foreground p-1.5 shadow-xl shadow-black/15">
+            <div className="mx-auto mb-1 h-1 w-16 rounded-full bg-background/40" />
             <div ref={paneRef} className="panel-scroll min-h-0 flex-1 overflow-y-auto rounded-[1.7rem]">
               <SiteFrame data={data} template={template} />
             </div>

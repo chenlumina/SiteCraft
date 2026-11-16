@@ -38,7 +38,7 @@ export function EditorToolbar() {
   const [deployOpen, setDeployOpen] = useState(false)
 
   return (
-    <header className="z-30 flex flex-wrap items-center gap-x-3 gap-y-2 border-b bg-ink-900/95 px-4 py-2.5 backdrop-blur">
+    <header className="z-30 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border bg-background/95 px-4 py-2.5 backdrop-blur">
       <Link href="/" aria-label="返回首页" className="shrink-0">
         <BrandLogo withText={false} />
       </Link>
@@ -47,7 +47,7 @@ export function EditorToolbar() {
         value={siteName}
         onChange={(e) => setSiteName(e.target.value)}
         aria-label="站点名称"
-        className="h-8 w-40 border-transparent bg-transparent px-2 font-medium hover:border-input focus:bg-ink-850 sm:w-52"
+        className="h-8 w-40 border-transparent bg-transparent px-2 font-medium hover:border-input focus:bg-muted sm:w-52"
       />
       <span className="hidden items-center gap-1.5 text-xs text-muted-foreground md:flex">
         <span

@@ -71,7 +71,7 @@ export function SkillInput() {
               setDragOver(null)
             }}
             className={cn(
-              'flex items-center gap-2 rounded-lg border bg-ink-850 p-2 transition-colors',
+              'flex items-center gap-2 rounded-lg border bg-background p-2 transition-colors',
               dragOver === index && 'border-primary bg-primary/10'
             )}
           >

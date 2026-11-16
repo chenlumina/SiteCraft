@@ -1,9 +1,8 @@
 /**
  * Tailwind 配置：shadcn/ui 的 CSS 变量色（HSL 通道写在 globals.css）+
- * 项目自有色板：ink 深空蓝中性阶（背景/表面/overlay）、brand 四色
- * （紫=主色、青/品红/琥珀=强调）、success/warning/danger/info 语义色。
- * keyframes 提供首页极光漂移、阶梯入场、悬浮、进度 shimmer 等动效原语。
- * 字体走系统栈（含中文 PingFang/雅黑），避免构建期下载网络字体导致离线构建失败。
+ * 项目自有色板：ink 深色阶（历史遗留，仅个别场景）、语义色 success/warning/danger/info。
+ * 视觉语言是「纸面编辑风」（globals :root），display 字体为印刷体栈。
+ * 字体走系统栈（含中文宋体/雅黑），避免构建期下载网络字体导致离线构建失败。
  */
 import type { Config } from 'tailwindcss'
 
@@ -76,12 +75,11 @@ const config: Config = {
           'sans-serif',
         ],
         display: [
-          'Segoe UI Variable Display',
-          'Segoe UI',
-          'PingFang SC',
-          'Microsoft YaHei',
-          'system-ui',
-          'sans-serif',
+          'Georgia',
+          'Times New Roman',
+          'Songti SC',
+          'SimSun',
+          'serif',
         ],
         mono: ['Cascadia Code', 'Consolas', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },

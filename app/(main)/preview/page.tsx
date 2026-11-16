@@ -51,7 +51,7 @@ function PreviewInner() {
 
   if (state.phase === 'loading') {
     return (
-      <div className="grid min-h-screen place-items-center bg-ink-900">
+      <div className="grid min-h-screen place-items-center bg-background">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin" /> 正在加载预览…
         </div>
@@ -61,7 +61,7 @@ function PreviewInner() {
 
   if (state.phase === 'error') {
     return (
-      <div className="grid min-h-screen place-items-center bg-ink-900 px-6">
+      <div className="grid min-h-screen place-items-center bg-background px-6">
         <div className="text-center">
           <p className="text-lg font-semibold">无法打开预览</p>
           <p className="mt-2 text-sm text-muted-foreground">{state.message}</p>
@@ -84,13 +84,13 @@ function PreviewInner() {
           asChild
           variant="secondary"
           size="sm"
-          className="pointer-events-auto bg-ink-900/85 text-foreground backdrop-blur hover:bg-ink-800"
+          className="pointer-events-auto border border-border bg-card text-foreground shadow-sm hover:bg-muted"
         >
           <Link href="/editor">
             <ArrowLeft /> 返回编辑器
           </Link>
         </Button>
-        <Badge className="pointer-events-auto bg-ink-900/85 text-foreground backdrop-blur">
+        <Badge className="pointer-events-auto border border-border bg-card text-foreground shadow-sm">
           {meta.displayName} · 全屏预览
         </Badge>
       </div>
@@ -103,7 +103,7 @@ export default function PreviewPage() {
   return (
     <Suspense
       fallback={
-        <div className="grid min-h-screen place-items-center bg-ink-900">
+        <div className="grid min-h-screen place-items-center bg-background">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
       }

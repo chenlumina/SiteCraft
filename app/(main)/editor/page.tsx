@@ -35,10 +35,10 @@ import { cn } from '@/lib/utils'
 function EditorSkeleton() {
   return (
     <div className="flex h-screen flex-col">
-      <div className="h-14 animate-pulse border-b bg-ink-850" />
+      <div className="h-14 animate-pulse border-b bg-muted" />
       <div className="flex flex-1 gap-4 p-4">
-        <div className="w-[420px] animate-pulse rounded-xl bg-ink-850" />
-        <div className="flex-1 animate-pulse rounded-xl bg-ink-850" />
+        <div className="w-[420px] animate-pulse rounded-xl bg-muted" />
+        <div className="flex-1 animate-pulse rounded-xl bg-muted" />
       </div>
     </div>
   )
@@ -120,8 +120,8 @@ function EditorInner() {
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <EditorToolbar />
-      <div className="flex items-center justify-between border-b bg-ink-900 px-4 py-1.5 lg:hidden">
-        <div className="flex gap-1 rounded-lg bg-ink-850 p-1">
+      <div className="flex items-center justify-between border-b border-border bg-card px-4 py-1.5 lg:hidden">
+        <div className="flex gap-1 rounded-lg bg-background p-1">
           <button
             type="button"
             onClick={() => setMobileView('edit')}
@@ -148,7 +148,7 @@ function EditorInner() {
       <div className="flex min-h-0 flex-1">
         <aside
           className={cn(
-            'panel-scroll w-full shrink-0 overflow-y-auto border-r bg-ink-900/60 p-4 lg:block lg:w-[420px]',
+            'panel-scroll w-full shrink-0 overflow-y-auto border-r bg-card p-4 lg:block lg:w-[420px]',
             mobileView === 'preview' && 'hidden'
           )}
         >

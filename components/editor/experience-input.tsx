@@ -176,13 +176,13 @@ export function ExperienceInput() {
               setDragOver(null)
             }}
             className={cn(
-              'rounded-lg border bg-ink-850 p-3 transition-colors',
+              'rounded-lg border bg-background p-3 transition-colors',
               dragOver === index && 'border-primary bg-primary/10'
             )}
           >
             <div className="flex items-center gap-2">
               <GripVertical className="h-4 w-4 shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing" />
-              <Briefcase className="h-4 w-4 shrink-0 text-brand-violet" />
+              <Briefcase className="h-4 w-4 shrink-0 text-muted-foreground" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{item.role}</p>
                 <p className="truncate text-xs text-muted-foreground">

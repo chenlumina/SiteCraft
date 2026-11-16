@@ -104,7 +104,7 @@ export function ThemePanel() {
                 setHexDraft(e.target.value)
                 setHexError('')
               }}
-              className="h-9 w-14 cursor-pointer rounded-md border border-input bg-ink-850 p-1"
+              className="h-9 w-14 cursor-pointer rounded-md border border-input bg-background p-1"
             />
           </div>
         </div>
@@ -124,7 +124,7 @@ export function ThemePanel() {
                   'rounded-lg border p-3 text-left transition-all',
                   active
                     ? 'border-primary bg-primary/10'
-                    : 'border-border bg-ink-850 hover:border-muted-foreground'
+                    : 'border-border bg-background hover:border-muted-foreground'
                 )}
               >
                 <span className="flex items-center gap-2">

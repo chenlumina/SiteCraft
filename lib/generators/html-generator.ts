@@ -40,7 +40,7 @@ export function generateSiteHTML(data: SiteData, template: TemplateName): string
   const title = `${esc(data.name)} · ${esc(data.title)}`
   const description = esc(data.bio.trim() || `${data.name} 的个人官网`)
   const favicon =
-    "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20x='2'%20y='2'%20width='36'%20height='36'%20rx='11'%20fill='%237c6cff'/%3E%3Cpath%20d='M15%2014l-6%206%206%206M25%2014l6%206-6%206'%20stroke='%230b0f1e'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'/%3E%3Ccircle%20cx='20'%20cy='20'%20r='2.2'%20fill='%230b0f1e'/%3E%3C/svg%3E"
+    "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20x='2'%20y='2'%20width='36'%20height='36'%20rx='10'%20fill='%231b1917'/%3E%3Cpath%20d='M15%2014l-6%206%206%206M25%2014l6%206-6%206'%20stroke='%23f8f7f1'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'/%3E%3Ccircle%20cx='20'%20cy='20'%20r='2.2'%20fill='%23f8f7f1'/%3E%3C/svg%3E"
   return `<!doctype html>
 <html lang="zh-CN">
 <head>
