@@ -6,9 +6,11 @@
 'use client'
 
 import { useReveal } from '@/lib/hooks/use-reveal'
+import { ScrollProgress, Spotlight } from '@/components/home/page-chrome'
 import { SiteNav } from '@/components/home/site-nav'
 import { Hero } from '@/components/home/hero'
 import { TemplateGallery } from '@/components/home/template-gallery'
+import { Playground } from '@/components/home/playground'
 import { Workflow } from '@/components/home/workflow'
 import { MySites } from '@/components/home/my-sites'
 import { SiteFooter } from '@/components/home/site-footer'
@@ -25,10 +27,13 @@ export default function HomePage() {
         <div className="absolute inset-x-0 top-0 h-[560px] bg-gradient-to-b from-ink-850/80 to-transparent" />
       </div>
 
+      <ScrollProgress />
+      <Spotlight />
       <SiteNav />
       <main className="relative">
         <Hero />
         <TemplateGallery />
+        <Playground />
         <Workflow />
         <MySites />
       </main>

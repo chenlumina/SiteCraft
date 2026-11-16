@@ -27,6 +27,7 @@ function HeroShowcase() {
   const [scale, setScale] = useState(0.35)
   const containerRef = useRef<HTMLDivElement>(null)
   const parallaxRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   const variants = useMemo<(SiteData & { template: TemplateName })[]>(
     () =>
@@ -77,19 +78,44 @@ function HeroShowcase() {
 
   const current = variants[active]
 
+  // 鼠标 3D 倾斜：跟随光标轻微 rotate，离开后弹回；reduced-motion 用户直接跳过
+  function onTilt(e: React.MouseEvent) {
+    const el = cardRef.current
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const rect = el.getBoundingClientRect()
+    const px = (e.clientX - rect.left) / rect.width - 0.5
+    const py = (e.clientY - rect.top) / rect.height - 0.5
+    el.style.transition = 'transform .12s ease-out'
+    el.style.transform = `perspective(1100px) rotateY(${(px * 6).toFixed(2)}deg) rotateX(${(-py * 5).toFixed(2)}deg)`
+  }
+  function onTiltEnd() {
+    const el = cardRef.current
+    if (!el) return
+    el.style.transition = 'transform .55s cubic-bezier(.2,.8,.2,1)'
+    el.style.transform = 'perspective(1100px) rotateY(0deg) rotateX(0deg)'
+  }
+
   return (
     <div ref={parallaxRef} className="relative will-change-transform">
       <div
+        ref={cardRef}
         className="relative overflow-hidden rounded-2xl border border-ink-600/60 bg-ink-850 shadow-2xl shadow-ink-950/70"
         onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        onMouseLeave={() => {
+          setPaused(false)
+          onTiltEnd()
+        }}
+        onMouseMove={onTilt}
       >
         <div className="flex items-center gap-2 border-b border-ink-700 bg-ink-800 px-4 py-2.5">
           <span className="h-2.5 w-2.5 rounded-full bg-danger/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-warning/80" />
           <span className="h-2.5 w-2.5 rounded-full bg-success/80" />
-          <span className="ml-3 flex-1 truncate rounded-md bg-ink-900 px-3 py-1 font-mono text-[11px] text-muted-foreground">
-            https://zhangliang.site
+          <span
+            key={current.template}
+            className="ml-3 flex-1 truncate rounded-md bg-ink-900 px-3 py-1 font-mono text-[11px] text-muted-foreground animate-fade-in"
+          >
+            https://zhangliang.site/{current.template}
           </span>
         </div>
 
@@ -173,7 +199,7 @@ export function Hero() {
           style={{ animationDelay: '0.25s' }}
         >
           填写资料、挑选模板、实时预览——三分钟生成一个完全属于你的个人官网。
-          一键导出静态 HTML，或直接部署到 GitHub Pages。
+          一键导出静态 HTML，或直接部署到 GitHub Pages。往下滚，试衣间可以直接玩。
         </p>
         <div className="mt-8 flex animate-fade-up flex-wrap gap-3" style={{ animationDelay: '0.35s' }}>
           <Button asChild size="lg" className="gap-2 shadow-lg shadow-primary/25">
@@ -192,17 +218,11 @@ export function Hero() {
           style={{ animationDelay: '0.45s' }}
         >
           {[
-            ['4', '套风格模板'],
-            ['100%', '响应式布局'],
-            ['1 键', '导出与部署'],
-          ].map(([value, label], i) => (
-            <div key={label} className={cn('flex items-center gap-6', i > 0 && 'border-l border-ink-600 pl-6')}>
-              <div>
-                <dt className="sr-only">{label}</dt>
-                <dd className="font-mono text-xl font-bold text-brand-cyan">{value}</dd>
-                <dd className="mt-0.5 text-xs text-muted-foreground">{label}</dd>
-              </div>
-            </div>
+            { value: TEMPLATES.length, suffix: '', label: '套独立版式' },
+            { value: 100, suffix: '%', label: '响应式布局' },
+            { value: 1, suffix: ' 键', label: '导出与部署' },
+          ].map((stat, i) => (
+            <StatItem key={stat.label} {...stat} first={i === 0} />
           ))}
         </dl>
       </div>
@@ -210,5 +230,61 @@ export function Hero() {
         <HeroShowcase />
       </div>
     </section>
+  )
+}
+
+/** 首页统计项：进入视口后数字从 0 滚动到目标值（reduced-motion 直接显示终值） */
+function StatItem({
+  value,
+  suffix,
+  label,
+  first,
+}: {
+  value: number
+  suffix: string
+  label: string
+  first: boolean
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [display, setDisplay] = useState(value)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let frame = 0
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0]?.isIntersecting) return
+        observer.disconnect()
+        const t0 = performance.now()
+        const duration = 900
+        const tick = (t: number) => {
+          const p = Math.min((t - t0) / duration, 1)
+          setDisplay(Math.round(value * (1 - Math.pow(1 - p, 3))))
+          if (p < 1) frame = requestAnimationFrame(tick)
+        }
+        setDisplay(0)
+        frame = requestAnimationFrame(tick)
+      },
+      { threshold: 0.4 }
+    )
+    observer.observe(el)
+    return () => {
+      observer.disconnect()
+      cancelAnimationFrame(frame)
+    }
+  }, [value])
+
+  return (
+    <div ref={ref} className={cn('flex items-center gap-6', !first && 'border-l border-ink-600 pl-6')}>
+      <div>
+        <dt className="sr-only">{label}</dt>
+        <dd className="font-mono text-xl font-bold text-brand-cyan">
+          {display}
+          {suffix}
+        </dd>
+        <dd className="mt-0.5 text-xs text-muted-foreground">{label}</dd>
+      </div>
+    </div>
   )
 }
