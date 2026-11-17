@@ -48,14 +48,18 @@
 .b-bars{margin-top:30px}
 .b-bar{position:relative;height:54px;border:3px solid var(--fg);background:var(--panel);margin-bottom:14px;overflow:hidden}
 .b-fill{position:absolute;inset:0;background:repeating-linear-gradient(45deg,var(--sp) 0 12px,var(--sp2) 12px 24px)}
-.b-barlabel{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;height:100%;padding:0 16px;font-weight:900;font-size:17px}
+.b-barlabel{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;height:100%;padding:0 14px;font-weight:900;font-size:17px;gap:12px}
+/* 文字牌：技能名/百分比压在条纹填充上，背景可能是任意主题色（含黑色），
+   所以给文字垫一块 panel 底 + 描边，保证任何主题色下都可读 */
+.b-barlabel > span{background:var(--panel);border:2px solid var(--fg);padding:3px 12px}
+.b-barlabel em{font-family:var(--fm);font-style:normal;font-weight:700;font-size:14px;background:var(--panel);border:2px solid var(--fg);padding:3px 10px}
 .b-barlabel em{font-family:var(--fm);font-style:normal;font-weight:700;font-size:15px}
 .b-slabs{margin-top:30px}
 .b-slab{border:3px solid var(--fg);background:var(--panel);padding:22px;margin-bottom:20px;box-shadow:8px 8px 0 var(--fg)}
 .b-slab:nth-child(even){background:var(--fg);color:var(--bg)}
 .b-slab:nth-child(even) .b-sdesc{color:#b5b5b5}
 .b-slab:nth-child(even) .b-stag{color:var(--bg);border-color:var(--bg)}
-.b-slab:nth-child(even) .b-slinks a{color:var(--sp)}
+.b-slab:nth-child(even) .b-slinks a{color:var(--bg);border-bottom-color:var(--bg)}
 .b-sidx{font-family:var(--fm);font-weight:700;color:var(--sp);font-size:13px;letter-spacing:.2em}
 .b-sname{font-size:clamp(24px,4cqw,34px);font-weight:900;margin-top:8px;overflow-wrap:anywhere}
 .b-sdesc{margin-top:10px;font-size:14.5px;color:var(--muted);max-width:72ch;line-height:1.75}

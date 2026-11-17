@@ -35,7 +35,7 @@ export const TECH_CSS = `
 .t-h::before{content:'$ ';color:var(--sp)}
 .t-skill{display:grid;grid-template-columns:140px 1fr 54px;gap:14px;align-items:center;padding:7px 0}
 .t-track{height:15px;border:1px solid var(--line);background:var(--panel);overflow:hidden}
-.t-fill{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--sp) 0 8px,transparent 8px 12px);box-shadow:0 0 12px var(--sp-soft)}
+.t-fill{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--sp) 0 8px,transparent 8px 12px);box-shadow:0 0 0 1.5px var(--fg),0 0 12px var(--sp-soft)}
 .t-pct{color:var(--muted);text-align:right;font-size:12.5px}
 .t-file{border:1px solid var(--line);border-radius:6px;background:var(--panel);margin-bottom:14px;overflow:hidden}
 .t-filebar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 14px;background:rgba(29,42,68,.45);border-bottom:1px solid var(--line);font-size:13px}
