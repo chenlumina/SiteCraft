@@ -21,7 +21,9 @@
     "test:unit": "node scripts/run-unit-tests.mjs",
     "test:e2e": "node scripts/e2e-check.mjs",
     "snapshot": "node --import tsx scripts/snapshot-generator.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "design:check": "node --import tsx scripts/design-check.mjs",
+    "check": "pnpm typecheck && pnpm lint && pnpm test:unit && pnpm design:check"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

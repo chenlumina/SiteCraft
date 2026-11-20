@@ -46,10 +46,17 @@ async function main() {
   }
   await prisma.site.upsert({
     where: { id: 'seed-site-tech' },
-    update: {},
+    // update 必须带上内容：写成 {} 的话重跑种子永远不会刷新示例数据，
+    // 改一次示例文案就得手动清库（这正是示例姓名残留的原因）
+    update: {
+      name: 'Lead 的个人主页',
+      template: 'tech',
+      content: JSON.stringify(techData),
+      status: 'published',
+    },
     create: {
       id: 'seed-site-tech',
-      name: '张亮的个人主页',
+      name: 'Lead 的个人主页',
       template: 'tech',
       content: JSON.stringify(techData),
       status: 'published',
@@ -68,7 +75,12 @@ async function main() {
   }
   await prisma.site.upsert({
     where: { id: 'seed-site-pro' },
-    update: {},
+    update: {
+      name: '求职简历站',
+      template: 'professional',
+      content: JSON.stringify(proData),
+      status: 'draft',
+    },
     create: {
       id: 'seed-site-pro',
       name: '求职简历站',

@@ -32,3 +32,5 @@ yarn-error.log*
 coverage/
 test-results/
 screenshots/
+# 设计门生成的临时 HTML
+.design-out/

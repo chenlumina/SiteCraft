@@ -6,7 +6,7 @@
 import type { SiteData } from '@/types'
 import { esc } from '../escape'
 import { FONT_MONO } from '../theme-consts'
-import { clampLevel, getSections, projectLinks, tagItems } from './shared'
+import { clampLevel, getSections, projectLinks, tagItems, orderSections } from './shared'
 
 export const TECH_CSS = `
 .site-tech{--bg:#0a0f1a;--fg:#d7e2f2;--muted:#7d8ca6;--line:#1d2a44;--panel:#0e1626;--fd:${FONT_MONO};--fb:${FONT_MONO};--fm:${FONT_MONO}}
@@ -64,11 +64,21 @@ export const TECH_CSS = `
 .t-commit{grid-template-columns:1fr;gap:2px}
 .t-when::before{content:'@ '}
 }
+/* 入场：只做一次，落在名字上 */
+.t-name{animation:sf-type .85s steps(18,end) .1s both}
 `
 
 export function renderTech(data: SiteData): string {
   const sections = getSections(data)
-  const nav = sections.map((s) => `<a href="#${s.id}">${s.navLabel}</a>`).join('')
+  const NAV: Record<string, string> = {
+    skills: '技能',
+    projects: '工程',
+    experience: '日志',
+    contact: '联系',
+  }
+  const nav = orderSections(sections, ['projects', 'skills', 'experience', 'contact'])
+    .map((s) => `<a href="#${s.id}">${NAV[s.id]}</a>`)
+    .join('')
 
   const skills = data.skills
     .map(
@@ -91,7 +101,9 @@ export function renderTech(data: SiteData): string {
 
   const experience = data.experience
     .map(
-      (e) => `<div class="t-commit"><span class="t-hash">${esc(e.period)}</span><span class="t-when">${esc(e.organization)}</span>
+      (
+        e
+      ) => `<div class="t-commit"><span class="t-hash">${esc(e.period)}</span><span class="t-when">${esc(e.organization)}</span>
   <span class="t-what"><b>${esc(e.role)}</b>${e.description.trim() ? `<p>${esc(e.description.trim())}</p>` : ''}</span></div>`
     )
     .join('')
@@ -113,8 +125,8 @@ export function renderTech(data: SiteData): string {
           ${data.location.trim() ? `<span class="t-tag">${esc(data.location.trim())}</span>` : ''}
           ${data.email.trim() ? `<span class="t-tag">${esc(data.email.trim())}</span>` : ''}
         </div>
-        ${sections.some((s) => s.id === 'skills') ? `<h2 class="t-h" id="skills" style="margin-top:44px">ls skills/</h2><div>${skills}</div>` : ''}
         ${sections.some((s) => s.id === 'projects') ? `<h2 class="t-h" id="projects">ls projects/</h2>${projects}` : ''}
+        ${sections.some((s) => s.id === 'skills') ? `<h2 class="t-h" id="skills" style="margin-top:44px">ls skills/</h2><div>${skills}</div>` : ''}
         ${sections.some((s) => s.id === 'experience') ? `<h2 class="t-h" id="experience">git log --oneline</h2>${experience}` : ''}
         <div class="t-box" id="contact">
           <p class="t-p t-ctitle">sendmail -t "一起聊聊？"</p>

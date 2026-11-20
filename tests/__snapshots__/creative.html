@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>张亮 · 全栈开发学习者 · Java / Web</title>
+<title>Lead · 全栈开发学习者 · Java / Web</title>
 <meta name="description" content="计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。">
 <meta name="generator" content="SiteCraft 个人官网生成器">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20x='2'%20y='2'%20width='36'%20height='36'%20rx='10'%20fill='%231b1917'/%3E%3Cpath%20d='M15%2014l-6%206%206%206M25%2014l6%206-6%206'%20stroke='%23f8f7f1'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'/%3E%3Ccircle%20cx='20'%20cy='20'%20r='2.2'%20fill='%23f8f7f1'/%3E%3C/svg%3E">
@@ -15,24 +15,53 @@
 /* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过各版式按钮的 color */
 .site-root :where(a){color:inherit;text-decoration:none}
 .site-root ul,.site-root ol{list-style:none}
-/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，
-   默认会撑到 300×150 把按钮擑爆；基样式统一收敛到 16px，
-   各版式需要不同尺寸时在自己的 CSS 里覆盖（后加载胜出） */
-.site-root svg{width:16px;height:16px;flex:none}
+/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，默认会撑到 300×150 把按钮撑爆。
+   这里必须是 :where(svg) 把特异性压到 (0,1,0)——原写法 .site-root svg 是 (0,1,1)，
+   版式里 .g-wave{width:100%} 这类单类覆盖根本盖不过去（后加载不算数，特异性才算数），
+   结果是 gold 的水波 SVG 被压成 16px，整池水缩小 6 倍 */
+.site-root :where(svg){width:16px;height:16px;flex:none}
 .site-root ::selection{background:var(--sp);color:var(--on-sp)}
 .site-root ::-webkit-scrollbar{width:10px;height:10px}
 .site-root ::-webkit-scrollbar-track{background:var(--bg)}
 .site-root ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:2px solid var(--bg)}
 .site-root ::-webkit-scrollbar-thumb:hover{background:var(--sp)}
 .s-name{overflow-wrap:anywhere}
+/* 交互层：所有版式的链接与按钮共用同一条缓动，按下给一次轻反馈。
+   :where() 保持 0 特异性，版式自有时序可以覆盖它 */
+.site-root :where(a,button){transition:color .22s cubic-bezier(.22,.7,.2,1),background-color .22s cubic-bezier(.22,.7,.2,1),border-color .22s cubic-bezier(.22,.7,.2,1),box-shadow .22s cubic-bezier(.22,.7,.2,1),opacity .22s}
+.site-root :where(a,button):active{opacity:.72}
+/* 入场关键帧共用；用哪个由各版式自己挑，不在这里统一套用 */
+@keyframes sf-rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes sf-land{from{opacity:0;transform:scale(.965)}to{opacity:1;transform:none}}
+@keyframes sf-type{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes sf-glow{from{opacity:0;filter:blur(7px)}to{opacity:1;filter:blur(0)}}
+@keyframes sf-glitch{0%{opacity:0;transform:translateX(-7px)}55%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
+
+/* 键盘焦点环：所有版式共享，版式可用更高特异性覆盖颜色 */
+/* 导航类链接的触摸下限：line box 只有 19~21px，垫到 WCAG 2.5.8 的 24px */
+.site-root nav a,.site-root header a{display:inline-flex;align-items:center;min-height:24px}
+.site-root a:focus-visible,.site-root button:focus-visible{outline:2px solid var(--sp);outline-offset:3px;border-radius:1px}
+/* 动效整体开关：用户在系统层拒绝动效时，全部版式的动画与过渡一律关闭 */
+@media (prefers-reduced-motion:reduce){
+.site-root *,.site-root *::before,.site-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 @keyframes sp-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.45)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
 
 
+.c-hl{display:inline-block;margin-right:8px;padding:1px 5px;font-size:10.5px;letter-spacing:.12em;
+  color:var(--sp-ink);border:1px solid currentColor;border-radius:2px;vertical-align:2px;}
 .site-creative{--bg:#fff8f0;--fg:#292524;--muted:#78716c;--line:#292524;--panel:#ffffff;--shadow:rgba(41,37,36,.16);--fd:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fb:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace}
 .c-nav{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:18px 20px;border-bottom:3px solid var(--fg)}
 .c-nav a{border:2px solid var(--fg);background:#fff;padding:7px 16px;border-radius:999px;font-weight:800;font-size:13px;box-shadow:3px 3px 0 var(--fg);transition:transform .15s,box-shadow .15s}
 .c-nav a:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--fg)}
 .c-hero{position:relative;text-align:center;padding:76px 24px 60px;border-bottom:3px solid var(--fg);background-image:radial-gradient(rgba(41,37,36,.08) 1.5px,transparent 1.5px);background-size:22px 22px;overflow:hidden}
+/* 主视觉锚点：马克笔手绘圈注。路径是手画的、故意不闭合，
+   描边用 dashoffset 从"笔尖落下"画出来；reduced-motion 下直接是画好的圈 */
+.c-namewrap{position:relative;display:inline-block;padding:6px 18px}
+.c-circle{position:absolute;inset:-6% -4%;width:108%;height:112%;overflow:visible;pointer-events:none}
+.c-circle path{fill:none;stroke:var(--sp);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:920;stroke-dashoffset:0;animation:c-draw .85s .25s cubic-bezier(.4,.1,.3,1) both}
+@keyframes c-draw{from{stroke-dashoffset:920}to{stroke-dashoffset:0}}
 .c-hero::before{content:'';position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,var(--sp-soft),transparent 70%);pointer-events:none}
 .c-status{display:inline-block;transform:rotate(-2deg);border:2px solid var(--fg);background:var(--sp);color:var(--on-sp);font-weight:800;padding:8px 18px;border-radius:12px;box-shadow:4px 4px 0 var(--fg);font-size:14px}
 .c-name{margin-top:26px;font-size:clamp(46px,8cqw,78px);font-weight:900;letter-spacing:-.02em;transform:rotate(-1.5deg);background:linear-gradient(100deg,var(--sp),var(--sp2));-webkit-background-clip:text;background-clip:text;color:transparent;font-style:normal}
@@ -84,27 +113,33 @@
 .c-polos{grid-template-columns:1fr}
 .c-note{max-width:none}
 }
+/* 入场：只做一次，落在名字上 */
+.c-name{animation:sf-land .7s cubic-bezier(.34,1.3,.64,1) .05s both}
 
-.site-creative{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;}
+.site-creative{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;--sp-ink:#137483;--sp-inkd:#22d3ee;}
 html{scroll-behavior:smooth;scrollbar-color:#fff8f0 auto}
 body{margin:0;background:#fff8f0}
 </style>
 </head>
 <body>
 <div class="site-root site-creative">
-  <nav class="c-nav" aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact">联系</a></nav>
+  <nav class="c-nav" aria-label="站点导航"><a href="#projects">拍立得</a><a href="#skills">贴纸</a><a href="#experience">便签</a><a href="#contact">来信</a></nav>
   <main>
     <section class="c-hero">
       <p class="c-status">正在寻找 2027 届实习机会</p>
-      <h1 class="s-name c-name">张亮</h1>
+      <div class="c-namewrap">
+        <h1 class="s-name c-name">Lead</h1>
+        <svg class="c-circle" viewBox="0 0 320 150" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M26,78 C22,34 118,10 205,14 C284,18 312,56 298,88 C284,120 158,138 88,128 C40,121 8,108 26,78 C34,64 58,54 88,48"/>
+        </svg>
+      </div>
       <p class="c-role">全栈开发学习者 · Java / Web</p>
-      <img class="c-face" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="张亮的头像">
-      <div class="c-chips"><span class="c-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span><span class="c-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</span></div>
+      <img class="c-face" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="Lead的头像">
+      <div class="c-chips"><span class="c-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span><span class="c-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>lead@example.com</span></div>
     </section>
     <div class="c-wrap">
-      <section id="skills"><h2 class="c-h2">技能贴纸</h2><div class="c-rings"><div class="c-ring"><span class="c-disc" style="--p:85"><i>85</i></span><b>Java</b></div><div class="c-ring"><span class="c-disc" style="--p:75"><i>75</i></span><b>Spring Boot</b></div><div class="c-ring"><span class="c-disc" style="--p:72"><i>72</i></span><b>MySQL</b></div><div class="c-ring"><span class="c-disc" style="--p:82"><i>82</i></span><b>HTML / CSS</b></div><div class="c-ring"><span class="c-disc" style="--p:74"><i>74</i></span><b>JavaScript</b></div><div class="c-ring"><span class="c-disc" style="--p:65"><i>65</i></span><b>Vue 3</b></div><div class="c-ring"><span class="c-disc" style="--p:62"><i>62</i></span><b>Next.js</b></div><div class="c-ring"><span class="c-disc" style="--p:68"><i>68</i></span><b>Linux</b></div></div></section>
       <section id="projects"><h2 class="c-h2">作品拍立得</h2><div class="c-polos"><article class="c-polo"><div class="c-polo-head"></div>
-  <h3 class="c-pname">音乐网站 music-web</h3>
+  <span class="c-hl">精选</span><h3 class="c-pname">音乐网站 music-web</h3>
   <p class="c-pdesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
   <ul class="c-ptags"><li class="c-ptag">Java</li><li class="c-ptag">Jakarta EE</li><li class="c-ptag">Tomcat</li><li class="c-ptag">MySQL</li></ul>
   </article><article class="c-polo"><div class="c-polo-head"></div>
@@ -112,14 +147,15 @@ body{margin:0;background:#fff8f0}
   <p class="c-pdesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
   <ul class="c-ptags"><li class="c-ptag">Servlet</li><li class="c-ptag">JSP</li><li class="c-ptag">MySQL</li></ul>
   </article><article class="c-polo"><div class="c-polo-head"></div>
-  <h3 class="c-pname">个人官网生成器</h3>
-  <p class="c-pdesc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+  <span class="c-hl">精选</span><h3 class="c-pname">个人官网生成器</h3>
+  <p class="c-pdesc">Next.js 14 全栈应用：可视化编辑、十三套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
   <ul class="c-ptags"><li class="c-ptag">Next.js</li><li class="c-ptag">TypeScript</li><li class="c-ptag">Prisma</li><li class="c-ptag">Tailwind</li></ul>
   </article><article class="c-polo"><div class="c-polo-head"></div>
   <h3 class="c-pname">操作系统实验笔记</h3>
   <p class="c-pdesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
   <ul class="c-ptags"><li class="c-ptag">C</li><li class="c-ptag">Assembly</li><li class="c-ptag">Linux</li></ul>
   </article></div></section>
+      <section id="skills"><h2 class="c-h2">技能贴纸</h2><div class="c-rings"><div class="c-ring"><span class="c-disc" style="--p:85"><i>85</i></span><b>Java</b></div><div class="c-ring"><span class="c-disc" style="--p:75"><i>75</i></span><b>Spring Boot</b></div><div class="c-ring"><span class="c-disc" style="--p:72"><i>72</i></span><b>MySQL</b></div><div class="c-ring"><span class="c-disc" style="--p:82"><i>82</i></span><b>HTML / CSS</b></div><div class="c-ring"><span class="c-disc" style="--p:74"><i>74</i></span><b>JavaScript</b></div><div class="c-ring"><span class="c-disc" style="--p:65"><i>65</i></span><b>Vue 3</b></div><div class="c-ring"><span class="c-disc" style="--p:62"><i>62</i></span><b>Next.js</b></div><div class="c-ring"><span class="c-disc" style="--p:68"><i>68</i></span><b>Linux</b></div></div></section>
       <section id="experience"><h2 class="c-h2">足迹便签</h2><div class="c-notes"><article class="c-note"><span class="c-nwhen">2024.09 - 至今</span>
   <h3 class="c-nrole">本科生 · 计算机科学与技术</h3>
   <p class="c-norg">计算机学院</p>
@@ -130,12 +166,12 @@ body{margin:0;background:#fff8f0}
       <section class="c-big" id="contact">
         <h2 class="c-h2">一起聊聊？</h2>
         <p class="c-blead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
-        <a class="c-bmail" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>发邮件给我</a>
+        <a class="c-bmail" href="mailto:lead@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>发邮件给我</a>
         <div class="c-soc"><a class="c-soc-a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="c-soc-a" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
       </section>
     </div>
   </main>
-  <footer class="c-foot">© 2026 张亮 · 由 SiteCraft 个人官网生成器构建</footer>
+  <footer class="c-foot">© 2026 Lead · 由 SiteCraft 个人官网生成器构建</footer>
 </div>
 </body>
 </html>

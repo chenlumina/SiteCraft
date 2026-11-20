@@ -8,9 +8,18 @@ import type { SiteData } from '@/types'
 import { esc } from '../escape'
 import { socialLinks } from '../icons'
 import { FONT_MONO, FONT_SANS } from '../theme-consts'
-import { avatarHTML, clampLevel, getSections, projectLinks, tagItems } from './shared'
+import {
+  avatarHTML,
+  clampLevel,
+  getSections,
+  projectLinks,
+  tagItems,
+  orderSections,
+} from './shared'
 
 export const BRUTAL_CSS = `
+.b-hl{display:inline-block;margin-right:8px;padding:1px 5px;font-size:10.5px;letter-spacing:.12em;
+  color:var(--sp-ink);border:1px solid currentColor;border-radius:2px;vertical-align:2px;}
 .site-brutal{--bg:#f4f4f3;--fg:#0a0a0a;--muted:#4b4b4b;--line:#0a0a0a;--panel:#ffffff;--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO}}
 .b-strip{background:var(--fg);color:var(--bg);padding:10px 16px;text-align:center;font-family:var(--fm);font-size:12px;letter-spacing:.24em;text-transform:uppercase}
 .b-nav{display:flex;flex-wrap:wrap;border-bottom:3px solid var(--fg)}
@@ -41,9 +50,10 @@ export const BRUTAL_CSS = `
 .b-slab{border:3px solid var(--fg);background:var(--panel);padding:22px;margin-bottom:20px;box-shadow:8px 8px 0 var(--fg)}
 .b-slab:nth-child(even){background:var(--fg);color:var(--bg)}
 .b-slab:nth-child(even) .b-sdesc{color:#b5b5b5}
+.b-slab:nth-child(even) .b-sidx,.b-slab:nth-child(even) .b-when{color:var(--sp-inkd)}
 .b-slab:nth-child(even) .b-stag{color:var(--bg);border-color:var(--bg)}
 .b-slab:nth-child(even) .b-slinks a{color:var(--bg);border-bottom-color:var(--bg)}
-.b-sidx{font-family:var(--fm);font-weight:700;color:var(--sp);font-size:13px;letter-spacing:.2em}
+.b-sidx{font-family:var(--fm);font-weight:700;color:var(--sp-ink);font-size:13px;letter-spacing:.2em}
 .b-sname{font-size:clamp(24px,4cqw,34px);font-weight:900;margin-top:8px;overflow-wrap:anywhere}
 .b-sdesc{margin-top:10px;font-size:14.5px;color:var(--muted);max-width:72ch;line-height:1.75}
 .b-stags{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;list-style:none}
@@ -53,7 +63,7 @@ export const BRUTAL_CSS = `
 .b-rows{margin-top:26px}
 .b-row{display:grid;grid-template-columns:170px 1fr;gap:8px 20px;padding:20px 0;border-bottom:3px solid var(--fg)}
 .b-row:last-child{border-bottom:none}
-.b-when{font-family:var(--fm);font-weight:700;color:var(--sp);font-size:13px}
+.b-when{font-family:var(--fm);font-weight:700;color:var(--sp-ink);font-size:13px}
 .b-rrole{font-size:19px;font-weight:900}
 .b-rorg{color:var(--muted);font-size:13.5px;margin-top:2px}
 .b-rdesc{margin-top:8px;font-size:14px;color:var(--muted);grid-column:2}
@@ -72,11 +82,21 @@ export const BRUTAL_CSS = `
 .b-row{grid-template-columns:1fr;gap:4px}
 .b-rdesc{grid-column:1}
 }
+/* 入场：只做一次，落在名字上 */
+.b-name{animation:sf-land .6s cubic-bezier(.2,.9,.3,1.3) both}
 `
 
 export function renderBrutal(data: SiteData): string {
   const sections = getSections(data)
-  const nav = sections.map((s) => `<a href="#${s.id}">${s.navLabel}</a>`).join('')
+  const NAV: Record<string, string> = {
+    skills: '本事',
+    projects: '作品',
+    experience: '履历',
+    contact: '联络',
+  }
+  const nav = orderSections(sections, ['projects', 'skills', 'experience', 'contact'])
+    .map((s) => `<a href="#${s.id}">${NAV[s.id]}</a>`)
+    .join('')
 
   const skills = data.skills
     .map(
@@ -89,7 +109,7 @@ export function renderBrutal(data: SiteData): string {
     .map((p, i) => {
       const links = projectLinks(p.link, p.repo)
       return `<article class="b-slab"><span class="b-sidx">NO.${String(i + 1).padStart(2, '0')}</span>
-  <h3 class="b-sname">${esc(p.name)}</h3>
+  ${p.highlight ? `<span class="b-hl">精选</span>` : ''}<h3 class="b-sname">${esc(p.name)}</h3>
   ${p.description.trim() ? `<p class="b-sdesc">${esc(p.description.trim())}</p>` : ''}
   ${p.tags.some((t) => t.trim()) ? `<ul class="b-stags">${tagItems(p.tags, 'b-stag')}</ul>` : ''}
   ${links ? `<div class="b-slinks">${links}</div>` : ''}</article>`
@@ -123,8 +143,8 @@ export function renderBrutal(data: SiteData): string {
       </div>
       ${avatarHTML(data, 'b-face', 'b-monogram')}
     </section>
-    ${sections.some((s) => s.id === 'skills') ? `<section class="b-sec" id="skills"><h2 class="b-h2"><i>01</i>技能栈</h2><div class="b-bars">${skills}</div></section>` : ''}
     ${sections.some((s) => s.id === 'projects') ? `<section class="b-sec" id="projects"><h2 class="b-h2"><i>02</i>项目作品</h2><div class="b-slabs">${projects}</div></section>` : ''}
+    ${sections.some((s) => s.id === 'skills') ? `<section class="b-sec" id="skills"><h2 class="b-h2"><i>01</i>技能栈</h2><div class="b-bars">${skills}</div></section>` : ''}
     ${sections.some((s) => s.id === 'experience') ? `<section class="b-sec" id="experience"><h2 class="b-h2"><i>03</i>经历</h2><div class="b-rows">${experience}</div></section>` : ''}
     <section class="b-contact" id="contact">
       <h2 class="b-ctitle">一起聊聊？</h2>

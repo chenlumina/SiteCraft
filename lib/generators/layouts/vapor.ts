@@ -8,7 +8,7 @@ import type { SiteData } from '@/types'
 import { esc } from '../escape'
 import { socialLinks } from '../icons'
 import { FONT_MONO, FONT_SANS } from '../theme-consts'
-import { clampLevel, getSections, mailBtn, projectLinks, tagItems } from './shared'
+import { clampLevel, getSections, mailBtn, projectLinks, tagItems, orderSections } from './shared'
 
 export const VAPOR_CSS = `
 .site-vapor{--bg:#12071f;--fg:#fdf4ff;--muted:#b6a3d9;--line:#37205a;--panel:rgba(55,32,90,.45);--track:#1c1030;--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO}}
@@ -31,7 +31,7 @@ export const VAPOR_CSS = `
 .v-chip{font-family:var(--fm);font-size:12px;color:var(--muted);border:1px solid var(--line);background:var(--panel);padding:6px 14px;border-radius:6px}
 .v-ctas{position:relative;z-index:1;margin-top:28px;display:flex;justify-content:center;flex-wrap:wrap;gap:16px}
 .v-btn{display:inline-flex;align-items:center;gap:9px;padding:12px 26px;border-radius:999px;font-weight:700;font-size:14px;font-family:var(--fm)}
-.v-btn.primary{background:linear-gradient(95deg,var(--sp),#b967ff);color:#fff;box-shadow:0 0 26px rgba(255,113,206,.4)}
+.v-btn.primary{background:linear-gradient(95deg,var(--sp),#b967ff);color:var(--on-sp);box-shadow:0 0 26px rgba(255,113,206,.4)}
 .v-btn.primary:hover{transform:translateY(-2px)}
 .v-btn.ghost{border:1.5px solid #01cdfe;color:#01cdfe;background:transparent}
 .v-btn.ghost:hover{box-shadow:0 0 18px rgba(1,205,254,.5)}
@@ -78,15 +78,27 @@ export const VAPOR_CSS = `
 .v-logline{grid-template-columns:1fr}
 .v-navlinks{display:none}
 }
+/* 入场：只做一次，落在名字上 */
+.v-name{animation:sf-glitch .75s cubic-bezier(.22,.7,.2,1) .05s both}
 `
 
 export function renderVapor(data: SiteData): string {
   const sections = getSections(data)
-  const nav = sections.map((s) => `<a href="#${s.id}">${s.navLabel}</a>`).join('')
+  const NAV: Record<string, string> = {
+    skills: '模块',
+    projects: '档案',
+    experience: '日志',
+    contact: '联络',
+  }
+  const nav = orderSections(sections, ['experience', 'projects', 'skills', 'contact'])
+    .map((s) => `<a href="#${s.id}">${NAV[s.id]}</a>`)
+    .join('')
 
   const skills = data.skills
     .map(
-      (s) => `<div class="v-bar"><div class="v-bartop"><span>${esc(s.name)}</span><em>${clampLevel(s.level)}%</em></div>
+      (
+        s
+      ) => `<div class="v-bar"><div class="v-bartop"><span>${esc(s.name)}</span><em>${clampLevel(s.level)}%</em></div>
   <div class="v-track"><span class="v-fill" style="width:${clampLevel(s.level)}%"></span></div></div>`
     )
     .join('')
@@ -131,9 +143,9 @@ export function renderVapor(data: SiteData): string {
         </div>
       </section>
       <div class="v-wrap">
-        ${sections.some((s) => s.id === 'skills') ? `<section class="v-sec" id="skills"><h2 class="v-h2">SKILLS</h2><div class="v-win"><div class="v-titlebar"><span>skills.exe</span><span class="v-x">— □ ✕</span></div><div class="v-body">${skills}</div></div></section>` : ''}
-        ${sections.some((s) => s.id === 'projects') ? `<section class="v-sec" id="projects"><h2 class="v-h2">PROJECTS</h2><div class="v-win"><div class="v-titlebar"><span>projects.exe</span><span class="v-x">— □ ✕</span></div><div class="v-body">${projects}</div></div></section>` : ''}
         ${sections.some((s) => s.id === 'experience') ? `<section class="v-sec" id="experience"><h2 class="v-h2">EXPERIENCE</h2><div class="v-win"><div class="v-titlebar"><span>history.log</span><span class="v-x">— □ ✕</span></div><div class="v-log">${experience}</div></div></section>` : ''}
+        ${sections.some((s) => s.id === 'projects') ? `<section class="v-sec" id="projects"><h2 class="v-h2">PROJECTS</h2><div class="v-win"><div class="v-titlebar"><span>projects.exe</span><span class="v-x">— □ ✕</span></div><div class="v-body">${projects}</div></div></section>` : ''}
+        ${sections.some((s) => s.id === 'skills') ? `<section class="v-sec" id="skills"><h2 class="v-h2">SKILLS</h2><div class="v-win"><div class="v-titlebar"><span>skills.exe</span><span class="v-x">— □ ✕</span></div><div class="v-body">${skills}</div></div></section>` : ''}
         <section class="v-sec" id="contact" style="padding-bottom:0">
           <div class="v-win v-cwin"><div class="v-titlebar"><span>contact.exe</span><span class="v-x">— □ ✕</span></div>
             <div class="v-body">

@@ -15,6 +15,7 @@ import {
   mailBtn,
   projectLinks,
   tagItems,
+  orderSections,
 } from './shared'
 
 export const AURORA_CSS = `
@@ -26,7 +27,16 @@ export const AURORA_CSS = `
 .a-navlinks{display:flex;gap:22px;font-size:13.5px}
 .a-navlinks a{color:var(--muted)}
 .a-navlinks a:hover{color:var(--sp)}
-.a-hero{position:relative;z-index:1;text-align:center;padding:104px 24px 84px}
+.a-hero{position:relative;z-index:1;text-align:center;padding:88px 24px 84px}
+/* 主视觉锚点：一道压扁的巨大椭圆边线，像地平线上的极光弧。
+   弧线本身是结构（不是又一层模糊光斑），上面那层极淡的径向渐变只是它的大气辉光 */
+.a-hero::after{content:"";position:absolute;left:50%;top:54px;width:168%;height:560px;z-index:-1;
+  transform:translateX(-50%) rotate(-7deg);border-radius:50%;
+  border-top:1px solid rgba(45,212,191,.42);
+  background:radial-gradient(120% 90% at 50% 0%,rgba(167,139,250,.12),transparent 62%);
+  pointer-events:none;opacity:0;animation:a-arc 1.1s .15s cubic-bezier(.22,.7,.2,1) both}
+@keyframes a-arc{from{opacity:0;transform:translateX(-50%) rotate(-7deg) translateY(18px)}
+  to{opacity:1;transform:translateX(-50%) rotate(-7deg) translateY(0)}}
 .a-hero::before{content:'';position:absolute;right:6%;top:12%;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--sp-soft),transparent 65%);filter:blur(30px);pointer-events:none}
 .a-face,.a-monogram{width:168px;height:168px;border-radius:50%;object-fit:cover;margin:0 auto;border:2px solid rgba(148,163,184,.35);box-shadow:0 0 0 12px rgba(148,163,184,.06),0 0 46px var(--sp-glow)}
 .a-monogram{display:grid;place-items:center;font-weight:800;font-size:56px;background:linear-gradient(135deg,var(--sp),var(--sp2));color:var(--on-sp)}
@@ -90,15 +100,26 @@ export const AURORA_CSS = `
 .a-isle:nth-child(odd),.a-isle:nth-child(even){transform:none}
 .a-navlinks{display:none}
 }
+/* 入场：只做一次，落在名字上 */
+.a-name{animation:sf-glow .95s cubic-bezier(.22,.7,.2,1) .1s both}
 `
 
 export function renderAurora(data: SiteData): string {
   const sections = getSections(data)
-  const nav = sections.map((s) => `<a href="#${s.id}">${s.navLabel}</a>`).join('')
+  const NAV: Record<string, string> = {
+    skills: '能力',
+    projects: '作品',
+    experience: '轨迹',
+    contact: '联络',
+  }
+  const nav = orderSections(sections, ['projects', 'experience', 'skills', 'contact'])
+    .map((s) => `<a href="#${s.id}">${NAV[s.id]}</a>`)
+    .join('')
 
   const skills = data.skills
     .map(
-      (s) => `<div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:${clampLevel(s.level)}"></span><span class="a-num">${clampLevel(s.level)}</span></span><span class="a-rname">${esc(s.name)}</span></div>`
+      (s) =>
+        `<div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:${clampLevel(s.level)}"></span><span class="a-num">${clampLevel(s.level)}</span></span><span class="a-rname">${esc(s.name)}</span></div>`
     )
     .join('')
 
@@ -141,9 +162,9 @@ export function renderAurora(data: SiteData): string {
         </div>
       </section>
       <div class="a-wrap">
-        ${sections.some((s) => s.id === 'skills') ? `<section class="a-sec" id="skills"><p class="a-kick">SKILLS</p><h2 class="a-h2">技能栈</h2><div class="a-rings">${skills}</div></section>` : ''}
         ${sections.some((s) => s.id === 'projects') ? `<section class="a-sec" id="projects"><p class="a-kick">PROJECTS</p><h2 class="a-h2">项目作品</h2><div class="a-isles">${projects}</div></section>` : ''}
         ${sections.some((s) => s.id === 'experience') ? `<section class="a-sec" id="experience"><p class="a-kick">EXPERIENCE</p><h2 class="a-h2">经历</h2><div class="a-tl">${experience}</div></section>` : ''}
+        ${sections.some((s) => s.id === 'skills') ? `<section class="a-sec" id="skills"><p class="a-kick">SKILLS</p><h2 class="a-h2">技能栈</h2><div class="a-rings">${skills}</div></section>` : ''}
         <section class="a-dome" id="contact">
           <h2 class="a-dh2">一起聊聊？</h2>
           <p class="a-dlead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>

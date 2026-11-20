@@ -24,6 +24,7 @@ for (const template of [
   'vapor',
   'swiss',
   'kraft',
+  'metro',
 ]) {
   const html = generateSiteHTML(createSampleData(), template)
   writeFileSync(path.join(outDir, `${template}.html`), html, 'utf-8')

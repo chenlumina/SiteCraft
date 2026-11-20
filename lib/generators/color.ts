@@ -62,8 +62,46 @@ export function onColor(hex: string): string {
   return luminance > 0.58 ? '#0b1220' : '#ffffff'
 }
 
+/**
+ * 把强调色往黑/白两端推，直到它在给定背景上达到 WCAG 正文对比度。
+ * 为什么不直接用 --sp 当文字色：用户只选一个主色，浅色（#22d3ee、#facc15）
+ * 放在浅纸底上对比度只有 1.6~1.8，正文直接不可读。强调色当背景永远安全，
+ * 当文字必须先过这道换算。
+ */
+export function contrastInk(hex: string, bg: string, target = 4.8): string {
+  const rel = (v: number) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
+  const lum = (h: string) => {
+    const { r, g, b } = hexToRgb(h)
+    return 0.2126 * rel(r / 255) + 0.7152 * rel(g / 255) + 0.0722 * rel(b / 255)
+  }
+  const ratio = (a: string, b: string) => {
+    const pair = [lum(a), lum(b)].sort((x, y) => y - x)
+    return (pair[0] + 0.05) / (pair[1] + 0.05)
+  }
+  if (ratio(hex, bg) >= target) return hex
+  const towardsWhite = lum(bg) < 0.18
+  const toHex = (r: number, g: number, b: number) =>
+    '#' +
+    [r, g, b]
+      .map((v) =>
+        Math.round(Math.max(0, Math.min(255, v)))
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')
+  const base = hexToRgb(hex)
+  for (let step = 1; step <= 20; step += 1) {
+    const t = step / 20
+    const mix = (v: number) => (towardsWhite ? v + (255 - v) * t : v * (1 - t))
+    const candidate = toHex(mix(base.r), mix(base.g), mix(base.b))
+    if (ratio(candidate, bg) >= target) return candidate
+  }
+  return towardsWhite ? '#ffffff' : '#000000'
+}
+
 /** 由主题色派生整组 CSS 变量：主色/渐变搭档/柔和底/光晕/主色上的文字色 */
-export function themeVars(sp: string): string {
+export function themeVars(sp: string, bg = '#ffffff'): string {
   const sp2 = hueShift(sp, 18)
-  return `--sp:${sp};--sp2:${sp2};--sp-soft:${rgba(sp, 0.14)};--sp-glow:${rgba(sp, 0.32)};--on-sp:${onColor(sp)};`
+  // --sp-ink：浅底上的强调色文字（已推到 ≥4.6:1）；--sp-inkd：深底版本
+  return `--sp:${sp};--sp2:${sp2};--sp-soft:${rgba(sp, 0.14)};--sp-glow:${rgba(sp, 0.32)};--on-sp:${onColor(sp)};--sp-ink:${contrastInk(sp, bg)};--sp-inkd:${contrastInk(sp, '#0b1220')};`
 }

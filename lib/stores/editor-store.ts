@@ -22,10 +22,25 @@ import type {
   Skill,
   TemplateName,
 } from '@/types'
-import { createSampleData } from '@/lib/sample-data'
+import { createSampleData, migrateLegacySample } from '@/lib/sample-data'
 import { getTemplate } from '@/lib/templates'
 import { moveItem, uid } from '@/lib/utils'
-import { MAX_EXPERIENCE_COUNT, MAX_PROJECT_COUNT, MAX_SKILL_COUNT } from '@/lib/validators/site-schema'
+import {
+  MAX_EXPERIENCE_COUNT,
+  MAX_PROJECT_COUNT,
+  MAX_SKILL_COUNT,
+} from '@/lib/validators/site-schema'
+
+/** persist 快照形态：只含可序列化字段，迁移函数按它收窄类型 */
+interface EditorSnapshot {
+  siteId: string | null
+  siteName: string
+  template: TemplateName
+  data: SiteData
+  device: DeviceMode
+  dirty: boolean
+  lastSavedAt: number | null
+}
 
 interface EditorState {
   siteId: string | null
@@ -83,8 +98,7 @@ export const useEditorStore = create<EditorState>()(
         })),
       setDevice: (device) => set({ device }),
       setSiteName: (siteName) => set({ siteName, dirty: true }),
-      updateData: (patch) =>
-        set((state) => ({ data: { ...state.data, ...patch }, dirty: true })),
+      updateData: (patch) => set((state) => ({ data: { ...state.data, ...patch }, dirty: true })),
       setPrimaryColor: (color) =>
         set((state) => ({
           data: { ...state.data, theme: { primaryColor: color } },
@@ -121,7 +135,6 @@ export const useEditorStore = create<EditorState>()(
           dirty: true,
           data: { ...state.data, skills: moveItem(state.data.skills, from, to) },
         })),
-
       addProject: (project) =>
         set((state) => {
           if (state.data.projects.length >= MAX_PROJECT_COUNT) return state
@@ -186,7 +199,10 @@ export const useEditorStore = create<EditorState>()(
           siteId: null,
           siteName: '我的个人官网',
           template: chosen,
-          data: { ...createSampleData(), theme: { primaryColor: getTemplate(chosen).defaultColor } },
+          data: {
+            ...createSampleData(),
+            theme: { primaryColor: getTemplate(chosen).defaultColor },
+          },
           dirty: false,
           lastSavedAt: null,
         })
@@ -201,12 +217,25 @@ export const useEditorStore = create<EditorState>()(
           dirty: false,
           lastSavedAt: new Date(record.updatedAt).getTime(),
         }),
-      markSaved: (id) =>
-        set({ siteId: id, dirty: false, saving: false, lastSavedAt: Date.now() }),
+      markSaved: (id) => set({ siteId: id, dirty: false, saving: false, lastSavedAt: Date.now() }),
       setSaving: (saving) => set({ saving }),
     }),
     {
       name: 'sitecraft-editor',
+      // v2：示例身份由「张亮」换成「Lead」。浏览器里存着旧快照的话，
+      // 改源码是没用的——预览读的是 localStorage，必须靠迁移把它换掉。
+      version: 2,
+      migrate: (persisted, version) => {
+        const next = (persisted ?? {}) as Partial<EditorSnapshot>
+        if (version >= 2 || !next.data) return next as EditorSnapshot
+        // 判定逻辑在 lib/sample-data.migrateLegacySample，纯函数、可单测
+        const data = migrateLegacySample(next.data)
+        const patched: Partial<EditorSnapshot> = { ...next, data }
+        if (next.siteName && next.siteName.includes('张亮')) {
+          patched.siteName = next.siteName.replace('张亮', data.name)
+        }
+        return patched as EditorSnapshot
+      },
       // 只持久化数据字段：函数不可序列化，saving 这类瞬时 UI 状态也不应跨会话保留
       partialize: (state) => ({
         siteId: state.siteId,

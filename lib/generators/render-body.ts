@@ -22,6 +22,7 @@ import { renderGold } from './layouts/gold'
 import { renderVapor } from './layouts/vapor'
 import { renderSwiss } from './layouts/swiss'
 import { renderKraft } from './layouts/kraft'
+import { renderMetro } from './layouts/metro'
 
 type LayoutRenderer = (data: SiteData) => string
 
@@ -38,6 +39,7 @@ const RENDERERS: Record<TemplateName, LayoutRenderer> = {
   vapor: renderVapor,
   swiss: renderSwiss,
   kraft: renderKraft,
+  metro: renderMetro,
 }
 
 export function renderSiteBody(data: SiteData, template: TemplateName): string {

@@ -9,24 +9,38 @@ import { esc, monogram, safeUrl } from '../escape'
 import { icon } from '../icons'
 import { DEFAULT_AVATAR_DATA_URI, DEFAULT_AVATAR_PATH } from '../theme-consts'
 
+export type SectionId = 'skills' | 'projects' | 'experience' | 'contact'
+
+/**
+ * 区块「存在性」索引：只回答"哪些区块有内容"，不回答"它叫什么"。
+ * 曾经这里还带着 navLabel / heading / kicker 三个字段，结果是 13 套网站的导航
+ * 永远写着 技能/项目/经历/联系——内容索引顺手把文案也统一了，正是要拒绝的模板化。
+ * 现在文案归各版式自己（每套一份 NAV 表），这里只留锚点 id。
+ */
 export interface SectionDef {
-  id: 'skills' | 'projects' | 'experience' | 'contact'
-  navLabel: string
-  kicker: string
-  heading: string
+  id: SectionId
 }
 
-/** 按「是否有内容」动态生成区块顺序：空区块不出现、导航锚点随之收缩 */
 export function getSections(data: SiteData): SectionDef[] {
   const sections: SectionDef[] = []
-  if (data.skills.length > 0)
-    sections.push({ id: 'skills', navLabel: '技能', kicker: 'SKILLS', heading: '技能栈' })
-  if (data.projects.length > 0)
-    sections.push({ id: 'projects', navLabel: '项目', kicker: 'PROJECTS', heading: '项目作品' })
-  if (data.experience.length > 0)
-    sections.push({ id: 'experience', navLabel: '经历', kicker: 'EXPERIENCE', heading: '经历' })
-  sections.push({ id: 'contact', navLabel: '联系', kicker: 'CONTACT', heading: '一起聊聊？' })
+  if (data.skills.length > 0) sections.push({ id: 'skills' })
+  if (data.projects.length > 0) sections.push({ id: 'projects' })
+  if (data.experience.length > 0) sections.push({ id: 'experience' })
+  sections.push({ id: 'contact' })
   return sections
+}
+
+/**
+ * 按模板声明的叙事顺序重排区块（只用于导航等"目录"类输出）。
+ * 不同母题对内容的优先级不同：简历先看经历，作品集先看作品——
+ * 导航必须跟着正文走，否则目录里 1 2 3 和页面上的顺序对不上。
+ */
+export function orderSections(sections: SectionDef[], order: readonly string[]): SectionDef[] {
+  const rank = (id: string) => {
+    const i = order.indexOf(id)
+    return i < 0 ? order.length : i
+  }
+  return [...sections].sort((a, b) => rank(a.id) - rank(b.id))
 }
 
 export function clampLevel(level: number): number {
@@ -74,14 +88,14 @@ export function projectLinks(link: string, repo: string): string {
     l
       ? `<a href="${l}" target="_blank" rel="noopener noreferrer">在线演示${icon('external')}</a>`
       : '',
-    r
-      ? `<a href="${r}" target="_blank" rel="noopener noreferrer">源码${icon('code')}</a>`
-      : '',
+    r ? `<a href="${r}" target="_blank" rel="noopener noreferrer">源码${icon('code')}</a>` : '',
   ].join('')
 }
 
 /** 五格评分点（手账/贴纸风格用），on = round(level/20) */
 export function levelDots(level: number): string {
   const filled = Math.round(clampLevel(level) / 20)
-  return Array.from({ length: 5 }, (_, i) => `<i class="${i < filled ? 'on' : 'off'}"></i>`).join('')
+  return Array.from({ length: 5 }, (_, i) => `<i class="${i < filled ? 'on' : 'off'}"></i>`).join(
+    ''
+  )
 }

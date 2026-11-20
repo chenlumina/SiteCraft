@@ -14,11 +14,25 @@ import {
   projectLinks,
   tagItems,
   type SectionDef,
+  orderSections,
 } from './shared'
 
 export const MINIMAL_CSS = `
+.m-epoint{margin-top:6px;display:grid;gap:2px;list-style:none}
+.m-epoint li{position:relative;padding-left:13px;font-size:12.5px;line-height:1.65;color:var(--fg2, var(--muted, #555))}
+.m-epoint li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:1px;background:var(--sp)}
+.m-hl{display:inline-block;margin-right:8px;padding:1px 5px;font-size:10.5px;letter-spacing:.12em;
+  color:var(--sp-ink);border:1px solid currentColor;border-radius:2px;vertical-align:2px;}
 .site-minimal{--bg:#fafaf9;--fg:#1c1917;--muted:#78716c;--line:#e7e5e4;--panel:#ffffff;--fd:${FONT_SERIF};--fb:${FONT_SANS};--fm:${FONT_MONO}}
-.m-col{max-width:680px;margin:0 auto;padding:0 24px}
+.m-col{position:relative;max-width:680px;margin:0 auto;padding:0 24px}
+/* 主视觉锚点：一条书脊线贴住版口，右侧留白里压一枚极淡的年份 —— 空白从此是"封面"而不是"没排完" */
+.m-col::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--fg) 0,var(--fg) 96px,var(--line) 96px,var(--line) 100%);opacity:.9}
+/* 5% 的水印在真实屏幕上等于不存在：改成描边数字 + 12% 填充，
+   一眼能看出"这里有个年份在压阵"，又不至于抢名字 */
+.m-year{position:absolute;right:-150px;top:18px;font-family:var(--fd);font-size:216px;line-height:.74;
+  font-weight:700;letter-spacing:-.06em;color:var(--fg);opacity:.10;pointer-events:none;user-select:none}
+@container (max-width:1080px){.m-year{display:none}}
 .m-top{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--line);font-family:var(--fm);font-size:12px;letter-spacing:.16em;color:var(--muted)}
 .m-top nav{display:flex;gap:18px}
 .m-top nav a:hover{color:var(--fg)}
@@ -41,6 +55,7 @@ export const MINIMAL_CSS = `
 .m-idx{font-family:var(--fd);font-style:italic;font-size:26px;color:var(--muted)}
 .m-wname{font-family:var(--fd);font-size:21px;font-weight:700;overflow-wrap:anywhere}
 .m-wdesc{margin-top:8px;color:var(--muted);font-size:14.5px;line-height:1.8}
+.m-wpoint{margin-top:6px;font-size:13px;line-height:1.7;color:var(--fg)}
 .m-wmeta{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--fm);font-size:12px;color:var(--muted);list-style:none}
 .m-wmeta a{color:var(--fg);border-bottom:1px solid var(--line);padding-bottom:1px}
 .m-wmeta a:hover{border-color:var(--fg)}
@@ -62,17 +77,33 @@ export const MINIMAL_CSS = `
 .m-work{grid-template-columns:1fr;gap:6px}
 .m-job{grid-template-columns:1fr;gap:4px}
 }
+/* 入场：只做一次，落在名字上 */
+.m-name{animation:sf-rise .72s cubic-bezier(.22,.7,.2,1) .05s both}
 `
 
 export function renderMinimal(data: SiteData): string {
   const sections = getSections(data)
-  const nav = sections
-    .map((s) => `<a href="#${s.id}">${s.navLabel}</a>`)
+  const NAV: Record<string, string> = {
+    skills: '技能',
+    projects: '作品',
+    experience: '年表',
+    contact: '来信',
+  }
+  /** 章节小标（极简版的编辑符号：编号 + 栏目词） */
+  const KICK: Record<string, string> = {
+    skills: 'SKILLS',
+    projects: 'WORKS',
+    experience: 'YEARS',
+    contact: 'LETTER',
+  }
+  const nav = orderSections(sections, ['projects', 'experience', 'skills', 'contact'])
+    .map((s) => `<a href="#${s.id}">${NAV[s.id]}</a>`)
     .join('')
 
   const skills = data.skills
     .map(
-      (s) => `<li class="m-skill"><b>${esc(s.name)}</b><i class="m-leader"></i><span class="m-pct">${clampLevel(s.level)} / 100</span></li>`
+      (s) =>
+        `<li class="m-skill"><b>${esc(s.name)}</b><i class="m-leader"></i><span class="m-pct">${clampLevel(s.level)} / 100</span></li>`
     )
     .join('')
 
@@ -82,8 +113,9 @@ export function renderMinimal(data: SiteData): string {
       const tags = tagItems(p.tags, '')
       return `<article class="m-work"><span class="m-idx">${String(i + 1).padStart(2, '0')}</span>
   <div>
-    <h3 class="m-wname">${esc(p.name)}</h3>
+    ${p.highlight ? `<span class="m-hl">精选</span>` : ''}<h3 class="m-wname">${esc(p.name)}</h3>
     ${p.description.trim() ? `<p class="m-wdesc">${esc(p.description.trim())}</p>` : ''}
+  ${p.points && p.points.length > 0 ? `<p class="m-wpoint">— ${esc(p.points[0])}</p>` : ''}
     ${tags || links ? `<ul class="m-wmeta">${tags}${links}</ul>` : ''}
   </div></article>`
     })
@@ -96,13 +128,14 @@ export function renderMinimal(data: SiteData): string {
     <h3 class="m-role2">${esc(e.role)}</h3>
     <p class="m-org">${esc(e.organization)}</p>
     ${e.description.trim() ? `<p class="m-jdesc">${esc(e.description.trim())}</p>` : ''}
+  ${e.points && e.points.length > 0 ? `<p class="m-epoint">— ${esc(e.points[0])}</p>` : ''}
   </div></article>`
     )
     .join('')
 
   const sec = (id: SectionDef['id'], body: string) =>
     sections.some((s) => s.id === id)
-      ? `<section class="m-sec" id="${id}"><h2 class="m-h2">${String(sections.findIndex((s) => s.id === id) + 1).padStart(2, '0')} · ${sections.find((s) => s.id === id)!.kicker}</h2>${body}</section>`
+      ? `<section class="m-sec" id="${id}"><h2 class="m-h2">${String(sections.findIndex((s) => s.id === id) + 1).padStart(2, '0')} · ${KICK[id]}</h2>${body}</section>`
       : ''
 
   const socials = socialLinks(data, 'm-soc', 'm-soc-a')
@@ -113,15 +146,16 @@ export function renderMinimal(data: SiteData): string {
     <header class="m-top"><span>${esc(data.name)}</span><nav aria-label="站点导航">${nav}</nav></header>
     <main>
       <section class="m-head">
-        <h1 class="s-name m-name">${esc(data.name)}</h1>
+        <span class="m-year" aria-hidden="true">${year}</span>
+      <h1 class="s-name m-name">${esc(data.name)}</h1>
         <p class="m-role">${esc(data.title)}</p>
         ${avatarHTML(data, 'm-face', 'm-monogram')}
         ${data.status.trim() ? `<p class="m-status">${esc(data.status.trim())}</p>` : ''}
         ${data.bio.trim() ? `<p class="m-bio">${esc(data.bio.trim())}</p>` : ''}
       </section>
-      ${sections.some((s) => s.id === 'skills') ? sec('skills', `<ul>${skills}</ul>`) : ''}
       ${sec('projects', projects)}
       ${sec('experience', experience)}
+      ${sections.some((s) => s.id === 'skills') ? sec('skills', `<ul>${skills}</ul>`) : ''}
       ${sec(
         'contact',
         `<p class="m-bio" style="margin-top:0">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>

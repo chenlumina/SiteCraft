@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="5-Check 质量检查 (typecheck + lint)" type="ShConfigurationType" factoryName="Shell Script">
-    <option name="SCRIPT_TEXT" value="pnpm typecheck &amp;&amp; pnpm lint" />
+  <configuration default="false" name="5-Check 质量检查 (typecheck + lint + 设计门)" type="ShConfigurationType" factoryName="Shell Script">
+    <option name="SCRIPT_TEXT" value="pnpm typecheck &amp;&amp; pnpm lint &amp;&amp; pnpm design:check" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />

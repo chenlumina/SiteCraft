@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>张亮 · 全栈开发学习者 · Java / Web</title>
+<title>Lead · 全栈开发学习者 · Java / Web</title>
 <meta name="description" content="计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。">
 <meta name="generator" content="SiteCraft 个人官网生成器">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20x='2'%20y='2'%20width='36'%20height='36'%20rx='10'%20fill='%231b1917'/%3E%3Cpath%20d='M15%2014l-6%206%206%206M25%2014l6%206-6%206'%20stroke='%23f8f7f1'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'/%3E%3Ccircle%20cx='20'%20cy='20'%20r='2.2'%20fill='%23f8f7f1'/%3E%3C/svg%3E">
@@ -15,16 +15,36 @@
 /* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过各版式按钮的 color */
 .site-root :where(a){color:inherit;text-decoration:none}
 .site-root ul,.site-root ol{list-style:none}
-/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，
-   默认会撑到 300×150 把按钮擑爆；基样式统一收敛到 16px，
-   各版式需要不同尺寸时在自己的 CSS 里覆盖（后加载胜出） */
-.site-root svg{width:16px;height:16px;flex:none}
+/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，默认会撑到 300×150 把按钮撑爆。
+   这里必须是 :where(svg) 把特异性压到 (0,1,0)——原写法 .site-root svg 是 (0,1,1)，
+   版式里 .g-wave{width:100%} 这类单类覆盖根本盖不过去（后加载不算数，特异性才算数），
+   结果是 gold 的水波 SVG 被压成 16px，整池水缩小 6 倍 */
+.site-root :where(svg){width:16px;height:16px;flex:none}
 .site-root ::selection{background:var(--sp);color:var(--on-sp)}
 .site-root ::-webkit-scrollbar{width:10px;height:10px}
 .site-root ::-webkit-scrollbar-track{background:var(--bg)}
 .site-root ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:2px solid var(--bg)}
 .site-root ::-webkit-scrollbar-thumb:hover{background:var(--sp)}
 .s-name{overflow-wrap:anywhere}
+/* 交互层：所有版式的链接与按钮共用同一条缓动，按下给一次轻反馈。
+   :where() 保持 0 特异性，版式自有时序可以覆盖它 */
+.site-root :where(a,button){transition:color .22s cubic-bezier(.22,.7,.2,1),background-color .22s cubic-bezier(.22,.7,.2,1),border-color .22s cubic-bezier(.22,.7,.2,1),box-shadow .22s cubic-bezier(.22,.7,.2,1),opacity .22s}
+.site-root :where(a,button):active{opacity:.72}
+/* 入场关键帧共用；用哪个由各版式自己挑，不在这里统一套用 */
+@keyframes sf-rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes sf-land{from{opacity:0;transform:scale(.965)}to{opacity:1;transform:none}}
+@keyframes sf-type{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes sf-glow{from{opacity:0;filter:blur(7px)}to{opacity:1;filter:blur(0)}}
+@keyframes sf-glitch{0%{opacity:0;transform:translateX(-7px)}55%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
+
+/* 键盘焦点环：所有版式共享，版式可用更高特异性覆盖颜色 */
+/* 导航类链接的触摸下限：line box 只有 19~21px，垫到 WCAG 2.5.8 的 24px */
+.site-root nav a,.site-root header a{display:inline-flex;align-items:center;min-height:24px}
+.site-root a:focus-visible,.site-root button:focus-visible{outline:2px solid var(--sp);outline-offset:3px;border-radius:1px}
+/* 动效整体开关：用户在系统层拒绝动效时，全部版式的动画与过渡一律关闭 */
+@media (prefers-reduced-motion:reduce){
+.site-root *,.site-root *::before,.site-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 @keyframes sp-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.45)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
 
 
@@ -36,7 +56,16 @@
 .a-navlinks{display:flex;gap:22px;font-size:13.5px}
 .a-navlinks a{color:var(--muted)}
 .a-navlinks a:hover{color:var(--sp)}
-.a-hero{position:relative;z-index:1;text-align:center;padding:104px 24px 84px}
+.a-hero{position:relative;z-index:1;text-align:center;padding:88px 24px 84px}
+/* 主视觉锚点：一道压扁的巨大椭圆边线，像地平线上的极光弧。
+   弧线本身是结构（不是又一层模糊光斑），上面那层极淡的径向渐变只是它的大气辉光 */
+.a-hero::after{content:"";position:absolute;left:50%;top:54px;width:168%;height:560px;z-index:-1;
+  transform:translateX(-50%) rotate(-7deg);border-radius:50%;
+  border-top:1px solid rgba(45,212,191,.42);
+  background:radial-gradient(120% 90% at 50% 0%,rgba(167,139,250,.12),transparent 62%);
+  pointer-events:none;opacity:0;animation:a-arc 1.1s .15s cubic-bezier(.22,.7,.2,1) both}
+@keyframes a-arc{from{opacity:0;transform:translateX(-50%) rotate(-7deg) translateY(18px)}
+  to{opacity:1;transform:translateX(-50%) rotate(-7deg) translateY(0)}}
 .a-hero::before{content:'';position:absolute;right:6%;top:12%;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--sp-soft),transparent 65%);filter:blur(30px);pointer-events:none}
 .a-face,.a-monogram{width:168px;height:168px;border-radius:50%;object-fit:cover;margin:0 auto;border:2px solid rgba(148,163,184,.35);box-shadow:0 0 0 12px rgba(148,163,184,.06),0 0 46px var(--sp-glow)}
 .a-monogram{display:grid;place-items:center;font-weight:800;font-size:56px;background:linear-gradient(135deg,var(--sp),var(--sp2));color:var(--on-sp)}
@@ -100,8 +129,10 @@
 .a-isle:nth-child(odd),.a-isle:nth-child(even){transform:none}
 .a-navlinks{display:none}
 }
+/* 入场：只做一次，落在名字上 */
+.a-name{animation:sf-glow .95s cubic-bezier(.22,.7,.2,1) .1s both}
 
-.site-aurora{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;}
+.site-aurora{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;--sp-ink:#22d3ee;--sp-inkd:#22d3ee;}
 html{scroll-behavior:smooth;scrollbar-color:#070b16 auto}
 body{margin:0;background:#070b16}
 </style>
@@ -109,22 +140,21 @@ body{margin:0;background:#070b16}
 <body>
 <div class="site-root site-aurora">
   <div class="a-space">
-    <header class="a-nav"><span class="a-brand"><span class="a-mark">张</span>张亮</span><nav class="a-navlinks" aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact">联系</a></nav></header>
+    <header class="a-nav"><span class="a-brand"><span class="a-mark">L</span>Lead</span><nav class="a-navlinks" aria-label="站点导航"><a href="#projects">作品</a><a href="#experience">轨迹</a><a href="#skills">能力</a><a href="#contact">联络</a></nav></header>
     <main>
       <section class="a-hero">
-        <img class="a-face" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="张亮的头像">
+        <img class="a-face" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="Lead的头像">
         <p class="a-status">正在寻找 2027 届实习机会</p>
-        <h1 class="s-name a-name">张亮</h1>
+        <h1 class="s-name a-name">Lead</h1>
         <p class="a-role">全栈开发学习者 · Java / Web</p>
         <p class="a-bio">计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。</p>
-        <div class="a-chips"><span class="a-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span><span class="a-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</span></div>
+        <div class="a-chips"><span class="a-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span><span class="a-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>lead@example.com</span></div>
         <div class="a-ctas">
           <a class="a-btn primary" href="#projects">查看项目</a>
-          <a class="a-btn ghost" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>联系我</a>
+          <a class="a-btn ghost" href="mailto:lead@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>联系我</a>
         </div>
       </section>
       <div class="a-wrap">
-        <section class="a-sec" id="skills"><p class="a-kick">SKILLS</p><h2 class="a-h2">技能栈</h2><div class="a-rings"><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:85"></span><span class="a-num">85</span></span><span class="a-rname">Java</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:75"></span><span class="a-num">75</span></span><span class="a-rname">Spring Boot</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:72"></span><span class="a-num">72</span></span><span class="a-rname">MySQL</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:82"></span><span class="a-num">82</span></span><span class="a-rname">HTML / CSS</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:74"></span><span class="a-num">74</span></span><span class="a-rname">JavaScript</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:65"></span><span class="a-num">65</span></span><span class="a-rname">Vue 3</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:62"></span><span class="a-num">62</span></span><span class="a-rname">Next.js</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:68"></span><span class="a-num">68</span></span><span class="a-rname">Linux</span></div></div></section>
         <section class="a-sec" id="projects"><p class="a-kick">PROJECTS</p><h2 class="a-h2">项目作品</h2><div class="a-isles"><article class="a-isle"><h3 class="a-iname">音乐网站 music-web</h3>
   <p class="a-idesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
   <ul class="a-itags"><li class="a-itag">Java</li><li class="a-itag">Jakarta EE</li><li class="a-itag">Tomcat</li><li class="a-itag">MySQL</li></ul>
@@ -132,7 +162,7 @@ body{margin:0;background:#070b16}
   <p class="a-idesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
   <ul class="a-itags"><li class="a-itag">Servlet</li><li class="a-itag">JSP</li><li class="a-itag">MySQL</li></ul>
   </article><article class="a-isle"><h3 class="a-iname">个人官网生成器</h3>
-  <p class="a-idesc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+  <p class="a-idesc">Next.js 14 全栈应用：可视化编辑、十三套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
   <ul class="a-itags"><li class="a-itag">Next.js</li><li class="a-itag">TypeScript</li><li class="a-itag">Prisma</li><li class="a-itag">Tailwind</li></ul>
   </article><article class="a-isle"><h3 class="a-iname">操作系统实验笔记</h3>
   <p class="a-idesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
@@ -145,15 +175,16 @@ body{margin:0;background:#070b16}
   <h3 class="a-trole">独立开发者</h3>
   <p class="a-torg">个人项目</p>
   <p class="a-tdesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></div></div></section>
+        <section class="a-sec" id="skills"><p class="a-kick">SKILLS</p><h2 class="a-h2">技能栈</h2><div class="a-rings"><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:85"></span><span class="a-num">85</span></span><span class="a-rname">Java</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:75"></span><span class="a-num">75</span></span><span class="a-rname">Spring Boot</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:72"></span><span class="a-num">72</span></span><span class="a-rname">MySQL</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:82"></span><span class="a-num">82</span></span><span class="a-rname">HTML / CSS</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:74"></span><span class="a-num">74</span></span><span class="a-rname">JavaScript</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:65"></span><span class="a-num">65</span></span><span class="a-rname">Vue 3</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:62"></span><span class="a-num">62</span></span><span class="a-rname">Next.js</span></div><div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:68"></span><span class="a-num">68</span></span><span class="a-rname">Linux</span></div></div></section>
         <section class="a-dome" id="contact">
           <h2 class="a-dh2">一起聊聊？</h2>
           <p class="a-dlead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
-          <a class="a-dmail" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</a>
+          <a class="a-dmail" href="mailto:lead@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>lead@example.com</a>
           <div class="a-dsoc"><a class="a-dsoc-a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="a-dsoc-a" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
         </section>
       </div>
     </main>
-    <footer class="a-foot">© 2026 张亮 · 由 SiteCraft 个人官网生成器构建</footer>
+    <footer class="a-foot">© 2026 Lead · 由 SiteCraft 个人官网生成器构建</footer>
   </div>
 </div>
 </body>

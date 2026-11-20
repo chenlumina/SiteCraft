@@ -6,7 +6,7 @@
  */
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Briefcase, Eye, FilePlus2, FolderGit2, Palette, Sparkles, User } from 'lucide-react'
 import { toast } from 'sonner'
@@ -31,6 +31,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
+
+/** 左栏宽度约束：太窄表单挤成一条，太宽预览没地方站 */
+const LEFT_MIN = 320
+const LEFT_MAX = 720
+const PREVIEW_MIN = 420
+const LEFT_DEFAULT = 420
+const LEFT_STORAGE_KEY = 'sitecraft-panel-width'
 
 function EditorSkeleton() {
   return (
@@ -85,6 +92,91 @@ function NewSiteButton() {
 }
 
 function EditorInner() {
+  const splitRef = useRef<HTMLDivElement | null>(null)
+  /** 容器真正挂载（水合门控前是骨架屏，那时拿不到宽度） */
+  const [splitReady, setSplitReady] = useState(false)
+  const draggingRef = useRef(false)
+  const [leftWidth, setLeftWidth] = useState(LEFT_DEFAULT)
+  /** 只有 lg 以上才固定左栏宽度：手机上左栏是整屏宽，不能被内联宽度锁死 */
+  const [isLg, setIsLg] = useState(false)
+
+  /** 夹到「左栏最小 / 右栏最小」之间——窗口越窄，左栏能拖的上限越小 */
+  const clampWidth = useCallback((next: number) => {
+    const total = splitRef.current?.clientWidth ?? 0
+    // total=0 说明布局还没就位（首次挂载时恢复 localStorage 会撞上这情况），
+    // 此时不能按「总宽 - 预览最小」去夹，否则会把记住的宽度压成 320
+    // 减去 1px 分隔条，保证预览真的拿到 PREVIEW_MIN
+    const max =
+      total > LEFT_MIN + PREVIEW_MIN ? Math.min(LEFT_MAX, total - PREVIEW_MIN - 1) : LEFT_MAX
+    return Math.round(Math.max(LEFT_MIN, Math.min(max, next)))
+  }, [])
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const sync = () => setIsLg(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  // 恢复上次拖到的宽度（刷新/重新进编辑器都还在）
+  useEffect(() => {
+    const saved = Number(window.localStorage.getItem(LEFT_STORAGE_KEY))
+    if (Number.isFinite(saved) && saved >= LEFT_MIN) setLeftWidth(clampWidth(saved))
+  }, [clampWidth])
+
+  // 容器一挂载就夹一次，并持续跟随尺寸变化：骨架屏阶段拿不到宽度，
+  // 只靠 rAF 会在骨架消失前跑完，留下「700 + 预览 399」这种错误状态
+  useEffect(() => {
+    const el = splitRef.current
+    if (!splitReady || !el) return
+    setLeftWidth((w) => clampWidth(w))
+    if (typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => setLeftWidth((w) => clampWidth(w)))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [splitReady, clampWidth])
+
+  // 窗口变窄时把左栏收回来，避免把预览挤没
+  useEffect(() => {
+    const onResize = () => setLeftWidth((w) => clampWidth(w))
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [clampWidth])
+
+  const commitWidth = useCallback(
+    (next: number) => {
+      const w = clampWidth(next)
+      setLeftWidth(w)
+      window.localStorage.setItem(LEFT_STORAGE_KEY, String(w))
+    },
+    [clampWidth]
+  )
+
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      if (!draggingRef.current) return
+      const rect = splitRef.current?.getBoundingClientRect()
+      if (!rect) return
+      e.preventDefault()
+      commitWidth(e.clientX - rect.left)
+    }
+    const onUp = () => {
+      if (!draggingRef.current) return
+      draggingRef.current = false
+      document.body.style.userSelect = ''
+      document.body.style.cursor = ''
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+    }
+  }, [commitWidth])
+
   const hydrated = useEditorHydrated()
   const searchParams = useSearchParams()
   const [loadingSite, setLoadingSite] = useState(false)
@@ -137,7 +229,9 @@ function EditorInner() {
             onClick={() => setMobileView('preview')}
             className={cn(
               'flex items-center gap-1 rounded-md px-3 py-1 text-xs font-medium transition-colors',
-              mobileView === 'preview' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
+              mobileView === 'preview'
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted-foreground'
             )}
           >
             <Eye className="h-3 w-3" /> 实时预览
@@ -145,12 +239,20 @@ function EditorInner() {
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-1">
+      <div
+        ref={(el) => {
+          splitRef.current = el
+          if (el) setSplitReady(true)
+        }}
+        className="flex min-h-0 flex-1"
+      >
         <aside
           className={cn(
-            'panel-scroll w-full shrink-0 overflow-y-auto border-r bg-card p-4 lg:block lg:w-[420px]',
+            'panel-scroll w-full shrink-0 overflow-y-auto bg-card p-4 lg:block',
             mobileView === 'preview' && 'hidden'
           )}
+          style={isLg ? { width: leftWidth } : undefined}
+          data-panel="form"
         >
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-muted-foreground">站点内容</h2>
@@ -192,6 +294,34 @@ function EditorInner() {
             </TabsContent>
           </Tabs>
         </aside>
+
+        {/* 拖拽分栏：lg 以上才出现；键盘可调（←/→ 16px，Home/End 到底），双击复位 */}
+        <div
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="拖动调整左右宽度"
+          aria-valuenow={leftWidth}
+          aria-valuemin={LEFT_MIN}
+          aria-valuemax={LEFT_MAX}
+          tabIndex={0}
+          onPointerDown={(e) => {
+            draggingRef.current = true
+            document.body.style.userSelect = 'none'
+            document.body.style.cursor = 'col-resize'
+            e.preventDefault()
+          }}
+          onDoubleClick={() => commitWidth(LEFT_DEFAULT)}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowLeft') commitWidth(leftWidth - 16)
+            else if (e.key === 'ArrowRight') commitWidth(leftWidth + 16)
+            else if (e.key === 'Home') commitWidth(LEFT_MIN)
+            else if (e.key === 'End') commitWidth(LEFT_MAX)
+          }}
+          className="group relative hidden w-px shrink-0 cursor-col-resize bg-border lg:block"
+        >
+          <span className="absolute inset-y-0 -left-2 -right-2" />
+          <span className="absolute left-1/2 top-1/2 h-9 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-border transition-colors group-hover:bg-primary/60 group-focus-visible:bg-primary" />
+        </div>
 
         <main className={cn('min-w-0 flex-1 lg:block', mobileView === 'edit' && 'hidden')}>
           <LivePreview />

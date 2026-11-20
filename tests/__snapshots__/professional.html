@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>张亮 · 全栈开发学习者 · Java / Web</title>
+<title>Lead · 全栈开发学习者 · Java / Web</title>
 <meta name="description" content="计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。">
 <meta name="generator" content="SiteCraft 个人官网生成器">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20x='2'%20y='2'%20width='36'%20height='36'%20rx='10'%20fill='%231b1917'/%3E%3Cpath%20d='M15%2014l-6%206%206%206M25%2014l6%206-6%206'%20stroke='%23f8f7f1'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'/%3E%3Ccircle%20cx='20'%20cy='20'%20r='2.2'%20fill='%23f8f7f1'/%3E%3C/svg%3E">
@@ -15,25 +15,50 @@
 /* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过各版式按钮的 color */
 .site-root :where(a){color:inherit;text-decoration:none}
 .site-root ul,.site-root ol{list-style:none}
-/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，
-   默认会撑到 300×150 把按钮擑爆；基样式统一收敛到 16px，
-   各版式需要不同尺寸时在自己的 CSS 里覆盖（后加载胜出） */
-.site-root svg{width:16px;height:16px;flex:none}
+/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，默认会撑到 300×150 把按钮撑爆。
+   这里必须是 :where(svg) 把特异性压到 (0,1,0)——原写法 .site-root svg 是 (0,1,1)，
+   版式里 .g-wave{width:100%} 这类单类覆盖根本盖不过去（后加载不算数，特异性才算数），
+   结果是 gold 的水波 SVG 被压成 16px，整池水缩小 6 倍 */
+.site-root :where(svg){width:16px;height:16px;flex:none}
 .site-root ::selection{background:var(--sp);color:var(--on-sp)}
 .site-root ::-webkit-scrollbar{width:10px;height:10px}
 .site-root ::-webkit-scrollbar-track{background:var(--bg)}
 .site-root ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:2px solid var(--bg)}
 .site-root ::-webkit-scrollbar-thumb:hover{background:var(--sp)}
 .s-name{overflow-wrap:anywhere}
+/* 交互层：所有版式的链接与按钮共用同一条缓动，按下给一次轻反馈。
+   :where() 保持 0 特异性，版式自有时序可以覆盖它 */
+.site-root :where(a,button){transition:color .22s cubic-bezier(.22,.7,.2,1),background-color .22s cubic-bezier(.22,.7,.2,1),border-color .22s cubic-bezier(.22,.7,.2,1),box-shadow .22s cubic-bezier(.22,.7,.2,1),opacity .22s}
+.site-root :where(a,button):active{opacity:.72}
+/* 入场关键帧共用；用哪个由各版式自己挑，不在这里统一套用 */
+@keyframes sf-rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes sf-land{from{opacity:0;transform:scale(.965)}to{opacity:1;transform:none}}
+@keyframes sf-type{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes sf-glow{from{opacity:0;filter:blur(7px)}to{opacity:1;filter:blur(0)}}
+@keyframes sf-glitch{0%{opacity:0;transform:translateX(-7px)}55%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
+
+/* 键盘焦点环：所有版式共享，版式可用更高特异性覆盖颜色 */
+/* 导航类链接的触摸下限：line box 只有 19~21px，垫到 WCAG 2.5.8 的 24px */
+.site-root nav a,.site-root header a{display:inline-flex;align-items:center;min-height:24px}
+.site-root a:focus-visible,.site-root button:focus-visible{outline:2px solid var(--sp);outline-offset:3px;border-radius:1px}
+/* 动效整体开关：用户在系统层拒绝动效时，全部版式的动画与过渡一律关闭 */
+@media (prefers-reduced-motion:reduce){
+.site-root *,.site-root *::before,.site-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 @keyframes sp-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.45)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
 
 
+.p-epoints{margin-top:6px;display:grid;gap:2px;list-style:none}
+.p-epoints li{position:relative;padding-left:13px;font-size:12.5px;line-height:1.65;color:var(--fg2, var(--muted, #555))}
+.p-epoints li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:1px;background:var(--sp)}
+.p-hl{display:inline-block;margin-right:8px;padding:1px 5px;font-size:10.5px;letter-spacing:.12em;
+  color:var(--sp-ink);border:1px solid currentColor;border-radius:2px;vertical-align:2px;}
 .site-professional{--bg:#eef1f6;--fg:#0f172a;--muted:#5b6b81;--line:#dbe2ec;--panel:#ffffff;--fd:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fb:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace}
 .p-desk{padding:36px 16px 72px}
 .p-page{max-width:980px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-top:6px solid var(--sp);box-shadow:0 24px 60px rgba(15,23,42,.12)}
 .p-head{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:34px 44px 24px;border-bottom:1px solid var(--line)}
-.p-name{font-size:clamp(34px,5cqw,48px);font-weight:800;letter-spacing:-.01em;font-style:normal}
-.p-role{margin-top:6px;color:var(--sp);font-weight:600;font-size:15.5px}
+.p-name{font-family:var(--fd);font-size:clamp(46px,6.2cqw,68px);line-height:1;font-weight:800;letter-spacing:-.03em;font-style:normal;background:none;-webkit-text-fill-color:currentColor}
+.p-role{margin-top:6px;color:var(--sp-ink);font-weight:600;font-size:15.5px}
 .p-status{display:inline-block;margin-top:10px;font-family:var(--fm);font-size:11.5px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:#f8fafc}
 .p-face,.p-monogram{width:96px;height:96px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
 .p-monogram{display:grid;place-items:center;font-weight:800;font-size:34px;background:linear-gradient(135deg,var(--sp),var(--sp2));color:var(--on-sp)}
@@ -49,18 +74,26 @@
 .p-card{border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px;transition:border-color .2s,box-shadow .2s}
 .p-card:hover{border-color:var(--sp);box-shadow:0 6px 18px rgba(15,23,42,.08)}
 .p-cname{font-weight:700;font-size:16.5px;overflow-wrap:anywhere}
+.p-points{margin-top:8px;display:grid;gap:3px;list-style:none}
+.p-points li{position:relative;padding-left:14px;font-size:12.5px;line-height:1.65;color:var(--fg)}
+.p-points li::before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:1px;background:var(--sp)}
 .p-cdesc{margin-top:6px;font-size:13.5px;color:var(--muted);line-height:1.7}
 .p-ctags{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;list-style:none}
-.p-ctag{background:var(--sp-soft);color:var(--sp);font-family:var(--fm);font-size:11.5px;padding:3px 9px;border-radius:4px}
+.p-ctag{background:var(--sp-soft);color:var(--sp-ink);font-family:var(--fm);font-size:11.5px;padding:3px 9px;border-radius:4px}
 .p-clinks{margin-top:10px;display:flex;gap:14px}
-.p-clinks a{color:var(--sp);font-size:12.5px;font-weight:600}
+.p-clinks a{color:var(--sp-ink);font-size:12.5px;font-weight:600}
 .p-clinks a:hover{text-decoration:underline}
 .p-tl{position:relative;padding-left:24px}
 .p-tl::before{content:'';position:absolute;left:6px;top:8px;bottom:8px;width:1.5px;background:var(--line)}
+/* 主视觉锚点：一条贯穿整段经历的主干线，节点落在线上——简历的真结构 */
+.p-tl{position:relative}
+/* 2px 的线在缩略图里看不见：加到 3px 并做成从实到虚的进度感，节点才像挂在轴上 */
+.p-tl::before{content:"";position:absolute;left:-17px;top:10px;bottom:18px;width:3px;
+  background:linear-gradient(180deg,var(--sp) 0,rgba(0,0,0,.18) 42%,rgba(0,0,0,.10) 100%)}
 .p-titem{position:relative;padding-bottom:22px}
 .p-titem:last-child{padding-bottom:0}
 .p-titem::before{content:'';position:absolute;left:-22px;top:6px;width:11px;height:11px;border-radius:50%;background:#fff;border:3px solid var(--sp)}
-.p-twhen{font-family:var(--fm);font-size:12px;color:var(--sp)}
+.p-twhen{font-family:var(--fm);font-size:12px;color:var(--sp-ink)}
 .p-trole{font-weight:700;font-size:15.5px;margin-top:2px}
 .p-torg{font-size:13px;color:var(--muted);margin-top:1px}
 .p-tdesc{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.7;max-width:60ch}
@@ -71,7 +104,8 @@
 .p-sfill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--sp),var(--sp2))}
 .p-sidebox{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff;margin-top:8px}
 .p-sidelead{font-size:12.5px;color:var(--muted);line-height:1.7}
-.p-smail{display:inline-flex;align-items:center;gap:8px;margin-top:10px;color:var(--sp);font-weight:600;font-size:13px}
+.p-smail{display:inline-flex;align-items:center;min-height:24px;gap:8px;margin-top:10px;color:var(--sp-ink);font-weight:600;font-size:13px}
+.p-navwrap a{display:inline-flex;align-items:center;min-height:24px}
 .p-smail svg{width:14px;height:14px}
 .p-soc{margin-top:8px;display:flex;flex-direction:column;gap:2px}
 .p-soc a{display:inline-flex;align-items:center;gap:9px;padding:7px 0;color:var(--muted);font-size:13px;font-weight:600}
@@ -87,8 +121,10 @@
 .p-side{padding:26px}
 .p-foot{padding:15px 26px}
 }
+/* 入场：只做一次，落在名字上 */
+.p-name{animation:sf-rise .72s cubic-bezier(.22,.7,.2,1) .05s both}
 
-.site-professional{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;}
+.site-professional{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;--sp-ink:#137483;--sp-inkd:#22d3ee;}
 html{scroll-behavior:smooth;scrollbar-color:#f8fafc auto}
 body{margin:0;background:#f8fafc}
 </style>
@@ -97,41 +133,47 @@ body{margin:0;background:#f8fafc}
 <div class="site-root site-professional">
   <div class="p-desk">
     <div class="p-page">
-      <header class="p-head">
+<header class="p-head">
         <div>
-          <h1 class="s-name p-name">张亮</h1>
+          <h1 class="s-name p-name">Lead</h1>
           <p class="p-role">全栈开发学习者 · Java / Web</p>
           <span class="p-status">正在寻找 2027 届实习机会</span>
         </div>
-        <img class="p-face" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="张亮的头像">
+        <img class="p-face" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="Lead的头像">
       </header>
       <div class="p-contactrow">
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</span>
-        <span style="margin-left:auto;display:flex;gap:16px"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact">联系</a></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>lead@example.com</span>
+        <nav class="p-navwrap" aria-label="站点导航" style="margin-left:auto;display:flex;gap:16px"><a href="#experience">履历</a><a href="#projects">项目</a><a href="#skills">技能</a><a href="#contact">联系</a></nav>
       </div>
       <div class="p-body">
         <main class="p-main">
-          <h2 class="p-h">项目作品</h2><article class="p-card"><h3 class="p-cname">音乐网站 music-web</h3>
-  <p class="p-cdesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
-  <ul class="p-ctags"><li class="p-ctag">Java</li><li class="p-ctag">Jakarta EE</li><li class="p-ctag">Tomcat</li><li class="p-ctag">MySQL</li></ul>
-  </article><article class="p-card"><h3 class="p-cname">教室预约系统</h3>
-  <p class="p-cdesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
-  <ul class="p-ctags"><li class="p-ctag">Servlet</li><li class="p-ctag">JSP</li><li class="p-ctag">MySQL</li></ul>
-  </article><article class="p-card"><h3 class="p-cname">个人官网生成器</h3>
-  <p class="p-cdesc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
-  <ul class="p-ctags"><li class="p-ctag">Next.js</li><li class="p-ctag">TypeScript</li><li class="p-ctag">Prisma</li><li class="p-ctag">Tailwind</li></ul>
-  </article><article class="p-card"><h3 class="p-cname">操作系统实验笔记</h3>
-  <p class="p-cdesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
-  <ul class="p-ctags"><li class="p-ctag">C</li><li class="p-ctag">Assembly</li><li class="p-ctag">Linux</li></ul>
-  </article>
           <h2 class="p-h" style="margin-top:32px">经历</h2><div class="p-tl" id="experience"><div class="p-titem"><span class="p-twhen">2024.09 - 至今</span>
   <h3 class="p-trole">本科生 · 计算机科学与技术</h3>
   <p class="p-torg">计算机学院</p>
-  <p class="p-tdesc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p></div><div class="p-titem"><span class="p-twhen">2025.03 - 至今</span>
+  <p class="p-tdesc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p>
+  <ul class="p-epoints"><li>专业课均分 88 / 100</li><li>独立完成 4 个课程项目并全部部署上线</li><li>担任课程设计小组负责人</li></ul></div><div class="p-titem"><span class="p-twhen">2025.03 - 至今</span>
   <h3 class="p-trole">独立开发者</h3>
   <p class="p-torg">个人项目</p>
-  <p class="p-tdesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></div></div>
+  <p class="p-tdesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p>
+  </div></div>
+          <h2 class="p-h" id="projects">项目作品</h2><article class="p-card"><span class="p-hl">精选</span><h3 class="p-cname">音乐网站 music-web</h3>
+  <p class="p-cdesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
+    <ul class="p-points"><li>300+ 首曲目上传后并发播放不卡顿</li><li>手写 JDBC 连接池，QPS 提升约 3 倍</li><li>外置 Tomcat 10 完成课程答辩部署</li></ul>
+  <ul class="p-ctags"><li class="p-ctag">Java</li><li class="p-ctag">Jakarta EE</li><li class="p-ctag">Tomcat</li><li class="p-ctag">MySQL</li></ul>
+  </article><article class="p-card"><h3 class="p-cname">教室预约系统</h3>
+  <p class="p-cdesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
+    
+  <ul class="p-ctags"><li class="p-ctag">Servlet</li><li class="p-ctag">JSP</li><li class="p-ctag">MySQL</li></ul>
+  </article><article class="p-card"><span class="p-hl">精选</span><h3 class="p-cname">个人官网生成器</h3>
+  <p class="p-cdesc">Next.js 14 全栈应用：可视化编辑、十三套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+    <ul class="p-points"><li>13 套版式共用一份渲染器，导出零依赖单文件</li><li>182 项版面断言纳入 CI，回归当场拦下</li></ul>
+  <ul class="p-ctags"><li class="p-ctag">Next.js</li><li class="p-ctag">TypeScript</li><li class="p-ctag">Prisma</li><li class="p-ctag">Tailwind</li></ul>
+  </article><article class="p-card"><h3 class="p-cname">操作系统实验笔记</h3>
+  <p class="p-cdesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
+    
+  <ul class="p-ctags"><li class="p-ctag">C</li><li class="p-ctag">Assembly</li><li class="p-ctag">Linux</li></ul>
+  </article>
         </main>
         <aside class="p-side">
           <h2 class="p-h" id="skills">技能栈</h2><div class="p-skill"><div class="p-srow"><span>Java</span><span class="p-spct">85%</span></div>
@@ -145,12 +187,12 @@ body{margin:0;background:#f8fafc}
   <div class="p-strack"><span class="p-sfill" style="width:68%"></span></div></div>
           <div class="p-sidebox" id="contact" style="margin-top:24px">
             <p class="p-sidelead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
-            <a class="p-smail" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</a>
+            <a class="p-smail" href="mailto:lead@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>lead@example.com</a>
           </div>
           <div class="p-soc"><a class="p-soc-a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="p-soc-a" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
         </aside>
       </div>
-      <footer class="p-foot"><span>© 2026 张亮</span><span>由 SiteCraft 个人官网生成器构建</span></footer>
+      <footer class="p-foot"><span>© 2026 Lead</span><span>由 SiteCraft 个人官网生成器构建</span></footer>
     </div>
   </div>
 </div>

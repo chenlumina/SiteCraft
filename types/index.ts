@@ -24,6 +24,7 @@ export type TemplateName =
   | 'vapor'
   | 'swiss'
   | 'kraft'
+  | 'metro'
 
 export type SiteStatus = 'draft' | 'published'
 
@@ -46,6 +47,12 @@ export interface Project {
   id: string
   name: string
   description: string
+  /**
+   * 0–3 条要点：问题 / 做法 / 结果。
+   * 可选，因为不是所有版式都该展示它——简历、报刊、展牌会逐条列出，
+   * 极简与手账只取第一条或不取。内容形态跟着版式走，这是"拒绝模板化"往下的一层。
+   */
+  points?: string[]
   tags: string[]
   link: string
   repo: string
@@ -58,6 +65,8 @@ export interface Experience {
   organization: string
   period: string
   description: string
+  /** 0-3 条职责 / 成果，写法与项目要点一致；是否展示由版式决定（见 FEATURE_SUPPORT） */
+  points?: string[]
 }
 
 export interface SiteTheme {

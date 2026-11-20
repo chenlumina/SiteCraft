@@ -13,7 +13,12 @@ import { Briefcase, ChevronDown, ChevronUp, GripVertical, Pencil, Plus, Trash2 }
 import { toast } from 'sonner'
 import type { Experience } from '@/types'
 import { useEditorStore } from '@/lib/stores/editor-store'
-import { MAX_EXPERIENCE_COUNT, experienceSchema } from '@/lib/validators/site-schema'
+import {
+  MAX_EXPERIENCE_COUNT,
+  MAX_POINT_COUNT,
+  experienceSchema,
+} from '@/lib/validators/site-schema'
+import { FEATURE_SUPPORT, getTemplate } from '@/lib/templates'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -29,7 +34,9 @@ import {
 import { FieldError } from '@/components/editor/form-section'
 import { cn } from '@/lib/utils'
 
-const experienceFormSchema = experienceSchema.omit({ id: true })
+const experienceFormSchema = experienceSchema.omit({ id: true }).extend({
+  pointsText: z.string().max(200, '职责总长最多 200 字'),
+})
 type ExperienceFormValues = z.infer<typeof experienceFormSchema>
 
 function ExperienceDialog({
@@ -43,6 +50,9 @@ function ExperienceDialog({
 }) {
   const addExperience = useEditorStore((s) => s.addExperience)
   const updateExperience = useEditorStore((s) => s.updateExperience)
+  const template = useEditorStore((s) => s.template)
+  const expSupport = FEATURE_SUPPORT[template].expPoints
+  const templateName = getTemplate(template).displayName
 
   const {
     register,
@@ -56,15 +66,25 @@ function ExperienceDialog({
       organization: editing?.organization ?? '',
       period: editing?.period ?? '',
       description: editing?.description ?? '',
+      pointsText: (editing?.points ?? []).join('\n'),
     },
   })
 
   function onSubmit(values: ExperienceFormValues) {
+    const { pointsText, ...rest } = values
+    const payload = {
+      ...rest,
+      points: pointsText
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .slice(0, MAX_POINT_COUNT),
+    }
     if (editing) {
-      updateExperience(editing.id, values)
+      updateExperience(editing.id, payload)
       toast.success('经历已更新')
     } else {
-      addExperience(values)
+      addExperience(payload)
       toast.success('经历已添加')
     }
     onOpenChange(false)
@@ -86,18 +106,33 @@ function ExperienceDialog({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <div>
             <Label htmlFor="exp-role">角色 / 职位 *</Label>
-            <Input id="exp-role" className="mt-1.5" placeholder="例如：前端开发实习生" {...register('role')} />
+            <Input
+              id="exp-role"
+              className="mt-1.5"
+              placeholder="例如：前端开发实习生"
+              {...register('role')}
+            />
             <FieldError message={errors.role?.message} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label htmlFor="exp-org">组织 / 学校 *</Label>
-              <Input id="exp-org" className="mt-1.5" placeholder="例如：某科技公司" {...register('organization')} />
+              <Input
+                id="exp-org"
+                className="mt-1.5"
+                placeholder="例如：某科技公司"
+                {...register('organization')}
+              />
               <FieldError message={errors.organization?.message} />
             </div>
             <div>
               <Label htmlFor="exp-period">时间段 *</Label>
-              <Input id="exp-period" className="mt-1.5" placeholder="2025.06 - 2025.09" {...register('period')} />
+              <Input
+                id="exp-period"
+                className="mt-1.5"
+                placeholder="2025.06 - 2025.09"
+                {...register('period')}
+              />
               <FieldError message={errors.period?.message} />
             </div>
           </div>
@@ -111,6 +146,30 @@ function ExperienceDialog({
               {...register('description')}
             />
             <FieldError message={errors.description?.message} />
+          </div>
+          <div>
+            <Label htmlFor="exp-points">职责 / 成果（每行一条，最多 {MAX_POINT_COUNT} 条）</Label>
+            <Textarea
+              id="exp-points"
+              className="mt-1.5"
+              rows={3}
+              placeholder={'例如：\n负责订单模块的接口开发\n接口平均响应从 800ms 降到 120ms'}
+              {...register('pointsText')}
+            />
+            <p
+              className={
+                expSupport === 'none'
+                  ? 'mt-1 rounded border border-dashed border-warning/50 bg-warning/10 px-2 py-1 text-[11px]'
+                  : 'mt-1 text-[11px] text-muted-foreground'
+              }
+            >
+              {expSupport === 'all' &&
+                `当前版式「${templateName}」会逐条列出，适合写「负责什么 → 结果如何」。`}
+              {expSupport === 'first' && `当前版式「${templateName}」只展示第一条。`}
+              {expSupport === 'none' &&
+                `当前版式「${templateName}」不展示职责条目 —— 换成 商务 / 杂志 / 瑞士 / 极简 才会出现。`}
+            </p>
+            <FieldError message={errors.pointsText?.message} />
           </div>
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
@@ -128,6 +187,8 @@ export function ExperienceInput() {
   const experience = useEditorStore((s) => s.data.experience)
   const removeExperience = useEditorStore((s) => s.removeExperience)
   const moveExperience = useEditorStore((s) => s.moveExperience)
+  const template = useEditorStore((s) => s.template)
+  const expMode = FEATURE_SUPPORT[template].expPoints
 
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Experience | null>(null)
@@ -188,6 +249,16 @@ export function ExperienceInput() {
                 <p className="truncate text-xs text-muted-foreground">
                   {item.organization} · {item.period}
                 </p>
+                {(item.points?.length ?? 0) > 0 && (
+                  <p className="truncate text-[11px] text-muted-foreground">
+                    职责 {item.points!.length} 条
+                    {expMode === 'none'
+                      ? '（当前版式不显示）'
+                      : expMode === 'first'
+                        ? '（仅显示第一条）'
+                        : ''}
+                  </p>
+                )}
               </div>
               <div className="flex shrink-0 flex-col">
                 <button

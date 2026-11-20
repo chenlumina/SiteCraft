@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>张亮 · 全栈开发学习者 · Java / Web</title>
+<title>Lead · 全栈开发学习者 · Java / Web</title>
 <meta name="description" content="计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。">
 <meta name="generator" content="SiteCraft 个人官网生成器">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20x='2'%20y='2'%20width='36'%20height='36'%20rx='10'%20fill='%231b1917'/%3E%3Cpath%20d='M15%2014l-6%206%206%206M25%2014l6%206-6%206'%20stroke='%23f8f7f1'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'/%3E%3Ccircle%20cx='20'%20cy='20'%20r='2.2'%20fill='%23f8f7f1'/%3E%3C/svg%3E">
@@ -15,16 +15,36 @@
 /* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过各版式按钮的 color */
 .site-root :where(a){color:inherit;text-decoration:none}
 .site-root ul,.site-root ol{list-style:none}
-/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，
-   默认会撑到 300×150 把按钮擑爆；基样式统一收敛到 16px，
-   各版式需要不同尺寸时在自己的 CSS 里覆盖（后加载胜出） */
-.site-root svg{width:16px;height:16px;flex:none}
+/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，默认会撑到 300×150 把按钮撑爆。
+   这里必须是 :where(svg) 把特异性压到 (0,1,0)——原写法 .site-root svg 是 (0,1,1)，
+   版式里 .g-wave{width:100%} 这类单类覆盖根本盖不过去（后加载不算数，特异性才算数），
+   结果是 gold 的水波 SVG 被压成 16px，整池水缩小 6 倍 */
+.site-root :where(svg){width:16px;height:16px;flex:none}
 .site-root ::selection{background:var(--sp);color:var(--on-sp)}
 .site-root ::-webkit-scrollbar{width:10px;height:10px}
 .site-root ::-webkit-scrollbar-track{background:var(--bg)}
 .site-root ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:2px solid var(--bg)}
 .site-root ::-webkit-scrollbar-thumb:hover{background:var(--sp)}
 .s-name{overflow-wrap:anywhere}
+/* 交互层：所有版式的链接与按钮共用同一条缓动，按下给一次轻反馈。
+   :where() 保持 0 特异性，版式自有时序可以覆盖它 */
+.site-root :where(a,button){transition:color .22s cubic-bezier(.22,.7,.2,1),background-color .22s cubic-bezier(.22,.7,.2,1),border-color .22s cubic-bezier(.22,.7,.2,1),box-shadow .22s cubic-bezier(.22,.7,.2,1),opacity .22s}
+.site-root :where(a,button):active{opacity:.72}
+/* 入场关键帧共用；用哪个由各版式自己挑，不在这里统一套用 */
+@keyframes sf-rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes sf-land{from{opacity:0;transform:scale(.965)}to{opacity:1;transform:none}}
+@keyframes sf-type{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes sf-glow{from{opacity:0;filter:blur(7px)}to{opacity:1;filter:blur(0)}}
+@keyframes sf-glitch{0%{opacity:0;transform:translateX(-7px)}55%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
+
+/* 键盘焦点环：所有版式共享，版式可用更高特异性覆盖颜色 */
+/* 导航类链接的触摸下限：line box 只有 19~21px，垫到 WCAG 2.5.8 的 24px */
+.site-root nav a,.site-root header a{display:inline-flex;align-items:center;min-height:24px}
+.site-root a:focus-visible,.site-root button:focus-visible{outline:2px solid var(--sp);outline-offset:3px;border-radius:1px}
+/* 动效整体开关：用户在系统层拒绝动效时，全部版式的动画与过渡一律关闭 */
+@media (prefers-reduced-motion:reduce){
+.site-root *,.site-root *::before,.site-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 @keyframes sp-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.45)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
 
 
@@ -48,7 +68,7 @@
 .v-chip{font-family:var(--fm);font-size:12px;color:var(--muted);border:1px solid var(--line);background:var(--panel);padding:6px 14px;border-radius:6px}
 .v-ctas{position:relative;z-index:1;margin-top:28px;display:flex;justify-content:center;flex-wrap:wrap;gap:16px}
 .v-btn{display:inline-flex;align-items:center;gap:9px;padding:12px 26px;border-radius:999px;font-weight:700;font-size:14px;font-family:var(--fm)}
-.v-btn.primary{background:linear-gradient(95deg,var(--sp),#b967ff);color:#fff;box-shadow:0 0 26px rgba(255,113,206,.4)}
+.v-btn.primary{background:linear-gradient(95deg,var(--sp),#b967ff);color:var(--on-sp);box-shadow:0 0 26px rgba(255,113,206,.4)}
 .v-btn.primary:hover{transform:translateY(-2px)}
 .v-btn.ghost{border:1.5px solid #01cdfe;color:#01cdfe;background:transparent}
 .v-btn.ghost:hover{box-shadow:0 0 18px rgba(1,205,254,.5)}
@@ -95,8 +115,10 @@
 .v-logline{grid-template-columns:1fr}
 .v-navlinks{display:none}
 }
+/* 入场：只做一次，落在名字上 */
+.v-name{animation:sf-glitch .75s cubic-bezier(.22,.7,.2,1) .05s both}
 
-.site-vapor{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;}
+.site-vapor{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;--sp-ink:#22d3ee;--sp-inkd:#22d3ee;}
 html{scroll-behavior:smooth;scrollbar-color:#12071f auto}
 body{margin:0;background:#12071f}
 </style>
@@ -104,24 +126,40 @@ body{margin:0;background:#12071f}
 <body>
 <div class="site-root site-vapor">
   <div class="v-scene">
-    <header class="v-nav"><span class="v-brand"><span class="v-mark">张</span>张亮</span><nav class="v-navlinks" aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact">联系</a></nav></header>
+    <header class="v-nav"><span class="v-brand"><span class="v-mark">L</span>Lead</span><nav class="v-navlinks" aria-label="站点导航"><a href="#experience">日志</a><a href="#projects">档案</a><a href="#skills">模块</a><a href="#contact">联络</a></nav></header>
     <main>
       <section class="v-hero">
         <p class="v-hello">~ WELCOME TO MY HOMEPAGE ~</p>
-        <h1 class="s-name v-name">张亮</h1>
+        <h1 class="s-name v-name">Lead</h1>
         <p class="v-role">全栈开发学习者 · Java / Web</p>
         <p class="v-bio">计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。</p>
         <p class="v-status">正在寻找 2027 届实习机会</p>
         <div class="v-chips">
           <span class="v-chip">湖北 · 武汉</span>
-          <span class="v-chip">zhangliang@example.com</span>
+          <span class="v-chip">lead@example.com</span>
         </div>
         <div class="v-ctas">
           <a class="v-btn primary" href="#projects">查看项目</a>
-          <a class="v-btn ghost" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>联系我 ↵</a>
+          <a class="v-btn ghost" href="mailto:lead@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>联系我 ↵</a>
         </div>
       </section>
       <div class="v-wrap">
+        <section class="v-sec" id="experience"><h2 class="v-h2">EXPERIENCE</h2><div class="v-win"><div class="v-titlebar"><span>history.log</span><span class="v-x">— □ ✕</span></div><div class="v-log"><div class="v-logline"><span class="v-logwhen">2024.09 - 至今</span>
+  <div class="v-logwhat"><b>本科生 · 计算机科学与技术</b><span class="v-org">计算机学院</span><p>主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p></div></div><div class="v-logline"><span class="v-logwhen">2025.03 - 至今</span>
+  <div class="v-logwhat"><b>独立开发者</b><span class="v-org">个人项目</span><p>课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></div></div></div></div></section>
+        <section class="v-sec" id="projects"><h2 class="v-h2">PROJECTS</h2><div class="v-win"><div class="v-titlebar"><span>projects.exe</span><span class="v-x">— □ ✕</span></div><div class="v-body"><div class="v-app"><div class="v-appbar"><span>音乐网站 music-web</span><i>proc 01</i></div>
+  <p class="v-appdesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
+  <ul class="v-apptags"><li class="v-apptag">Java</li><li class="v-apptag">Jakarta EE</li><li class="v-apptag">Tomcat</li><li class="v-apptag">MySQL</li></ul>
+  </div><div class="v-app"><div class="v-appbar"><span>教室预约系统</span><i>proc 02</i></div>
+  <p class="v-appdesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
+  <ul class="v-apptags"><li class="v-apptag">Servlet</li><li class="v-apptag">JSP</li><li class="v-apptag">MySQL</li></ul>
+  </div><div class="v-app"><div class="v-appbar"><span>个人官网生成器</span><i>proc 03</i></div>
+  <p class="v-appdesc">Next.js 14 全栈应用：可视化编辑、十三套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+  <ul class="v-apptags"><li class="v-apptag">Next.js</li><li class="v-apptag">TypeScript</li><li class="v-apptag">Prisma</li><li class="v-apptag">Tailwind</li></ul>
+  </div><div class="v-app"><div class="v-appbar"><span>操作系统实验笔记</span><i>proc 04</i></div>
+  <p class="v-appdesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
+  <ul class="v-apptags"><li class="v-apptag">C</li><li class="v-apptag">Assembly</li><li class="v-apptag">Linux</li></ul>
+  </div></div></div></section>
         <section class="v-sec" id="skills"><h2 class="v-h2">SKILLS</h2><div class="v-win"><div class="v-titlebar"><span>skills.exe</span><span class="v-x">— □ ✕</span></div><div class="v-body"><div class="v-bar"><div class="v-bartop"><span>Java</span><em>85%</em></div>
   <div class="v-track"><span class="v-fill" style="width:85%"></span></div></div><div class="v-bar"><div class="v-bartop"><span>Spring Boot</span><em>75%</em></div>
   <div class="v-track"><span class="v-fill" style="width:75%"></span></div></div><div class="v-bar"><div class="v-bartop"><span>MySQL</span><em>72%</em></div>
@@ -131,35 +169,19 @@ body{margin:0;background:#12071f}
   <div class="v-track"><span class="v-fill" style="width:65%"></span></div></div><div class="v-bar"><div class="v-bartop"><span>Next.js</span><em>62%</em></div>
   <div class="v-track"><span class="v-fill" style="width:62%"></span></div></div><div class="v-bar"><div class="v-bartop"><span>Linux</span><em>68%</em></div>
   <div class="v-track"><span class="v-fill" style="width:68%"></span></div></div></div></div></section>
-        <section class="v-sec" id="projects"><h2 class="v-h2">PROJECTS</h2><div class="v-win"><div class="v-titlebar"><span>projects.exe</span><span class="v-x">— □ ✕</span></div><div class="v-body"><div class="v-app"><div class="v-appbar"><span>音乐网站 music-web</span><i>proc 01</i></div>
-  <p class="v-appdesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
-  <ul class="v-apptags"><li class="v-apptag">Java</li><li class="v-apptag">Jakarta EE</li><li class="v-apptag">Tomcat</li><li class="v-apptag">MySQL</li></ul>
-  </div><div class="v-app"><div class="v-appbar"><span>教室预约系统</span><i>proc 02</i></div>
-  <p class="v-appdesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
-  <ul class="v-apptags"><li class="v-apptag">Servlet</li><li class="v-apptag">JSP</li><li class="v-apptag">MySQL</li></ul>
-  </div><div class="v-app"><div class="v-appbar"><span>个人官网生成器</span><i>proc 03</i></div>
-  <p class="v-appdesc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
-  <ul class="v-apptags"><li class="v-apptag">Next.js</li><li class="v-apptag">TypeScript</li><li class="v-apptag">Prisma</li><li class="v-apptag">Tailwind</li></ul>
-  </div><div class="v-app"><div class="v-appbar"><span>操作系统实验笔记</span><i>proc 04</i></div>
-  <p class="v-appdesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
-  <ul class="v-apptags"><li class="v-apptag">C</li><li class="v-apptag">Assembly</li><li class="v-apptag">Linux</li></ul>
-  </div></div></div></section>
-        <section class="v-sec" id="experience"><h2 class="v-h2">EXPERIENCE</h2><div class="v-win"><div class="v-titlebar"><span>history.log</span><span class="v-x">— □ ✕</span></div><div class="v-log"><div class="v-logline"><span class="v-logwhen">2024.09 - 至今</span>
-  <div class="v-logwhat"><b>本科生 · 计算机科学与技术</b><span class="v-org">计算机学院</span><p>主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p></div></div><div class="v-logline"><span class="v-logwhen">2025.03 - 至今</span>
-  <div class="v-logwhat"><b>独立开发者</b><span class="v-org">个人项目</span><p>课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></div></div></div></div></section>
         <section class="v-sec" id="contact" style="padding-bottom:0">
           <div class="v-win v-cwin"><div class="v-titlebar"><span>contact.exe</span><span class="v-x">— □ ✕</span></div>
             <div class="v-body">
               <h2 class="v-ctitle">INSERT <em>MAIL</em> TO CONTINUE</h2>
               <p class="v-clead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
-              <a class="v-cmail" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</a>
+              <a class="v-cmail" href="mailto:lead@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>lead@example.com</a>
               <div class="v-csoc"><a class="v-csoc-a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="v-csoc-a" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
             </div>
           </div>
         </section>
       </div>
     </main>
-    <footer class="v-foot">© 2026 张亮 · 由 SiteCraft 个人官网生成器构建 · PRESS ANY KEY</footer>
+    <footer class="v-foot">© 2026 Lead · 由 SiteCraft 个人官网生成器构建 · PRESS ANY KEY</footer>
   </div>
 </div>
 </body>

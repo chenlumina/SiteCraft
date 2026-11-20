@@ -15,6 +15,66 @@ import { Input } from '@/components/ui/input'
 import { Slider } from '@/components/ui/slider'
 import { cn } from '@/lib/utils'
 
+/**
+ * 熟练度百分比输入框：滑杆负责粗调，输入框负责精确输入（"输入 85" 比拖准 85 快得多）。
+ * 受控策略：聚焦期间显示本地草稿 draft，避免用户正在敲的字被 store 值改写；
+ * 每次可解析就实时写回 store（预览立刻变），失焦/回车时统一取整并夹到 0–100。
+ */
+function LevelField({
+  skillName,
+  value,
+  onChange,
+}: {
+  skillName: string
+  value: number
+  onChange: (next: number) => void
+}) {
+  const [draft, setDraft] = useState<string | null>(null)
+  const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n)))
+
+  function commit(raw: string) {
+    const digits = raw.replace(/[^\d]/g, '')
+    setDraft(null)
+    if (digits === '') return // 清空视为放弃修改，保留原值
+    onChange(clamp(Number(digits)))
+  }
+
+  return (
+    <div className="relative w-14 shrink-0">
+      <Input
+        value={draft ?? String(value)}
+        inputMode="numeric"
+        autoComplete="off"
+        aria-label={`${skillName} 熟练度百分比，0 到 100`}
+        onChange={(e) => {
+          const next = e.target.value
+          if (!/^\d{0,3}$/.test(next)) return // 只接受数字，长度上限 3 位
+          setDraft(next)
+          if (next !== '') onChange(clamp(Number(next)))
+        }}
+        onBlur={(e) => commit(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            commit((e.target as HTMLInputElement).value)
+            e.currentTarget.blur()
+          } else if (e.key === 'Escape') {
+            setDraft(null)
+            e.currentTarget.blur()
+          } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault()
+            setDraft(null)
+            onChange(clamp(value + (e.key === 'ArrowUp' ? 1 : -1)))
+          }
+        }}
+        className="h-8 pl-1.5 pr-4 text-right font-mono text-xs"
+      />
+      <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+        %
+      </span>
+    </div>
+  )
+}
+
 export function SkillInput() {
   const skills = useEditorStore((s) => s.data.skills)
   const addSkill = useEditorStore((s) => s.addSkill)
@@ -91,9 +151,11 @@ export function SkillInput() {
               onValueChange={([value]) => updateSkill(skill.id, { level: value })}
               className="w-24 shrink-0"
             />
-            <span className="w-9 shrink-0 text-right font-mono text-xs text-muted-foreground">
-              {skill.level}%
-            </span>
+            <LevelField
+              skillName={skill.name || `第 ${index + 1} 项`}
+              value={skill.level}
+              onChange={(level) => updateSkill(skill.id, { level })}
+            />
             <div className="flex shrink-0 flex-col">
               <button
                 type="button"

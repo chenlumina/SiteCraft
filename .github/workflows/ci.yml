@@ -33,6 +33,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Design gate（版面度量：溢出 / 对比度 / 动效降级 / 触摸尺寸）
+        run: pnpm design:check
+
       - name: Build
         run: pnpm build
         env:

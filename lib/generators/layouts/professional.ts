@@ -13,15 +13,21 @@ import {
   getSections,
   projectLinks,
   tagItems,
+  orderSections,
 } from './shared'
 
 export const PROFESSIONAL_CSS = `
+.p-epoints{margin-top:6px;display:grid;gap:2px;list-style:none}
+.p-epoints li{position:relative;padding-left:13px;font-size:12.5px;line-height:1.65;color:var(--fg2, var(--muted, #555))}
+.p-epoints li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:1px;background:var(--sp)}
+.p-hl{display:inline-block;margin-right:8px;padding:1px 5px;font-size:10.5px;letter-spacing:.12em;
+  color:var(--sp-ink);border:1px solid currentColor;border-radius:2px;vertical-align:2px;}
 .site-professional{--bg:#eef1f6;--fg:#0f172a;--muted:#5b6b81;--line:#dbe2ec;--panel:#ffffff;--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO}}
 .p-desk{padding:36px 16px 72px}
 .p-page{max-width:980px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-top:6px solid var(--sp);box-shadow:0 24px 60px rgba(15,23,42,.12)}
 .p-head{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;padding:34px 44px 24px;border-bottom:1px solid var(--line)}
-.p-name{font-size:clamp(34px,5cqw,48px);font-weight:800;letter-spacing:-.01em;font-style:normal}
-.p-role{margin-top:6px;color:var(--sp);font-weight:600;font-size:15.5px}
+.p-name{font-family:var(--fd);font-size:clamp(46px,6.2cqw,68px);line-height:1;font-weight:800;letter-spacing:-.03em;font-style:normal;background:none;-webkit-text-fill-color:currentColor}
+.p-role{margin-top:6px;color:var(--sp-ink);font-weight:600;font-size:15.5px}
 .p-status{display:inline-block;margin-top:10px;font-family:var(--fm);font-size:11.5px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:#f8fafc}
 .p-face,.p-monogram{width:96px;height:96px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
 .p-monogram{display:grid;place-items:center;font-weight:800;font-size:34px;background:linear-gradient(135deg,var(--sp),var(--sp2));color:var(--on-sp)}
@@ -37,18 +43,26 @@ export const PROFESSIONAL_CSS = `
 .p-card{border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px;transition:border-color .2s,box-shadow .2s}
 .p-card:hover{border-color:var(--sp);box-shadow:0 6px 18px rgba(15,23,42,.08)}
 .p-cname{font-weight:700;font-size:16.5px;overflow-wrap:anywhere}
+.p-points{margin-top:8px;display:grid;gap:3px;list-style:none}
+.p-points li{position:relative;padding-left:14px;font-size:12.5px;line-height:1.65;color:var(--fg)}
+.p-points li::before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:1px;background:var(--sp)}
 .p-cdesc{margin-top:6px;font-size:13.5px;color:var(--muted);line-height:1.7}
 .p-ctags{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;list-style:none}
-.p-ctag{background:var(--sp-soft);color:var(--sp);font-family:var(--fm);font-size:11.5px;padding:3px 9px;border-radius:4px}
+.p-ctag{background:var(--sp-soft);color:var(--sp-ink);font-family:var(--fm);font-size:11.5px;padding:3px 9px;border-radius:4px}
 .p-clinks{margin-top:10px;display:flex;gap:14px}
-.p-clinks a{color:var(--sp);font-size:12.5px;font-weight:600}
+.p-clinks a{color:var(--sp-ink);font-size:12.5px;font-weight:600}
 .p-clinks a:hover{text-decoration:underline}
 .p-tl{position:relative;padding-left:24px}
 .p-tl::before{content:'';position:absolute;left:6px;top:8px;bottom:8px;width:1.5px;background:var(--line)}
+/* 主视觉锚点：一条贯穿整段经历的主干线，节点落在线上——简历的真结构 */
+.p-tl{position:relative}
+/* 2px 的线在缩略图里看不见：加到 3px 并做成从实到虚的进度感，节点才像挂在轴上 */
+.p-tl::before{content:"";position:absolute;left:-17px;top:10px;bottom:18px;width:3px;
+  background:linear-gradient(180deg,var(--sp) 0,rgba(0,0,0,.18) 42%,rgba(0,0,0,.10) 100%)}
 .p-titem{position:relative;padding-bottom:22px}
 .p-titem:last-child{padding-bottom:0}
 .p-titem::before{content:'';position:absolute;left:-22px;top:6px;width:11px;height:11px;border-radius:50%;background:#fff;border:3px solid var(--sp)}
-.p-twhen{font-family:var(--fm);font-size:12px;color:var(--sp)}
+.p-twhen{font-family:var(--fm);font-size:12px;color:var(--sp-ink)}
 .p-trole{font-weight:700;font-size:15.5px;margin-top:2px}
 .p-torg{font-size:13px;color:var(--muted);margin-top:1px}
 .p-tdesc{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.7;max-width:60ch}
@@ -59,7 +73,8 @@ export const PROFESSIONAL_CSS = `
 .p-sfill{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--sp),var(--sp2))}
 .p-sidebox{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff;margin-top:8px}
 .p-sidelead{font-size:12.5px;color:var(--muted);line-height:1.7}
-.p-smail{display:inline-flex;align-items:center;gap:8px;margin-top:10px;color:var(--sp);font-weight:600;font-size:13px}
+.p-smail{display:inline-flex;align-items:center;min-height:24px;gap:8px;margin-top:10px;color:var(--sp-ink);font-weight:600;font-size:13px}
+.p-navwrap a{display:inline-flex;align-items:center;min-height:24px}
 .p-smail svg{width:14px;height:14px}
 .p-soc{margin-top:8px;display:flex;flex-direction:column;gap:2px}
 .p-soc a{display:inline-flex;align-items:center;gap:9px;padding:7px 0;color:var(--muted);font-size:13px;font-weight:600}
@@ -75,17 +90,28 @@ export const PROFESSIONAL_CSS = `
 .p-side{padding:26px}
 .p-foot{padding:15px 26px}
 }
+/* 入场：只做一次，落在名字上 */
+.p-name{animation:sf-rise .72s cubic-bezier(.22,.7,.2,1) .05s both}
 `
 
 export function renderProfessional(data: SiteData): string {
   const sections = getSections(data)
-  const nav = sections.map((s) => `<a href="#${s.id}">${s.navLabel}</a>`).join('')
+  const NAV: Record<string, string> = {
+    skills: '技能',
+    projects: '项目',
+    experience: '履历',
+    contact: '联系',
+  }
+  const nav = orderSections(sections, ['experience', 'projects', 'skills', 'contact'])
+    .map((s) => `<a href="#${s.id}">${NAV[s.id]}</a>`)
+    .join('')
 
   const projects = data.projects
     .map((p) => {
       const links = projectLinks(p.link, p.repo)
-      return `<article class="p-card"><h3 class="p-cname">${esc(p.name)}</h3>
+      return `<article class="p-card">${p.highlight ? `<span class="p-hl">精选</span>` : ''}<h3 class="p-cname">${esc(p.name)}</h3>
   ${p.description.trim() ? `<p class="p-cdesc">${esc(p.description.trim())}</p>` : ''}
+    ${p.points && p.points.length > 0 ? `<ul class="p-points">${p.points.map((pt) => `<li>${esc(pt)}</li>`).join('')}</ul>` : ''}
   ${p.tags.some((t) => t.trim()) ? `<ul class="p-ctags">${tagItems(p.tags, 'p-ctag')}</ul>` : ''}
   ${links ? `<div class="p-clinks">${links}</div>` : ''}</article>`
     })
@@ -96,13 +122,16 @@ export function renderProfessional(data: SiteData): string {
       (e) => `<div class="p-titem"><span class="p-twhen">${esc(e.period)}</span>
   <h3 class="p-trole">${esc(e.role)}</h3>
   <p class="p-torg">${esc(e.organization)}</p>
-  ${e.description.trim() ? `<p class="p-tdesc">${esc(e.description.trim())}</p>` : ''}</div>`
+  ${e.description.trim() ? `<p class="p-tdesc">${esc(e.description.trim())}</p>` : ''}
+  ${e.points && e.points.length > 0 ? `<ul class="p-epoints">${e.points.map((pt) => `<li>${esc(pt)}</li>`).join('')}</ul>` : ''}</div>`
     )
     .join('')
 
   const skills = data.skills
     .map(
-      (s) => `<div class="p-skill"><div class="p-srow"><span>${esc(s.name)}</span><span class="p-spct">${clampLevel(s.level)}%</span></div>
+      (
+        s
+      ) => `<div class="p-skill"><div class="p-srow"><span>${esc(s.name)}</span><span class="p-spct">${clampLevel(s.level)}%</span></div>
   <div class="p-strack"><span class="p-sfill" style="width:${clampLevel(s.level)}%"></span></div></div>`
     )
     .join('')
@@ -113,7 +142,7 @@ export function renderProfessional(data: SiteData): string {
   return `<div class="site-root site-professional">
   <div class="p-desk">
     <div class="p-page">
-      <header class="p-head">
+<header class="p-head">
         <div>
           <h1 class="s-name p-name">${esc(data.name)}</h1>
           <p class="p-role">${esc(data.title)}</p>
@@ -124,12 +153,12 @@ export function renderProfessional(data: SiteData): string {
       <div class="p-contactrow">
         ${data.location.trim() ? `<span>${icon('pin')}${esc(data.location.trim())}</span>` : ''}
         ${data.email.trim() ? `<span>${icon('mail')}${esc(data.email.trim())}</span>` : ''}
-        ${nav ? `<span style="margin-left:auto;display:flex;gap:16px">${nav}</span>` : ''}
+        ${nav ? `<nav class="p-navwrap" aria-label="站点导航" style="margin-left:auto;display:flex;gap:16px">${nav}</nav>` : ''}
       </div>
       <div class="p-body">
         <main class="p-main">
-          ${sections.some((s) => s.id === 'projects') ? `<h2 class="p-h">项目作品</h2>${projects}` : ''}
           ${sections.some((s) => s.id === 'experience') ? `<h2 class="p-h" style="margin-top:32px">经历</h2><div class="p-tl" id="experience">${experience}</div>` : ''}
+          ${sections.some((s) => s.id === 'projects') ? `<h2 class="p-h" id="projects">项目作品</h2>${projects}` : ''}
         </main>
         <aside class="p-side">
           ${sections.some((s) => s.id === 'skills') ? `<h2 class="p-h" id="skills">技能栈</h2>${skills}` : ''}

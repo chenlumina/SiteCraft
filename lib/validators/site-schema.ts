@@ -10,6 +10,8 @@ export const MAX_SKILL_COUNT = 24
 export const MAX_PROJECT_COUNT = 16
 export const MAX_EXPERIENCE_COUNT = 12
 export const MAX_TAG_COUNT = 6
+export const MAX_POINT_COUNT = 3
+export const MAX_POINT_LEN = 60
 
 // 不用 z.string().url()：它拒绝空串，而社交链接「留空=不展示」是合法状态；
 // 这里用 refine 实现「空串 或 合法 http(s)」，并顺带限制长度防滥用。
@@ -49,7 +51,13 @@ export const projectSchema = z.object({
   id: z.string().min(1),
   name: z.string().trim().min(1, '项目名称不能为空').max(40, '项目名称最多 40 字'),
   description: z.string().trim().max(300, '项目描述最多 300 字'),
-  tags: z.array(z.string().trim().min(1).max(16, '标签最多 16 字')).max(MAX_TAG_COUNT, `最多 ${MAX_TAG_COUNT} 个标签`),
+  points: z
+    .array(z.string().trim().max(60, '单条要点最多 60 字'))
+    .max(3, '最多 3 条要点')
+    .default([]),
+  tags: z
+    .array(z.string().trim().min(1).max(16, '标签最多 16 字'))
+    .max(MAX_TAG_COUNT, `最多 ${MAX_TAG_COUNT} 个标签`),
   link: httpUrl,
   repo: httpUrl,
   highlight: z.boolean(),
@@ -61,6 +69,10 @@ export const experienceSchema = z.object({
   organization: z.string().trim().min(1, '组织不能为空').max(40, '组织最多 40 字'),
   period: z.string().trim().min(1, '时间段不能为空').max(30, '时间段最多 30 字'),
   description: z.string().trim().max(300, '描述最多 300 字'),
+  points: z
+    .array(z.string().trim().max(60, '单条职责最多 60 字'))
+    .max(3, '最多 3 条职责')
+    .default([]),
 })
 
 export const siteDataSchema = z.object({
@@ -74,7 +86,9 @@ export const siteDataSchema = z.object({
   socials: socialsSchema,
   skills: z.array(skillSchema).max(MAX_SKILL_COUNT, `最多 ${MAX_SKILL_COUNT} 项技能`),
   projects: z.array(projectSchema).max(MAX_PROJECT_COUNT, `最多 ${MAX_PROJECT_COUNT} 个项目`),
-  experience: z.array(experienceSchema).max(MAX_EXPERIENCE_COUNT, `最多 ${MAX_EXPERIENCE_COUNT} 段经历`),
+  experience: z
+    .array(experienceSchema)
+    .max(MAX_EXPERIENCE_COUNT, `最多 ${MAX_EXPERIENCE_COUNT} 段经历`),
   theme: z.object({ primaryColor: hexColor }),
 })
 
@@ -105,6 +119,7 @@ export const templateNameSchema = z.enum([
   'vapor',
   'swiss',
   'kraft',
+  'metro',
 ])
 
 export const siteStatusSchema = z.enum(['draft', 'published'])

@@ -55,6 +55,8 @@ export function Playground() {
   const meta = getTemplate(template)
   const innerW = device === 'desktop' ? DESKTOP_W : MOBILE_W
   const innerH = device === 'desktop' ? DESKTOP_H : MOBILE_H
+  // 手机外框留边：内容四周 8px 边框空间，外框完整落在预览盒内不被裁切
+  const bezel = device === 'mobile' ? 8 : 0
   const { boxRef, scale, boxH } = useFitScale(innerW, innerH)
 
   function switchTemplate(next: TemplateName) {
@@ -65,7 +67,7 @@ export function Playground() {
   const data = useMemo<SiteData>(
     () => ({
       ...SAMPLE_SITE_DATA,
-      name: name.trim() || '张亮',
+      name: name.trim() || 'Lead',
       theme: { primaryColor: color },
     }),
     [name, color]
@@ -74,7 +76,9 @@ export function Playground() {
   return (
     <section id="playground" className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-20">
       <div className="reveal mb-10 max-w-xl">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">Playground</p>
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          Playground
+        </p>
         <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
           先试后建 · 模板试衣间
         </h2>
@@ -87,7 +91,9 @@ export function Playground() {
         {/* 控制台 */}
         <div className="space-y-5 rounded-xl border bg-card p-5">
           <div>
-            <p className="mb-2 text-xs font-semibold text-muted-foreground">① 版式（{TEMPLATES.length} 套）</p>
+            <p className="mb-2 text-xs font-semibold text-muted-foreground">
+              ① 版式（{TEMPLATES.length} 套）
+            </p>
             <div className="grid grid-cols-3 gap-2">
               {TEMPLATES.map((t) => (
                 <button
@@ -138,7 +144,7 @@ export function Playground() {
                   className={cn(
                     'aspect-square rounded-md border-2 transition-transform hover:scale-110',
                     color.toLowerCase() === c.toLowerCase()
-                      ? 'border-foreground scale-110'
+                      ? 'scale-110 border-foreground'
                       : 'border-transparent'
                   )}
                   style={{ backgroundColor: c }}
@@ -191,15 +197,18 @@ export function Playground() {
           <div
             ref={boxRef}
             className="relative w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl shadow-black/5"
-            style={{ height: boxH }}
+            style={{ height: boxH + bezel * 2 }}
           >
+            {/* 居中用显式像素偏移：translateX(-50%) 按未缩放宽度计算，
+                与 scale 叠加会让内容中心偏左 195*(1-s)px，与手机外框错位 */}
             <div
-              className="absolute top-0 origin-top-left"
+              className="absolute origin-top-left"
               style={{
-                left: device === 'mobile' ? '50%' : 0,
+                top: bezel,
+                left: device === 'mobile' ? `calc(50% - ${(innerW * scale) / 2}px)` : 0,
                 width: innerW,
                 height: innerH,
-                transform: `translateX(${device === 'mobile' ? '-50%' : '0'}) scale(${scale})`,
+                transform: `scale(${scale})`,
               }}
             >
               <SiteFrame data={data} template={template} />
@@ -207,11 +216,11 @@ export function Playground() {
             {device === 'mobile' && (
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute top-[-8px] rounded-[30px] border-2 border-foreground/50"
+                className="pointer-events-none absolute top-0 rounded-[30px] border-2 border-foreground/50"
                 style={{
                   left: '50%',
-                  width: MOBILE_W * scale + 18,
-                  height: MOBILE_H * scale + 18,
+                  width: innerW * scale + bezel * 2,
+                  height: innerH * scale + bezel * 2,
                   transform: 'translateX(-50%)',
                 }}
               />

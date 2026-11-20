@@ -45,9 +45,12 @@ async function step(name, fn) {
 // ---------- 首页 ----------
 await step('首页加载与关键内容', async () => {
   await page.goto(BASE, { waitUntil: 'networkidle' })
-  await page.waitForSelector('text=把你自己，')
-  const cards = await page.locator('#templates > div > article').count()
-  if (cards !== 12) throw new Error(`模板卡片数量 ${cards} != 12`)
+  // 首屏标语每 4.8s 中英轮换：冷启动编译可能跨过首轮轮换，断言需兼容两种语言
+  await page.waitForSelector('h1')
+  const headline = (await page.locator('h1').first().textContent()) || ''
+  if (!/把你自己|DEPLOY/.test(headline)) throw new Error(`首屏标语异常: ${headline.slice(0, 40)}`)
+  const cards = await page.locator('#templates [data-template-row]').count()
+  if (cards !== 12) throw new Error(`样册索引行数 ${cards} != 12`)
   await page.waitForSelector('#sites article')
   const sites = await page.locator('#sites article').count()
   if (sites < 2) throw new Error(`种子站点数量 ${sites} < 2`)
@@ -55,13 +58,15 @@ await step('首页加载与关键内容', async () => {
   if (!showcaseBox || showcaseBox.width > 1440) throw new Error('模板区宽度溢出')
 })
 // 整页截图前滚到底再回顶：触发 IntersectionObserver 的滚动显现，
-// 否则 fullPage 截图不经过滚动，below-the-fold 区块会停在隐藏态
+// 否则 fullPage 截图不经过滚动，below-the-fold 区块会停在隐藏态。
+// 停留/回顶后的等待需覆盖「最大阶梯延迟(11*80ms)+过渡时长(700ms)」，
+// 否则最后一张卡片会被拍在半透明中间态。
 await page.evaluate(async () => {
   window.scrollTo(0, document.body.scrollHeight)
-  await new Promise((r) => setTimeout(r, 600))
+  await new Promise((r) => setTimeout(r, 900))
   window.scrollTo(0, 0)
 })
-await page.waitForTimeout(700)
+await page.waitForTimeout(1300)
 await page.screenshot({ path: `${OUT}/01-home.png`, fullPage: true })
 
 await step('首页 API 数据', async () => {
@@ -207,10 +212,10 @@ await step('移动端首页布局', async () => {
   if (overflow > 2) throw new Error(`首页横向溢出 ${overflow}px`)
   await page.evaluate(async () => {
     window.scrollTo(0, document.body.scrollHeight)
-    await new Promise((r) => setTimeout(r, 600))
+    await new Promise((r) => setTimeout(r, 900))
     window.scrollTo(0, 0)
   })
-  await page.waitForTimeout(500)
+  await page.waitForTimeout(900)
 })
 await page.screenshot({ path: `${OUT}/05-home-mobile.png`, fullPage: true })
 

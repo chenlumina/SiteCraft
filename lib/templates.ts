@@ -1,5 +1,5 @@
 /**
- * 十二套模板的元数据「单一来源」：首页画廊、编辑器模板选择器、主题色板、
+ * 十三套模板的元数据「单一来源」：首页画廊、编辑器模板选择器、主题色板、
  * 数据库种子（prisma/seed.ts）都读这里，新增模板只需改这一处 + 生成器 CSS + 类型联合。
  * defaultColor 同时是切模板时自动应用的主题色（见 editor-store.setTemplate）。
  */
@@ -50,7 +50,8 @@ export const TEMPLATES: TemplateMeta[] = [
     name: 'ink',
     displayName: '水墨 Ink',
     tagline: '宣纸上的东方留白',
-    description: '宣纸底色、朱砂印章与墨韵笔触，安静克制的东方文人气质。适合喜欢内敛表达的开发者与写作者。',
+    description:
+      '宣纸底色、朱砂印章与墨韵笔触，安静克制的东方文人气质。适合喜欢内敛表达的开发者与写作者。',
     mood: 'light',
     defaultColor: '#9e1b32',
     swatches: ['#9e1b32', '#1c1a17', '#0f766e', '#b45309', '#1e3a5f', '#4d7c0f'],
@@ -70,7 +71,8 @@ export const TEMPLATES: TemplateMeta[] = [
     name: 'aurora',
     displayName: '极光 Aurora',
     tagline: '深夜上空的流动光幕',
-    description: '深空底色上的玻璃卡片与极光渐变，安静而高级。适合想突出作品氛围感的设计师与独立开发者。',
+    description:
+      '深空底色上的玻璃卡片与极光渐变，安静而高级。适合想突出作品氛围感的设计师与独立开发者。',
     mood: 'dark',
     defaultColor: '#2dd4bf',
     swatches: ['#2dd4bf', '#a78bfa', '#f472b6', '#38bdf8', '#34d399', '#818cf8'],
@@ -80,7 +82,8 @@ export const TEMPLATES: TemplateMeta[] = [
     name: 'editorial',
     displayName: '杂志 Editorial',
     tagline: '铅字排印的刊物质感',
-    description: '衬线大标题、首字下沉与粗细双线，像一本被认真排版的独立杂志。适合作品集与长文写作者。',
+    description:
+      '衬线大标题、首字下沉与粗细双线，像一本被认真排版的独立杂志。适合作品集与长文写作者。',
     mood: 'light',
     defaultColor: '#c2410c',
     swatches: ['#c2410c', '#181511', '#1d4ed8', '#9f1239', '#166534', '#a16207'],
@@ -100,7 +103,8 @@ export const TEMPLATES: TemplateMeta[] = [
     name: 'vapor',
     displayName: '蒸汽波 Vapor',
     tagline: '落日网格上的复古未来',
-    description: '紫罗兰夜空、粉青霓虹与透视网格，把主页变成一张 80 年代合成器海报。适合追求强烈风格的创作者。',
+    description:
+      '紫罗兰夜空、粉青霓虹与透视网格，把主页变成一张 80 年代合成器海报。适合追求强烈风格的创作者。',
     mood: 'dark',
     defaultColor: '#ff71ce',
     swatches: ['#ff71ce', '#01cdfe', '#b967ff', '#05ffa1', '#fffb96', '#ff6e27'],
@@ -110,7 +114,8 @@ export const TEMPLATES: TemplateMeta[] = [
     name: 'swiss',
     displayName: '瑞士 Swiss',
     tagline: '网格与留白的秩序之美',
-    description: '国际主义排版风格：细黑规则线、大号无衬线与一点红色强调。适合设计师与工程师的冷静表达。',
+    description:
+      '国际主义排版风格：细黑规则线、大号无衬线与一点红色强调。适合设计师与工程师的冷静表达。',
     mood: 'light',
     defaultColor: '#dc2626',
     swatches: ['#dc2626', '#111111', '#0f766e', '#1d4ed8', '#ea580c', '#065f46'],
@@ -120,11 +125,23 @@ export const TEMPLATES: TemplateMeta[] = [
     name: 'kraft',
     displayName: '手账 Kraft',
     tagline: '牛皮纸上的拼贴日常',
-    description: '牛皮纸底色、胶带贴纸与虚线手作边框，温暖亲切像一本手工手账。适合学生与生活记录者。',
+    description:
+      '牛皮纸底色、胶带贴纸与虚线手作边框，温暖亲切像一本手工手账。适合学生与生活记录者。',
     mood: 'light',
     defaultColor: '#0f766e',
     swatches: ['#0f766e', '#b45309', '#7c3aed', '#dc2626', '#0369a1', '#4d7c0f'],
     features: ['胶带拼贴', '虚线手作', '牛皮纸质感'],
+  },
+  {
+    name: 'metro',
+    displayName: '线路 Metro',
+    tagline: '一站一站坐过去',
+    description:
+      '整站是一条地铁线：页头是线路牌，技能是图例，项目与经历是同一条轨道上的站点，联系是终点站。适合想把履历讲成「运行图」的人。',
+    mood: 'light',
+    defaultColor: '#2563eb',
+    swatches: ['#2563eb', '#0f766e', '#b91c1c', '#7c3aed', '#0369a1', '#c2410c'],
+    features: ['连续轨道', '站点编号', '时刻表式经历'],
   },
 ]
 
@@ -141,4 +158,31 @@ export function isTemplateName(value: string): value is TemplateName {
 
 export function getTemplate(name: TemplateName): TemplateMeta {
   return TEMPLATE_MAP[name]
+}
+/**
+ * 版式能力表：哪些可选内容字段会被这套版式真正展示。
+ * 内容形态跟着版式走是设计，但"写了却看不到"必须是可见的信息——
+ * 编辑器的每个可选字段都要从这里取一句话告诉用户。
+ */
+export const FEATURE_SUPPORT: Record<
+  TemplateName,
+  {
+    points: 'all' | 'first' | 'none'
+    highlight: boolean
+    expPoints: 'all' | 'first' | 'none'
+  }
+> = {
+  minimal: { points: 'first', highlight: true, expPoints: 'first' },
+  tech: { points: 'none', highlight: false, expPoints: 'none' },
+  creative: { points: 'none', highlight: true, expPoints: 'none' },
+  professional: { points: 'all', highlight: true, expPoints: 'all' },
+  ink: { points: 'none', highlight: false, expPoints: 'none' },
+  brutal: { points: 'none', highlight: true, expPoints: 'none' },
+  aurora: { points: 'none', highlight: false, expPoints: 'none' },
+  editorial: { points: 'all', highlight: true, expPoints: 'all' },
+  gold: { points: 'all', highlight: true, expPoints: 'none' },
+  vapor: { points: 'none', highlight: false, expPoints: 'none' },
+  swiss: { points: 'all', highlight: true, expPoints: 'all' },
+  kraft: { points: 'none', highlight: false, expPoints: 'none' },
+  metro: { points: 'none', highlight: false, expPoints: 'none' },
 }

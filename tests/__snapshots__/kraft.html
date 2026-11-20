@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>张亮 · 全栈开发学习者 · Java / Web</title>
+<title>Lead · 全栈开发学习者 · Java / Web</title>
 <meta name="description" content="计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。">
 <meta name="generator" content="SiteCraft 个人官网生成器">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20x='2'%20y='2'%20width='36'%20height='36'%20rx='10'%20fill='%231b1917'/%3E%3Cpath%20d='M15%2014l-6%206%206%206M25%2014l6%206-6%206'%20stroke='%23f8f7f1'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'/%3E%3Ccircle%20cx='20'%20cy='20'%20r='2.2'%20fill='%23f8f7f1'/%3E%3C/svg%3E">
@@ -15,21 +15,49 @@
 /* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过各版式按钮的 color */
 .site-root :where(a){color:inherit;text-decoration:none}
 .site-root ul,.site-root ol{list-style:none}
-/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，
-   默认会撑到 300×150 把按钮擑爆；基样式统一收敛到 16px，
-   各版式需要不同尺寸时在自己的 CSS 里覆盖（后加载胜出） */
-.site-root svg{width:16px;height:16px;flex:none}
+/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，默认会撑到 300×150 把按钮撑爆。
+   这里必须是 :where(svg) 把特异性压到 (0,1,0)——原写法 .site-root svg 是 (0,1,1)，
+   版式里 .g-wave{width:100%} 这类单类覆盖根本盖不过去（后加载不算数，特异性才算数），
+   结果是 gold 的水波 SVG 被压成 16px，整池水缩小 6 倍 */
+.site-root :where(svg){width:16px;height:16px;flex:none}
 .site-root ::selection{background:var(--sp);color:var(--on-sp)}
 .site-root ::-webkit-scrollbar{width:10px;height:10px}
 .site-root ::-webkit-scrollbar-track{background:var(--bg)}
 .site-root ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:2px solid var(--bg)}
 .site-root ::-webkit-scrollbar-thumb:hover{background:var(--sp)}
 .s-name{overflow-wrap:anywhere}
+/* 交互层：所有版式的链接与按钮共用同一条缓动，按下给一次轻反馈。
+   :where() 保持 0 特异性，版式自有时序可以覆盖它 */
+.site-root :where(a,button){transition:color .22s cubic-bezier(.22,.7,.2,1),background-color .22s cubic-bezier(.22,.7,.2,1),border-color .22s cubic-bezier(.22,.7,.2,1),box-shadow .22s cubic-bezier(.22,.7,.2,1),opacity .22s}
+.site-root :where(a,button):active{opacity:.72}
+/* 入场关键帧共用；用哪个由各版式自己挑，不在这里统一套用 */
+@keyframes sf-rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes sf-land{from{opacity:0;transform:scale(.965)}to{opacity:1;transform:none}}
+@keyframes sf-type{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes sf-glow{from{opacity:0;filter:blur(7px)}to{opacity:1;filter:blur(0)}}
+@keyframes sf-glitch{0%{opacity:0;transform:translateX(-7px)}55%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
+
+/* 键盘焦点环：所有版式共享，版式可用更高特异性覆盖颜色 */
+/* 导航类链接的触摸下限：line box 只有 19~21px，垫到 WCAG 2.5.8 的 24px */
+.site-root nav a,.site-root header a{display:inline-flex;align-items:center;min-height:24px}
+.site-root a:focus-visible,.site-root button:focus-visible{outline:2px solid var(--sp);outline-offset:3px;border-radius:1px}
+/* 动效整体开关：用户在系统层拒绝动效时，全部版式的动画与过渡一律关闭 */
+@media (prefers-reduced-motion:reduce){
+.site-root *,.site-root *::before,.site-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 @keyframes sp-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.45)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
 
 
-.site-kraft{--bg:#f6ecdd;--fg:#3d2f22;--muted:#8a7a66;--line:#e0d2bc;--panel:#fffbf2;--tape:rgba(255,252,240,.7);--dashed:#c9b691;--shadow:rgba(61,47,34,.14);--fd:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fb:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace}
-.k-page{max-width:920px;margin:0 auto;padding:0 24px 72px;background-image:radial-gradient(rgba(61,47,34,.05) 1px,transparent 1px);background-size:16px 16px}
+.site-kraft{--bg:#f6ecdd;--fg:#3d2f22;--muted:#6e6252;--line:#e0d2bc;--panel:#fffbf2;--tape:rgba(255,252,240,.7);--dashed:#c9b691;--shadow:rgba(61,47,34,.14);--fd:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fb:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,sans-serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace}
+.k-page{position:relative;max-width:920px;margin:0 auto;padding:0 24px 72px;background-image:radial-gradient(rgba(61,47,34,.05) 1px,transparent 1px);background-size:16px 16px}
+/* 主视觉锚点：左边一列打孔 —— 这页手账是被装订起来的，不是飘着的 */
+/* 装订孔要够大才读得出来是"孔"：4.5px 实心 + 内阴影，再加一条骑缝虚线 */
+.k-page::before{content:"";position:absolute;left:-38px;top:52px;bottom:56px;width:18px;pointer-events:none;
+  background-image:radial-gradient(circle at 9px 9px,rgba(61,47,34,.34) 4.5px,rgba(61,47,34,.10) 5.2px,transparent 5.6px);
+  background-size:18px 52px;background-repeat:repeat-y}
+.k-page::after{content:"";position:absolute;left:-16px;top:52px;bottom:56px;width:1px;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(61,47,34,.28) 0 6px,transparent 6px 13px)}
+@container (max-width:1000px){.k-page::before{display:none}}
 .k-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:20px 0;border-bottom:1.5px dashed var(--dashed)}
 .k-nav a{border:1.5px dashed var(--dashed);background:var(--panel);border-radius:10px;padding:7px 16px;font-weight:700;font-size:13px;color:var(--fg)}
 .k-nav a:hover{background:var(--sp-soft);border-color:var(--sp)}
@@ -68,10 +96,10 @@
 .k-ntags{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px;list-style:none}
 .k-ntag{background:var(--sp-soft);border-radius:999px;padding:3px 11px;font-size:11.5px;font-weight:700}
 .k-nlinks{margin-top:12px;display:flex;gap:14px}
-.k-nlinks a{font-size:12.5px;font-weight:700;color:var(--sp);border-bottom:1.5px dashed var(--sp);padding-bottom:1px}
+.k-nlinks a{font-size:12.5px;font-weight:700;color:var(--sp-ink);border-bottom:1.5px dashed var(--sp);padding-bottom:1px}
 .k-diary{margin-top:22px;display:flex;flex-direction:column;gap:20px}
 .k-entry{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
-.k-stamp{background:var(--panel);border:1.5px dashed var(--dashed);border-radius:8px;padding:8px 13px;font-family:var(--fm);font-size:11px;color:var(--sp);font-weight:700;white-space:nowrap;transform:rotate(-1deg)}
+.k-stamp{background:var(--panel);border:1.5px dashed var(--dashed);border-radius:8px;padding:8px 13px;font-family:var(--fm);font-size:11px;color:var(--sp-ink);font-weight:700;white-space:nowrap;transform:rotate(-1deg)}
 .k-ebody b{font-size:15.5px;font-weight:800}
 .k-eorg{font-size:12.5px;color:var(--muted);margin-top:2px}
 .k-edesc{margin-top:7px;font-size:13.5px;color:var(--muted);line-height:1.8}
@@ -82,7 +110,7 @@
 .k-mail{display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:var(--sp);color:#fffbf2;font-weight:800;padding:11px 24px;border-radius:999px;font-size:14px}
 .k-mail svg{width:15px;height:15px}
 .k-pcside{display:flex;flex-direction:column;gap:14px}
-.k-stampbox{border:1.5px dashed var(--dashed);border-radius:8px;height:76px;display:grid;place-items:center;color:var(--sp)}
+.k-stampbox{border:1.5px dashed var(--dashed);border-radius:8px;height:76px;display:grid;place-items:center;color:var(--sp-ink)}
 .k-stampbox svg{width:26px;height:26px;opacity:.7}
 .k-addr{display:flex;flex-direction:column;gap:14px}
 .k-addr i{display:block;height:1.5px;background:#d9c8a8}
@@ -97,8 +125,10 @@
 .k-postcard{grid-template-columns:1fr}
 .k-entry{grid-template-columns:1fr;gap:8px}
 }
+/* 入场：只做一次，落在名字上 */
+.k-name{animation:sf-rise .72s cubic-bezier(.22,.7,.2,1) .05s both}
 
-.site-kraft{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;}
+.site-kraft{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;--sp-ink:#116a77;--sp-inkd:#22d3ee;}
 html{scroll-behavior:smooth;scrollbar-color:#f6ecdd auto}
 body{margin:0;background:#f6ecdd}
 </style>
@@ -106,23 +136,25 @@ body{margin:0;background:#f6ecdd}
 <body>
 <div class="site-root site-kraft">
   <div class="k-page">
-    <nav class="k-nav" aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact">联系</a></nav>
+    <nav class="k-nav" aria-label="站点导航"><a href="#experience">日子</a><a href="#projects">贴纸</a><a href="#skills">技能</a><a href="#contact">留言</a></nav>
     <main>
       <section class="k-hero">
         <div class="k-polaroid">
-          <img class="k-pimg" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="张亮的头像">
-          <span class="k-pcap">NO.2026 · 张</span>
+          <img class="k-pimg" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20240%20240%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%231e2640%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230b0f1e%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fig%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237c6cff%22%2F%3E%3Cstop%20offset%3D%2260%25%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23f472b6%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22240%22%20height%3D%22240%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22196%22%20cy%3D%2244%22%20r%3D%2230%22%20fill%3D%22%2322d3ee%22%20opacity%3D%220.14%22%2F%3E%3Ccircle%20cx%3D%2236%22%20cy%3D%22204%22%20r%3D%2242%22%20fill%3D%22%237c6cff%22%20opacity%3D%220.16%22%2F%3E%3Cpath%20d%3D%22M0%20176%20L240%20120%20L240%20240%20L0%20240%20Z%22%20fill%3D%22%23151b31%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2292%22%20r%3D%2238%22%20fill%3D%22url(%23fig)%22%2F%3E%3Cpath%20d%3D%22M52%20208c6-40%2034-62%2068-62s62%2022%2068%2062%22%20fill%3D%22url(%23fig)%22%20opacity%3D%220.9%22%2F%3E%3Cpath%20d%3D%22M96%2092l-10%2010%2010%2010M144%2092l10%2010-10%2010%22%20stroke%3D%22%230b0f1e%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20fill%3D%22none%22%20opacity%3D%220.85%22%2F%3E%3C%2Fsvg%3E" alt="Lead的头像">
+          <span class="k-pcap">NO.2026 · L</span>
         </div>
         <span class="k-status">正在寻找 2027 届实习机会</span>
-        <h1 class="s-name k-name">张亮</h1>
+        <h1 class="s-name k-name">Lead</h1>
         <p class="k-role">全栈开发学习者 · Java / Web</p>
         <p class="k-bio">计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。</p>
         <div class="k-chips">
           <span class="k-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>湖北 · 武汉</span>
-          <span class="k-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>zhangliang@example.com</span>
+          <span class="k-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>lead@example.com</span>
         </div>
       </section>
-      <section class="k-sec" id="skills"><h2 class="k-h2">技能标签</h2><div class="k-tags"><div class="k-tagrow"><span class="k-tag">Java</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">Spring Boot</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">MySQL</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">HTML / CSS</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">JavaScript</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">Vue 3</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">Next.js</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">Linux</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i><i class="off"></i></span></div></div></section>
+      <section class="k-sec" id="experience"><h2 class="k-h2">手帐日记</h2><div class="k-diary"><div class="k-entry"><span class="k-stamp">2024.09 - 至今</span>
+  <div class="k-ebody"><b>本科生 · 计算机科学与技术</b><p class="k-eorg">计算机学院</p><p class="k-edesc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p></div></div><div class="k-entry"><span class="k-stamp">2025.03 - 至今</span>
+  <div class="k-ebody"><b>独立开发者</b><p class="k-eorg">个人项目</p><p class="k-edesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></div></div></div></section>
       <section class="k-sec" id="projects"><h2 class="k-h2">便签作品</h2><div class="k-notes"><article class="k-note"><h3 class="k-nname">音乐网站 music-web</h3>
   <p class="k-ndesc">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
   <ul class="k-ntags"><li class="k-ntag">Java</li><li class="k-ntag">Jakarta EE</li><li class="k-ntag">Tomcat</li><li class="k-ntag">MySQL</li></ul>
@@ -130,21 +162,19 @@ body{margin:0;background:#f6ecdd}
   <p class="k-ndesc">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
   <ul class="k-ntags"><li class="k-ntag">Servlet</li><li class="k-ntag">JSP</li><li class="k-ntag">MySQL</li></ul>
   </article><article class="k-note"><h3 class="k-nname">个人官网生成器</h3>
-  <p class="k-ndesc">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+  <p class="k-ndesc">Next.js 14 全栈应用：可视化编辑、十三套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
   <ul class="k-ntags"><li class="k-ntag">Next.js</li><li class="k-ntag">TypeScript</li><li class="k-ntag">Prisma</li><li class="k-ntag">Tailwind</li></ul>
   </article><article class="k-note"><h3 class="k-nname">操作系统实验笔记</h3>
   <p class="k-ndesc">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
   <ul class="k-ntags"><li class="k-ntag">C</li><li class="k-ntag">Assembly</li><li class="k-ntag">Linux</li></ul>
   </article></div></section>
-      <section class="k-sec" id="experience"><h2 class="k-h2">手帐日记</h2><div class="k-diary"><div class="k-entry"><span class="k-stamp">2024.09 - 至今</span>
-  <div class="k-ebody"><b>本科生 · 计算机科学与技术</b><p class="k-eorg">计算机学院</p><p class="k-edesc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p></div></div><div class="k-entry"><span class="k-stamp">2025.03 - 至今</span>
-  <div class="k-ebody"><b>独立开发者</b><p class="k-eorg">个人项目</p><p class="k-edesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></div></div></div></section>
+      <section class="k-sec" id="skills"><h2 class="k-h2">技能标签</h2><div class="k-tags"><div class="k-tagrow"><span class="k-tag">Java</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">Spring Boot</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">MySQL</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">HTML / CSS</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">JavaScript</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">Vue 3</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">Next.js</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i><i class="off"></i></span></div><div class="k-tagrow"><span class="k-tag">Linux</span><span class="k-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="off"></i><i class="off"></i></span></div></div></section>
       <section class="k-sec" id="contact" style="padding-bottom:0">
         <div class="k-postcard">
           <div>
             <h2 class="k-pch2">一起聊聊？</h2>
             <p class="k-pclead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
-            <a class="k-mail" href="mailto:zhangliang@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>寄封信</a>
+            <a class="k-mail" href="mailto:lead@example.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>寄封信</a>
           </div>
           <div class="k-pcside">
             <span class="k-stampbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
@@ -154,7 +184,7 @@ body{margin:0;background:#f6ecdd}
         </div>
       </section>
     </main>
-    <footer class="k-foot">© 2026 张亮 · 由 SiteCraft 个人官网生成器构建</footer>
+    <footer class="k-foot">© 2026 Lead · 由 SiteCraft 个人官网生成器构建</footer>
   </div>
 </div>
 </body>

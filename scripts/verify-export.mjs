@@ -23,14 +23,40 @@ const checks = await page.evaluate(() => ({
 }))
 console.log('export checks:', JSON.stringify(checks))
 await page.screenshot({ path: 'screenshots/07-export-standalone.png', fullPage: false })
-// 移动端视口下容器查询生效
+// 移动端视口下容器查询生效。版式无关断言：12 套版式类名与锚点位置各异
+// （有的 id 在 section 上、有的在 h2 标题上；tech 的项目区是 block 竖排文件列表），
+// 因此兼容两种模式收集项目卡片：A 锚点子树内「高>60px 子元素最多」的容器；
+// B 锚点为标题时取其后续兄弟（遇下一个锚点/标题停止）。再测前两张卡片是否竖排。
 await page.setViewportSize({ width: 390, height: 844 })
 await page.waitForTimeout(400)
-const mobileCols = await page.evaluate(() => {
-  const grid = document.querySelector('.project-grid')
-  return grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').length : 0
+const mobile = await page.evaluate(() => {
+  const anchor = document.getElementById('projects')
+  const overflow = document.documentElement.scrollWidth - window.innerWidth
+  if (!anchor) return { cols: 0, overflow }
+  const tallKids = (el) => [...el.children].filter((c) => c.getBoundingClientRect().height > 60)
+  let cards = null
+  for (const el of [anchor, ...anchor.querySelectorAll('*')]) {
+    const t = tallKids(el)
+    if (t.length >= 2 && (!cards || t.length > cards.length)) cards = t
+  }
+  if (!cards) {
+    cards = []
+    let n = anchor.nextElementSibling
+    while (n && !n.id && !/^H[1-3]$/.test(n.tagName)) {
+      const t = tallKids(n)
+      if (t.length >= 2) cards.push(...t)
+      else if (n.getBoundingClientRect().height > 60) cards.push(n)
+      n = n.nextElementSibling
+    }
+  }
+  if (!cards || cards.length < 2) return { cols: 0, overflow }
+  const a = cards[0].getBoundingClientRect()
+  const b = cards[1].getBoundingClientRect()
+  return { cols: b.top >= a.bottom - 4 ? 1 : 2, overflow }
 })
-console.log('mobile project columns:', mobileCols)
+console.log('mobile project columns:', mobile.cols, 'overflow:', mobile.overflow)
+if (mobile.cols !== 1) throw new Error(`移动端项目区应为单列，实际 ${mobile.cols}`)
+if (mobile.overflow > 2) throw new Error(`移动端横向溢出 ${mobile.overflow}px`)
 await page.screenshot({ path: 'screenshots/08-export-mobile.png' })
 console.log('console errors:', errors.length, errors.slice(0,2))
 await browser.close()

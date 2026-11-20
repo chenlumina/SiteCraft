@@ -8,11 +8,19 @@ import type { SiteData } from '@/types'
 import { esc, monogram } from '../escape'
 import { icon, socialLinks } from '../icons'
 import { FONT_MONO, FONT_SANS } from '../theme-consts'
-import { avatarHTML, getSections, levelDots, projectLinks, tagItems } from './shared'
+import { avatarHTML, getSections, levelDots, projectLinks, tagItems, orderSections } from './shared'
 
 export const KRAFT_CSS = `
-.site-kraft{--bg:#f6ecdd;--fg:#3d2f22;--muted:#8a7a66;--line:#e0d2bc;--panel:#fffbf2;--tape:rgba(255,252,240,.7);--dashed:#c9b691;--shadow:rgba(61,47,34,.14);--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO}}
-.k-page{max-width:920px;margin:0 auto;padding:0 24px 72px;background-image:radial-gradient(rgba(61,47,34,.05) 1px,transparent 1px);background-size:16px 16px}
+.site-kraft{--bg:#f6ecdd;--fg:#3d2f22;--muted:#6e6252;--line:#e0d2bc;--panel:#fffbf2;--tape:rgba(255,252,240,.7);--dashed:#c9b691;--shadow:rgba(61,47,34,.14);--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO}}
+.k-page{position:relative;max-width:920px;margin:0 auto;padding:0 24px 72px;background-image:radial-gradient(rgba(61,47,34,.05) 1px,transparent 1px);background-size:16px 16px}
+/* 主视觉锚点：左边一列打孔 —— 这页手账是被装订起来的，不是飘着的 */
+/* 装订孔要够大才读得出来是"孔"：4.5px 实心 + 内阴影，再加一条骑缝虚线 */
+.k-page::before{content:"";position:absolute;left:-38px;top:52px;bottom:56px;width:18px;pointer-events:none;
+  background-image:radial-gradient(circle at 9px 9px,rgba(61,47,34,.34) 4.5px,rgba(61,47,34,.10) 5.2px,transparent 5.6px);
+  background-size:18px 52px;background-repeat:repeat-y}
+.k-page::after{content:"";position:absolute;left:-16px;top:52px;bottom:56px;width:1px;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(61,47,34,.28) 0 6px,transparent 6px 13px)}
+@container (max-width:1000px){.k-page::before{display:none}}
 .k-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;padding:20px 0;border-bottom:1.5px dashed var(--dashed)}
 .k-nav a{border:1.5px dashed var(--dashed);background:var(--panel);border-radius:10px;padding:7px 16px;font-weight:700;font-size:13px;color:var(--fg)}
 .k-nav a:hover{background:var(--sp-soft);border-color:var(--sp)}
@@ -51,10 +59,10 @@ export const KRAFT_CSS = `
 .k-ntags{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px;list-style:none}
 .k-ntag{background:var(--sp-soft);border-radius:999px;padding:3px 11px;font-size:11.5px;font-weight:700}
 .k-nlinks{margin-top:12px;display:flex;gap:14px}
-.k-nlinks a{font-size:12.5px;font-weight:700;color:var(--sp);border-bottom:1.5px dashed var(--sp);padding-bottom:1px}
+.k-nlinks a{font-size:12.5px;font-weight:700;color:var(--sp-ink);border-bottom:1.5px dashed var(--sp);padding-bottom:1px}
 .k-diary{margin-top:22px;display:flex;flex-direction:column;gap:20px}
 .k-entry{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
-.k-stamp{background:var(--panel);border:1.5px dashed var(--dashed);border-radius:8px;padding:8px 13px;font-family:var(--fm);font-size:11px;color:var(--sp);font-weight:700;white-space:nowrap;transform:rotate(-1deg)}
+.k-stamp{background:var(--panel);border:1.5px dashed var(--dashed);border-radius:8px;padding:8px 13px;font-family:var(--fm);font-size:11px;color:var(--sp-ink);font-weight:700;white-space:nowrap;transform:rotate(-1deg)}
 .k-ebody b{font-size:15.5px;font-weight:800}
 .k-eorg{font-size:12.5px;color:var(--muted);margin-top:2px}
 .k-edesc{margin-top:7px;font-size:13.5px;color:var(--muted);line-height:1.8}
@@ -65,7 +73,7 @@ export const KRAFT_CSS = `
 .k-mail{display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:var(--sp);color:#fffbf2;font-weight:800;padding:11px 24px;border-radius:999px;font-size:14px}
 .k-mail svg{width:15px;height:15px}
 .k-pcside{display:flex;flex-direction:column;gap:14px}
-.k-stampbox{border:1.5px dashed var(--dashed);border-radius:8px;height:76px;display:grid;place-items:center;color:var(--sp)}
+.k-stampbox{border:1.5px dashed var(--dashed);border-radius:8px;height:76px;display:grid;place-items:center;color:var(--sp-ink)}
 .k-stampbox svg{width:26px;height:26px;opacity:.7}
 .k-addr{display:flex;flex-direction:column;gap:14px}
 .k-addr i{display:block;height:1.5px;background:#d9c8a8}
@@ -80,15 +88,26 @@ export const KRAFT_CSS = `
 .k-postcard{grid-template-columns:1fr}
 .k-entry{grid-template-columns:1fr;gap:8px}
 }
+/* 入场：只做一次，落在名字上 */
+.k-name{animation:sf-rise .72s cubic-bezier(.22,.7,.2,1) .05s both}
 `
 
 export function renderKraft(data: SiteData): string {
   const sections = getSections(data)
-  const nav = sections.map((s) => `<a href="#${s.id}">${s.navLabel}</a>`).join('')
+  const NAV: Record<string, string> = {
+    skills: '技能',
+    projects: '贴纸',
+    experience: '日子',
+    contact: '留言',
+  }
+  const nav = orderSections(sections, ['experience', 'projects', 'skills', 'contact'])
+    .map((s) => `<a href="#${s.id}">${NAV[s.id]}</a>`)
+    .join('')
 
   const skills = data.skills
     .map(
-      (s) => `<div class="k-tagrow"><span class="k-tag">${esc(s.name)}</span><span class="k-dots">${levelDots(s.level)}</span></div>`
+      (s) =>
+        `<div class="k-tagrow"><span class="k-tag">${esc(s.name)}</span><span class="k-dots">${levelDots(s.level)}</span></div>`
     )
     .join('')
 
@@ -130,9 +149,9 @@ export function renderKraft(data: SiteData): string {
           ${data.email.trim() ? `<span class="k-chip">${icon('mail')}${esc(data.email.trim())}</span>` : ''}
         </div>
       </section>
-      ${sections.some((s) => s.id === 'skills') ? `<section class="k-sec" id="skills"><h2 class="k-h2">技能标签</h2><div class="k-tags">${skills}</div></section>` : ''}
-      ${sections.some((s) => s.id === 'projects') ? `<section class="k-sec" id="projects"><h2 class="k-h2">便签作品</h2><div class="k-notes">${projects}</div></section>` : ''}
       ${sections.some((s) => s.id === 'experience') ? `<section class="k-sec" id="experience"><h2 class="k-h2">手帐日记</h2><div class="k-diary">${experience}</div></section>` : ''}
+      ${sections.some((s) => s.id === 'projects') ? `<section class="k-sec" id="projects"><h2 class="k-h2">便签作品</h2><div class="k-notes">${projects}</div></section>` : ''}
+      ${sections.some((s) => s.id === 'skills') ? `<section class="k-sec" id="skills"><h2 class="k-h2">技能标签</h2><div class="k-tags">${skills}</div></section>` : ''}
       <section class="k-sec" id="contact" style="padding-bottom:0">
         <div class="k-postcard">
           <div>

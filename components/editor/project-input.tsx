@@ -23,7 +23,13 @@ import {
 import { toast } from 'sonner'
 import type { Project } from '@/types'
 import { useEditorStore } from '@/lib/stores/editor-store'
-import { MAX_PROJECT_COUNT, MAX_TAG_COUNT, projectSchema } from '@/lib/validators/site-schema'
+import {
+  MAX_POINT_COUNT,
+  MAX_PROJECT_COUNT,
+  MAX_TAG_COUNT,
+  projectSchema,
+} from '@/lib/validators/site-schema'
+import { FEATURE_SUPPORT, getTemplate } from '@/lib/templates'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -44,6 +50,7 @@ import { cn } from '@/lib/utils'
 const projectFormSchema = z.object({
   name: projectSchema.shape.name,
   description: projectSchema.shape.description,
+  pointsText: z.string().max(200, '要点总长最多 200 字'),
   tagsText: z.string().max(120, '标签总长最多 120 字'),
   link: projectSchema.shape.link,
   repo: projectSchema.shape.repo,
@@ -72,6 +79,10 @@ function ProjectDialog({
 }) {
   const addProject = useEditorStore((s) => s.addProject)
   const updateProject = useEditorStore((s) => s.updateProject)
+  const template = useEditorStore((s) => s.template)
+  const support = FEATURE_SUPPORT[template].points
+  const highlightShown = FEATURE_SUPPORT[template].highlight
+  const templateName = getTemplate(template).displayName
 
   const {
     register,
@@ -85,6 +96,7 @@ function ProjectDialog({
     defaultValues: {
       name: editing?.name ?? '',
       description: editing?.description ?? '',
+      pointsText: (editing?.points ?? []).join('\n'),
       tagsText: editing?.tags.join(', ') ?? '',
       link: editing?.link ?? '',
       repo: editing?.repo ?? '',
@@ -96,6 +108,11 @@ function ProjectDialog({
     const payload = {
       name: values.name,
       description: values.description,
+      points: values.pointsText
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .slice(0, MAX_POINT_COUNT),
       tags: parseTags(values.tagsText),
       link: values.link,
       repo: values.repo,
@@ -128,12 +145,19 @@ function ProjectDialog({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>{editing ? '编辑项目' : '添加项目'}</DialogTitle>
-          <DialogDescription>展示在官网「项目作品」区块，精选项目会获得徽章标记。</DialogDescription>
+          <DialogDescription>
+            展示在官网「项目作品」区块，精选项目会获得徽章标记。
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <div>
             <Label htmlFor="project-name">项目名称 *</Label>
-            <Input id="project-name" className="mt-1.5" placeholder="例如：个人博客系统" {...register('name')} />
+            <Input
+              id="project-name"
+              className="mt-1.5"
+              placeholder="例如：个人博客系统"
+              {...register('name')}
+            />
             <FieldError message={errors.name?.message} />
           </div>
           <div>
@@ -148,19 +172,61 @@ function ProjectDialog({
             <FieldError message={errors.description?.message} />
           </div>
           <div>
+            <div>
+              <Label htmlFor="project-points">要点（每行一条，最多 {MAX_POINT_COUNT} 条）</Label>
+              <Textarea
+                id="project-points"
+                className="mt-1.5"
+                rows={3}
+                placeholder={'例如：\n并发播放不卡顿\nQPS 提升 3 倍\n完成课程答辩部署'}
+                {...register('pointsText')}
+              />
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                写「问题 / 做法 / 结果」这类可量化的句子。
+              </p>
+              <p
+                className={
+                  support === 'none'
+                    ? 'mt-1 rounded border border-dashed border-warning/50 bg-warning/10 px-2 py-1 text-[11px] text-foreground'
+                    : 'mt-1 text-[11px] text-muted-foreground'
+                }
+              >
+                {support === 'all' && `当前版式「${templateName}」会逐条列出这三条。`}
+                {support === 'first' && `当前版式「${templateName}」只展示第一条。`}
+                {support === 'none' &&
+                  `当前版式「${templateName}」不展示要点 —— 换成 商务 / 杂志 / 鎏金 / 瑞士 / 极简 才会出现。`}
+              </p>
+              <FieldError message={errors.pointsText?.message} />
+            </div>
+
             <Label htmlFor="project-tags">技术标签（逗号分隔，最多 {MAX_TAG_COUNT} 个）</Label>
-            <Input id="project-tags" className="mt-1.5" placeholder="Next.js, TypeScript, Prisma" {...register('tagsText')} />
+            <Input
+              id="project-tags"
+              className="mt-1.5"
+              placeholder="Next.js, TypeScript, Prisma"
+              {...register('tagsText')}
+            />
             <FieldError message={errors.tagsText?.message} />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label htmlFor="project-link">演示链接</Label>
-              <Input id="project-link" className="mt-1.5" placeholder="https://" {...register('link')} />
+              <Input
+                id="project-link"
+                className="mt-1.5"
+                placeholder="https://"
+                {...register('link')}
+              />
               <FieldError message={errors.link?.message} />
             </div>
             <div>
               <Label htmlFor="project-repo">源码链接</Label>
-              <Input id="project-repo" className="mt-1.5" placeholder="https://" {...register('repo')} />
+              <Input
+                id="project-repo"
+                className="mt-1.5"
+                placeholder="https://"
+                {...register('repo')}
+              />
               <FieldError message={errors.repo?.message} />
             </div>
           </div>
@@ -168,6 +234,12 @@ function ProjectDialog({
             <Label htmlFor="project-highlight" className="flex items-center gap-2 text-sm">
               <Star className="h-4 w-4 text-warning" /> 标记为精选项目
             </Label>
+            {!highlightShown && (
+              <p className="rounded border border-dashed border-warning/50 bg-warning/10 px-2 py-1 text-[11px]">
+                当前版式「{templateName}」不显示精选标记 —— 换 极简 / 商务 / 创意 / 杂志 / 粗野 /
+                鎏金 / 瑞士 才会出现。 标记会保留，切版式后自动生效。
+              </p>
+            )}
             <Switch
               id="project-highlight"
               checked={watch('highlight')}
@@ -189,6 +261,10 @@ function ProjectDialog({
 export function ProjectInput() {
   const projects = useEditorStore((s) => s.data.projects)
   const updateProject = useEditorStore((s) => s.updateProject)
+  const template = useEditorStore((s) => s.template)
+  const pointsMode = FEATURE_SUPPORT[template].points
+  const highlightShown = FEATURE_SUPPORT[template].highlight
+  const templateName = getTemplate(template).displayName
   const removeProject = useEditorStore((s) => s.removeProject)
   const moveProject = useEditorStore((s) => s.moveProject)
 
@@ -252,6 +328,7 @@ export function ProjectInput() {
               <button
                 type="button"
                 aria-label={project.highlight ? '取消精选' : '标记精选'}
+                title={highlightShown ? undefined : `当前版式「${templateName}」不显示精选标记`}
                 onClick={() => updateProject(project.id, { highlight: !project.highlight })}
                 className={cn(
                   'shrink-0 transition-colors',
@@ -305,7 +382,22 @@ export function ProjectInput() {
               </Button>
             </div>
             {project.description && (
-              <p className="mt-1.5 line-clamp-2 pl-6 text-xs text-muted-foreground">{project.description}</p>
+              <p className="mt-1.5 line-clamp-2 pl-6 text-xs text-muted-foreground">
+                {project.description}
+              </p>
+            )}
+            {project.highlight && !highlightShown && (
+              <p className="mt-1 pl-6 text-[11px] text-muted-foreground">精选（当前版式不显示）</p>
+            )}
+            {(project.points?.length ?? 0) > 0 && (
+              <p className="mt-1 pl-6 text-[11px] text-muted-foreground">
+                要点 {project.points!.length} 条
+                {pointsMode === 'none'
+                  ? '（当前版式不显示）'
+                  : pointsMode === 'first'
+                    ? '（仅显示第一条）'
+                    : ''}
+              </p>
             )}
             {project.tags.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-1 pl-6">

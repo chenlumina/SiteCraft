@@ -9,7 +9,7 @@
 ```bash
 pnpm install        # 安装依赖（自动 prisma generate + husky）
 pnpm db:push        # 同步数据库结构（SQLite: prisma/dev.db）
-pnpm db:seed        # 写入 4 套模板 + 示例站点
+pnpm db:seed        # 写入 12 套模板 + 示例站点
 pnpm dev            # http://localhost:3000
 ```
 
@@ -29,14 +29,26 @@ pnpm dev            # http://localhost:3000
 | `pnpm test:unit` | 单元测试（Node 内置运行器 + tsx，自动建独立 test.db，不碰开发库） |
 | `pnpm snapshot` | 重录四模板黄金快照（仅模板视觉有意变更时执行） |
 | `pnpm test:e2e` | 无头 Edge 端到端验证（需先 `pnpm start`，截图存 screenshots/） |
+| `pnpm design:check` | 设计门：无头浏览器量 12 套模板的溢出 / 字号 / 对比度 / 动效降级 / 触摸尺寸，168 项断言 |
+| `pnpm check` | 一把梭：typecheck → lint → 单测 → 设计门（提交前想全绿就跑这个） |
 
-提交前 Husky + lint-staged 自动执行 ESLint 与 Prettier。
+提交前 Husky + lint-staged 自动执行 ESLint 与 Prettier；**推送前** Husky 自动执行 `pnpm design:check`，
+版面回归在本地就拦下（只改文档想跳过：`git push --no-verify`）。
+
+### 设计门（`design:check`）
+
+模板不是靠肉眼验收的。`scripts/design-check.mjs` 用无头 Edge/Chrome 渲染**源码**（不是快照），
+逐套断言 144 项：横向溢出、主标题出界、字号阶梯、**最差正文对比度**（遍历所有叶子文本节点，
+按 WCAG 大/小字阈值判定）、`prefers-reduced-motion` / `:focus-visible` 是否存在、
+块状链接可点高度、字体家族数（≤3）、标题是否真有入场动画、交互元素是否有过渡。CI 里也会跑，回归到"强调色当正文色"这类问题会直接红。
+
+> 认浏览器顺序：`BROWSER_PATH` 环境变量 → 本机 Edge/Chrome → CI 的 `/usr/bin/google-chrome`。
 
 ## 功能一览
 
 - **首页**：模板画廊（真实渲染缩略）、工作流程、我的站点管理（搜索 / 模板筛选 / 排序 / 批量选择 / 删除撤销 / 发布状态切换，视图状态本地持久化）
 - **编辑器** `/editor`：资料 / 技能 / 项目 / 经历 / 主题五区表单（React Hook Form + Zod），技能熟练度滑杆、项目与经历拖拽排序、精选标记、删除撤销；右侧实时预览支持桌面 / 390px 移动端切换
-- **十二套模板**：minimal（极简衬线）、tech（深色终端）、creative（撞色贴纸）、professional（商务简历）、ink（水墨宣纸）、brutal（粗野海报）、aurora（极光玻璃）、editorial（杂志铅字）、gold（鎏金暗夜）、vapor（蒸汽波）、swiss（瑞士国际主义）、kraft（手账牛皮纸），全部基于容器查询响应式，主题色实时联动
+- **十三套模板**：minimal（极简衬线）、tech（深色终端）、creative（撞色贴纸）、professional（商务简历）、ink（水墨宣纸）、brutal（粗野海报）、aurora（极光玻璃）、editorial（报纸内页）、gold（鎏金暗夜）、vapor（蒸汽波）、swiss（瑞士国际主义）、kraft（手账牛皮纸）、metro（地铁线路图），全部基于容器查询响应式，主题色实时联动
 - **全屏预览** `/preview`：所见即所得，链接可点击
 - **导出**：一键下载零依赖静态 HTML（与预览完全一致，用户输入全部转义，URL 协议白名单）
 - **部署**：配置 `GITHUB_TOKEN` 后自动创建仓库、推送首页并开启 GitHub Pages；未配置时给出明确指引并可改为导出
@@ -92,7 +104,7 @@ GITHUB_TOKEN=ghp_xxx   # GitHub Personal Access Token，需 repo 权限
 
 ## 里程碑对照
 
-- Phase 1-3（脚手架 / 编辑器 / 4 模板 / 实时预览 / 导出 / GitHub 部署）：已完成
+- Phase 1-3（脚手架 / 编辑器 / 12 模板 / 实时预览 / 导出 / GitHub 部署）：已完成
 - Phase 4（NextAuth 用户系统、速率限制、Vitest/Playwright 测试）：规范标注为二期可选，当前使用本地默认用户（`lib/default-user.ts`），`(auth)` 路由组留待二期
 
 ## 目录结构
@@ -105,14 +117,14 @@ components/
   ui/                shadcn 基础组件
   editor/            编辑器表单区
   preview/           实时预览
-  templates/         SiteFrame 渲染容器（四套模板样式在生成器 styles.ts 内）
+  templates/         SiteFrame 渲染容器（十二套独立版式见 lib/generators/layouts/）
   home/              首页区块
 lib/
-  generators/        HTML 生成器（escape / color / icons / styles / render-body，单一事实来源）
+  generators/        HTML 生成器（escape / icons / theme-consts / layouts 十二独立版式，单一事实来源）
   site-service.ts    站点落库服务（saveSite / patchSite，所有权校验内置）
   validators/        Zod 校验器（前后端共用单一来源）
   stores/            Zustand 编辑器状态（localStorage 持久化）
 prisma/              schema + seed
-tests/               单元测试 + 四模板黄金快照
+tests/               单元测试 + 十二模板黄金快照
 types/               全局类型
 ```

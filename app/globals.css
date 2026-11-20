@@ -101,13 +101,176 @@
   .panel-scroll::-webkit-scrollbar-track {
     background: transparent;
   }
+
+  /* 首页底纹·点阵稿纸：26px 网格墨点（数据 URI 之外的纯 CSS 层，零请求）。
+     6% 墨色让底纹可感知，又不至于拉低正文对比度 */
+  .paper-dots {
+    background-image: radial-gradient(hsl(40 10% 12% / 0.06) 1px, transparent 1.4px);
+    background-size: 26px 26px;
+  }
+
+  /* 首页底纹·纸纹颗粒：feTurbulence 噪声平铺 + multiply 混合，
+     给暖纸底一层真实纸浆纤维感；stitchTiles 保证 200px 平铺无缝 */
+  .paper-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    mix-blend-mode: multiply;
+    opacity: 0.06;
+  }
+
+  /* ---- 印刷工坊艺术层动效（均尊重全局 reduced-motion / 打印隐藏） ---- */
+
+  /* 邮戳「盖章」入场：从放大淡入到落定，模拟印章砸在纸面 */
+  @keyframes stamp-in {
+    0% {
+      opacity: 0;
+      transform: scale(1.6) rotate(-14deg);
+    }
+    60% {
+      opacity: 0.9;
+      transform: scale(0.96) rotate(-11deg);
+    }
+    100% {
+      opacity: 0.85;
+      transform: scale(1) rotate(-12deg);
+    }
+  }
+  .postmark-stamp {
+    animation: stamp-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.5s both;
+  }
+
+  /* 红笔边注描线：pathLength=1 配合 dashoffset 从 1→0 画出 */
+  @keyframes draw-in {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .marginalia-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw-in 1.1s ease-out 0.9s forwards;
+  }
+
+  /* 墨尘漂浮：缓慢上下 drift + 呼吸透明度 */
+  @keyframes dust-float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+      opacity: 0.1;
+    }
+    50% {
+      transform: translate3d(6px, -22px, 0);
+      opacity: 0.28;
+    }
+  }
+  .ink-dust {
+    animation: dust-float var(--dust-dur, 12s) ease-in-out var(--dust-delay, 0s) infinite;
+  }
+
+  /* 半调墨晕缓慢呼吸缩放，让大面积网点有生命感 */
+  @keyframes bloom-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.06);
+    }
+  }
+  .halftone-breathe {
+    animation: bloom-breathe 14s ease-in-out infinite;
+    transform-origin: center;
+  }
+
+  /* 航线纸飞机轻微悬浮 */
+  @keyframes plane-bob {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(8deg);
+    }
+    50% {
+      transform: translate3d(0, -6px, 0) rotate(4deg);
+    }
+  }
+  .plane-bob {
+    animation: plane-bob 5s ease-in-out infinite;
+  }
+
+  /* ---- 首屏「墨团跟随鼠标」交互（参考 MiMo 式光标墨块） ---- */
+
+  /* 墨团有机形变：border-radius 缓慢演变，模拟墨水表面张力 */
+  @keyframes ink-blob-morph {
+    0%,
+    100% {
+      border-radius: 58% 42% 55% 45% / 52% 58% 42% 48%;
+    }
+    33% {
+      border-radius: 46% 54% 48% 52% / 56% 44% 58% 42%;
+    }
+    66% {
+      border-radius: 52% 48% 62% 38% / 44% 56% 44% 56%;
+    }
+  }
+  .ink-blob-core {
+    background-color: #141210;
+    animation: ink-blob-morph 9s ease-in-out infinite alternate;
+    transition:
+      opacity 0.45s ease,
+      transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /* 首屏中英标语互换：旧句上滑淡出 / 新句下滑淡入 */
+  @keyframes hero-swap-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes hero-swap-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+  }
+  .hero-swap-in {
+    animation: hero-swap-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .hero-swap-out {
+    animation: hero-swap-out 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  /* 样册换张：新样张轻微上浮落定，像把一张新样张放上灯箱 */
+  @keyframes plate-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  .plate-in {
+    animation: plate-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 }
 
-/* 打印兜底：纸面上不允许存在「隐藏等待滚动」的内容 */
+/* 打印兜底：纸面上不允许存在「隐藏等待滚动」的内容；底纹纯装饰，打印时隐藏省墨 */
 @media print {
   .reveal {
     opacity: 1;
     transform: none;
+  }
+  .paper-texture {
+    display: none;
   }
 }
 

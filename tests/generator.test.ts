@@ -27,6 +27,7 @@ const TEMPLATES: TemplateName[] = [
   'vapor',
   'swiss',
   'kraft',
+  'metro',
 ]
 const snapshotDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '__snapshots__')
 
@@ -83,7 +84,10 @@ describe('动态区块：没有内容的区块与锚点不出现', () => {
     assert.ok(!body.includes('id="projects"'))
     assert.ok(!body.includes('id="experience"'))
     assert.ok(body.includes('id="contact"'))
-    assert.ok(body.includes('CONTACT'))
+    // 断言模板自己的文案，而不是 getSections 里那份共享标签：
+    // 共享文案已经从 SectionDef 移除（13 套导航各说各的），测试也不能再依赖它
+    assert.ok(body.includes('LETTER'))
+    assert.ok(body.includes('来信'))
     assert.ok(!body.includes('href="#skills"'))
   })
 

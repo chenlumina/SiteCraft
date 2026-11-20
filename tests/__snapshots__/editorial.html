@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>张亮 · 全栈开发学习者 · Java / Web</title>
+<title>Lead · 全栈开发学习者 · Java / Web</title>
 <meta name="description" content="计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。">
 <meta name="generator" content="SiteCraft 个人官网生成器">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2040%2040'%3E%3Crect%20x='2'%20y='2'%20width='36'%20height='36'%20rx='10'%20fill='%231b1917'/%3E%3Cpath%20d='M15%2014l-6%206%206%206M25%2014l6%206-6%206'%20stroke='%23f8f7f1'%20stroke-width='2.6'%20stroke-linecap='round'%20stroke-linejoin='round'%20fill='none'/%3E%3Ccircle%20cx='20'%20cy='20'%20r='2.2'%20fill='%23f8f7f1'/%3E%3C/svg%3E">
@@ -15,76 +15,146 @@
 /* :where() 把这条重置的特异性降为 (0,1,0)，否则 .site-root a (0,1,1) 会压过各版式按钮的 color */
 .site-root :where(a){color:inherit;text-decoration:none}
 .site-root ul,.site-root ol{list-style:none}
-/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，
-   默认会撑到 300×150 把按钮擑爆；基样式统一收敛到 16px，
-   各版式需要不同尺寸时在自己的 CSS 里覆盖（后加载胜出） */
-.site-root svg{width:16px;height:16px;flex:none}
+/* 图标 SVG 统一尺寸：icon() 产出的 svg 无 width/height 属性，默认会撑到 300×150 把按钮撑爆。
+   这里必须是 :where(svg) 把特异性压到 (0,1,0)——原写法 .site-root svg 是 (0,1,1)，
+   版式里 .g-wave{width:100%} 这类单类覆盖根本盖不过去（后加载不算数，特异性才算数），
+   结果是 gold 的水波 SVG 被压成 16px，整池水缩小 6 倍 */
+.site-root :where(svg){width:16px;height:16px;flex:none}
 .site-root ::selection{background:var(--sp);color:var(--on-sp)}
 .site-root ::-webkit-scrollbar{width:10px;height:10px}
 .site-root ::-webkit-scrollbar-track{background:var(--bg)}
 .site-root ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:2px solid var(--bg)}
 .site-root ::-webkit-scrollbar-thumb:hover{background:var(--sp)}
 .s-name{overflow-wrap:anywhere}
+/* 交互层：所有版式的链接与按钮共用同一条缓动，按下给一次轻反馈。
+   :where() 保持 0 特异性，版式自有时序可以覆盖它 */
+.site-root :where(a,button){transition:color .22s cubic-bezier(.22,.7,.2,1),background-color .22s cubic-bezier(.22,.7,.2,1),border-color .22s cubic-bezier(.22,.7,.2,1),box-shadow .22s cubic-bezier(.22,.7,.2,1),opacity .22s}
+.site-root :where(a,button):active{opacity:.72}
+/* 入场关键帧共用；用哪个由各版式自己挑，不在这里统一套用 */
+@keyframes sf-rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@keyframes sf-land{from{opacity:0;transform:scale(.965)}to{opacity:1;transform:none}}
+@keyframes sf-type{from{opacity:0;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
+@keyframes sf-glow{from{opacity:0;filter:blur(7px)}to{opacity:1;filter:blur(0)}}
+@keyframes sf-glitch{0%{opacity:0;transform:translateX(-7px)}55%{opacity:1;transform:translateX(2px)}100%{opacity:1;transform:none}}
+
+/* 键盘焦点环：所有版式共享，版式可用更高特异性覆盖颜色 */
+/* 导航类链接的触摸下限：line box 只有 19~21px，垫到 WCAG 2.5.8 的 24px */
+.site-root nav a,.site-root header a{display:inline-flex;align-items:center;min-height:24px}
+.site-root a:focus-visible,.site-root button:focus-visible{outline:2px solid var(--sp);outline-offset:3px;border-radius:1px}
+/* 动效整体开关：用户在系统层拒绝动效时，全部版式的动画与过渡一律关闭 */
+@media (prefers-reduced-motion:reduce){
+.site-root *,.site-root *::before,.site-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 @keyframes sp-pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.45)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
 
 
-.site-editorial{--bg:#fafaf6;--fg:#1a1712;--muted:#5c554a;--line:#d6d0c4;--panel:#ffffff;--fd:Georgia,'Times New Roman','Songti SC','SimSun',serif;--fb:Georgia,'Times New Roman','Songti SC','SimSun',serif;--fm:'Cascadia Code',Consolas,ui-monospace,Menlo,monospace}
-.e-paper{max-width:1020px;margin:0 auto;padding:0 clamp(20px,4cqw,48px) 72px}
-.e-mast-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px 0 12px;border-bottom:1px solid var(--fg);font-family:var(--fm);font-size:11px;letter-spacing:.24em;color:var(--muted);text-transform:uppercase}
-.e-masthead{padding:36px 0 6px;text-align:center}
-.e-title{font-family:var(--fd);font-size:clamp(56px,10cqw,108px);font-weight:800;line-height:1;letter-spacing:.01em;font-style:normal;background:none;-webkit-text-fill-color:currentColor}
-.e-subtitle{margin-top:12px;text-align:center;font-family:var(--fd);font-style:italic;font-size:clamp(16px,2.6cqw,21px);color:var(--muted);font-weight:400}
-.e-rule{margin-top:20px;height:4px;background:var(--fg)}
-.e-rule2{margin-top:2px;height:1px;background:var(--fg);margin-bottom:0}
-.e-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:30px;padding:13px 0;border-bottom:1px solid var(--fg);font-family:var(--fm);font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
-.e-nav a:hover{color:var(--fg)}
-.e-statusline{text-align:center;padding:24px 0 0;font-family:var(--fm);font-size:11.5px;letter-spacing:.22em;color:var(--sp);text-transform:uppercase}
-.e-lede{padding:26px 0 44px;border-bottom:1px solid var(--fg);column-count:2;column-gap:44px;font-size:15.5px;line-height:1.95;color:#3a342b}
-.e-lede::first-letter{float:left;font-size:3.2em;line-height:.88;padding:2px 12px 0 0;font-weight:700;color:var(--sp);font-family:var(--fd)}
-.e-sec{padding:46px 0;border-bottom:1px solid var(--fg)}
-.e-sechead{display:flex;align-items:baseline;gap:16px;margin-bottom:28px}
-.e-num{font-family:var(--fd);font-style:italic;font-size:36px;color:var(--sp);font-weight:700;line-height:1}
-.e-h2{font-family:var(--fd);font-size:clamp(24px,3.4cqw,33px);font-weight:800;letter-spacing:-.01em;font-style:normal}
-.e-hline{flex:1;border-bottom:1px solid var(--fg);transform:translateY(-7px)}
+.e-epoints{margin-top:6px;display:grid;gap:2px;list-style:none}
+.e-epoints li{position:relative;padding-left:13px;font-size:12.5px;line-height:1.65;color:var(--fg2, var(--muted, #555))}
+.e-epoints li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:1px;background:var(--sp)}
+.site-editorial{--bg:#faf8f3;--fg:#1a1712;--fg2:#565045;--line:#d9d3c6;--tint:#f2eee4;--fd:Georgia,'Times New Roman','Songti SC','SimSun',serif;--fb:Georgia,'Times New Roman','Songti SC','SimSun',serif;
+  --t-title:clamp(48px,9.2cqw,100px);--t-h2:clamp(21px,2.9cqw,29px);--t-body:15px;--t-lead:16.5px;--t-fine:11.5px;
+  font-variant-numeric:tabular-nums lining-nums}
+.e-paper{max-width:1040px;margin:0 auto;padding:0 clamp(20px,4cqw,48px) 64px}
+
+/* 刊头：这条 3px 线是整份版面的主音，它画出之后整页才开始说话 */
+.e-mast{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding:22px 0 10px;font-size:var(--t-fine);color:var(--fg2);font-variant-caps:small-caps;letter-spacing:.08em}
+.e-masthead{padding:30px 0 4px;text-align:center}
+.e-title{font-family:var(--fd);font-size:var(--t-title);font-weight:800;line-height:.94;letter-spacing:-.025em;
+  margin-left:-.03em;font-style:normal;background:none;-webkit-text-fill-color:currentColor;
+  animation:e-rise .75s cubic-bezier(.22,.7,.2,1) .12s both}
+.e-sub{margin-top:12px;font-style:italic;font-size:clamp(15px,2.2cqw,19px);color:var(--fg2);letter-spacing:.01em}
+.e-rule{margin-top:18px;height:3px;background:var(--fg);transform-origin:left;animation:e-draw .8s cubic-bezier(.22,.7,.2,1) both}
+.e-rule2{margin-top:2px;height:1px;background:var(--fg);transform-origin:left;
+  animation:e-draw .8s cubic-bezier(.22,.7,.2,1) .1s both}
+.e-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:28px;padding:12px 0;
+  border-bottom:1px solid var(--fg);font-size:12px;font-variant-caps:small-caps;letter-spacing:.1em;color:var(--fg2)}
+.e-nav a{padding-bottom:1px}
+.e-nav a:hover{color:var(--fg);box-shadow:0 2px 0 var(--sp)}
+
+.e-status{margin-top:24px;text-align:center;font-style:italic;font-size:13.5px;color:var(--fg2)}
+.e-status::before{content:"";display:inline-block;width:6px;height:6px;background:var(--sp);
+  margin-right:9px;vertical-align:middle;transform:translateY(-1px)}
+
+/* 导语：首字下沉是这份报纸的签名，保留；行宽收窄到 62ch，衬线行距 1.9 */
+.e-lede{padding:22px 0 40px;border-bottom:1px solid var(--fg);column-count:2;column-gap:46px;
+  font-size:var(--t-lead);line-height:1.9;color:#332e26;max-width:none}
+.e-lede::first-letter{float:left;font-size:3.1em;line-height:.86;padding:3px 11px 0 0;font-weight:700;
+  color:var(--sp-ink);font-family:var(--fd)}
+
+.e-sec{padding:42px 0;border-bottom:1px solid var(--fg)}
+.e-sechead{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+.e-num{font-family:var(--fd);font-style:italic;font-size:34px;color:var(--sp-ink);font-weight:700;line-height:1}
+.e-h2{font-family:var(--fd);font-size:var(--t-h2);font-weight:800;letter-spacing:-.015em;font-style:normal;
+  margin-left:-.02em}
+.e-hline{flex:1;height:1px;background:var(--fg);transform:translateY(-6px)}
+
+/* 技能：三列数据表（名称 / 刻度 / 数值），刻度用线长表示比例，数值 tabular 右对齐 */
 .e-table{width:100%;border-collapse:collapse;font-size:14.5px}
-.e-table td{padding:11px 0;border-top:1px solid var(--line);vertical-align:middle}
+.e-table td{padding:10px 0;border-top:1px solid var(--line);vertical-align:middle}
 .e-table tr:first-child td{border-top:none}
-.e-tdname{font-weight:600}
-.e-tdnum{text-align:right;font-family:var(--fm);font-size:12.5px;color:var(--muted);white-space:nowrap}
-.e-sq{display:inline-block;width:9px;height:9px;background:var(--sp);margin-left:12px;vertical-align:middle}
-.e-features{margin-top:6px}
-.e-feat{display:grid;grid-template-columns:104px 1fr;gap:6px 24px;padding:26px 0;border-top:2px solid var(--fg)}
+.e-tdname{font-weight:600;white-space:nowrap;padding-right:18px!important}
+.e-tdbar{width:62%}
+.e-bar{display:block;height:2px;background:var(--line)}
+.e-bar i{display:block;height:2px;background:var(--sp);transform-origin:left;
+  animation:e-draw 1s cubic-bezier(.22,.7,.2,1) both}
+.e-tdnum{text-align:right;font-size:12.5px;color:var(--fg2);white-space:nowrap;padding-left:14px!important}
+
+/* 特稿：编号 + 标题 + 摘要，悬停时编号右移、顶线转金 */
+.e-feat{display:grid;grid-template-columns:100px 1fr;gap:4px 22px;padding:24px 0;border-top:2px solid var(--fg);
+  position:relative}
 .e-feat:first-child{border-top:none;padding-top:0}
-.e-fnum{font-family:var(--fd);font-style:italic;font-size:64px;line-height:.85;color:#d8d2c4;font-weight:700}
-.e-feat:hover .e-fnum{color:var(--sp)}
-.e-fhead h3{font-family:var(--fd);font-style:italic;font-size:clamp(21px,3.2cqw,29px);font-weight:700;overflow-wrap:anywhere}
-.e-fdek{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.8;max-width:68ch}
-.e-fmeta{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--fm);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;list-style:none;align-items:center}
-.e-fmeta a{color:var(--sp);border-bottom:1px solid var(--sp)}
-.e-class{display:grid;grid-template-columns:1fr 1fr;gap:0 44px;margin-top:4px}
+.e-feat::after{content:"";position:absolute;inset:-2px 0 auto 0;height:2px;background:var(--sp);
+  transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.22,.7,.2,1)}
+.e-feat:hover::after{transform:scaleX(1)}
+.e-fnum{font-family:var(--fd);font-style:italic;font-size:60px;line-height:.85;color:var(--sp-ink);font-weight:700;
+  transition:transform .32s cubic-bezier(.22,.7,.2,1)}
+.e-feat:hover .e-fnum{transform:translateX(3px)}
+.e-fhead h3{font-family:var(--fd);font-style:italic;font-size:clamp(20px,3cqw,28px);font-weight:700;
+  line-height:1.2;overflow-wrap:anywhere}
+.e-fdek{margin-top:8px;color:var(--fg2);font-size:14px;line-height:1.8;max-width:62ch}
+.e-topmark{display:inline-block;margin-bottom:6px;padding:1px 7px;font-size:10.5px;letter-spacing:.18em;
+  color:var(--sp-ink);border:1px solid currentColor;border-radius:2px}
+.e-ppoints{margin-top:10px;list-style:none;display:grid;gap:4px}
+.e-ppoints li{position:relative;padding-left:16px;font-size:13px;line-height:1.7;color:#332e26}
+.e-ppoints li::before{content:"—";position:absolute;left:0;color:var(--sp-ink)}
+.e-fmeta{margin-top:11px;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:var(--t-fine);color:var(--fg2);
+  font-variant-caps:small-caps;letter-spacing:.08em;list-style:none;align-items:center}
+.e-fmeta a{color:var(--sp-ink);box-shadow:inset 0 -1px 0 var(--sp-ink);padding-bottom:2px}
+.e-fmeta a:hover{box-shadow:inset 0 -2px 0 var(--sp)}
+
+/* 经历：双栏分类广告式排版 */
+.e-class{display:grid;grid-template-columns:1fr 1fr;gap:0 46px}
 .e-citem{padding:16px 0;border-top:1px solid var(--fg)}
-.e-cwhen{font-family:var(--fm);font-size:11.5px;color:var(--sp);letter-spacing:.16em}
-.e-crole{font-family:var(--fd);font-weight:700;font-size:17px;margin-top:4px}
-.e-corg{font-size:12.5px;color:var(--muted);margin-top:1px}
-.e-cdesc{margin-top:6px;font-size:13.5px;color:var(--muted);line-height:1.7}
-.e-letter{margin-top:48px;border:1px solid var(--fg);padding:40px 44px 36px;text-align:center;position:relative}
-.e-letter::before{content:'“';position:absolute;top:-38px;left:22px;font-family:var(--fd);font-size:96px;color:#d8d2c4;line-height:1}
-.e-lead{color:var(--muted);font-size:14.5px;max-width:50ch;margin:0 auto;line-height:1.8}
-.e-mail{display:inline-block;margin-top:20px;font-family:var(--fd);font-size:19px;border-bottom:2px solid var(--sp);padding-bottom:3px;color:var(--fg)}
-.e-mail:hover{color:var(--sp)}
-.e-soc{margin-top:24px;display:flex;justify-content:center;gap:22px}
+.e-cwhen{font-size:var(--t-fine);color:var(--sp-ink);letter-spacing:.04em;font-variant-caps:small-caps}
+.e-crole{font-family:var(--fd);font-weight:700;font-size:16.5px;margin-top:5px;line-height:1.3}
+.e-corg{font-size:12.5px;color:var(--fg2);margin-top:2px}
+.e-cdesc{margin-top:6px;font-size:13.5px;color:var(--fg2);line-height:1.7;max-width:46ch}
+
+/* 联系：去掉装饰引号，只剩一条框线和一个可点的地址 */
+.e-letter{margin-top:44px;border:1px solid var(--fg);padding:38px 40px 34px;text-align:center}
+.e-lead{color:var(--fg2);font-size:14.5px;max-width:46ch;margin:0 auto;line-height:1.85}
+.e-mail{display:inline-block;margin-top:18px;font-family:var(--fd);font-size:19px;
+  box-shadow:inset 0 -2px 0 var(--sp);padding-bottom:3px;color:var(--fg)}
+.e-mail:hover{box-shadow:inset 0 -4px 0 var(--sp)}
+.e-soc{margin-top:24px;display:flex;justify-content:center;gap:20px}
 .e-soc a{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--fg);border-radius:0;color:var(--fg)}
 .e-soc a:hover{background:var(--fg);color:var(--bg)}
-.e-foot{padding-top:26px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:var(--fm);font-size:11px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
+.e-foot{padding-top:24px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font-size:var(--t-fine);color:var(--fg2);letter-spacing:.04em;font-variant-caps:small-caps}
+
+@keyframes e-draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes e-rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
 @container (max-width:760px){
 .e-lede{column-count:1}
-.e-feat{grid-template-columns:1fr;gap:4px}
-.e-fnum{font-size:40px}
+.e-feat{grid-template-columns:1fr;gap:2px}
+.e-fnum{font-size:38px}
 .e-class{grid-template-columns:1fr}
-.e-letter{padding:30px 24px}
+.e-letter{padding:28px 22px}
 }
 
-.site-editorial{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;}
+.site-editorial{--sp:#22d3ee;--sp2:#2244ee;--sp-soft:rgba(34, 211, 238, 0.14);--sp-glow:rgba(34, 211, 238, 0.32);--on-sp:#0b1220;--sp-ink:#137483;--sp-inkd:#22d3ee;}
 html{scroll-behavior:smooth;scrollbar-color:#fafaf6 auto}
 body{margin:0;background:#fafaf6}
 </style>
@@ -92,53 +162,59 @@ body{margin:0;background:#fafaf6}
 <body>
 <div class="site-root site-editorial">
   <div class="e-paper">
-    <div class="e-mast-top"><span>PERSONAL ISSUE — 2026</span><span>湖北 · 武汉</span></div>
+<div class="e-mast"><span>第 7 期 · 2026</span><span>湖北 · 武汉</span></div>
     <header class="e-masthead">
-      <h1 class="s-name e-title">张亮</h1>
-      <p class="e-subtitle">全栈开发学习者 · Java / Web</p>
+      <h1 class="s-name e-title">Lead</h1>
+      <p class="e-sub">全栈开发学习者 · Java / Web</p>
     </header>
     <div class="e-rule"></div>
     <div class="e-rule2"></div>
-    <nav class="e-nav" aria-label="站点导航"><a href="#skills">技能</a><a href="#projects">项目</a><a href="#experience">经历</a><a href="#contact">联系</a></nav>
+    <nav class="e-nav" aria-label="站点导航"><a href="#projects">特稿</a><a href="#experience">纪事</a><a href="#skills">技能版</a><a href="#contact">读者来信</a></nav>
     <main>
-      <p class="e-statusline">● 正在寻找 2027 届实习机会</p>
+      <p class="e-status">正在寻找 2027 届实习机会</p>
       <p class="e-lede">计算机科学与技术专业在读，专注 Java Web 与前端工程化。喜欢把课程项目打磨成真正能上线的产品，相信「做出来」比「想出来」更有说服力。</p>
-      <section class="e-sec" id="skills"><div class="e-sechead"><span class="e-num">01</span><h2 class="e-h2">技能栈</h2><span class="e-hline"></span></div><table class="e-table"><tr><td class="e-tdname">Java</td><td class="e-tdnum">85 / 100<span class="e-sq"></span></td></tr><tr><td class="e-tdname">Spring Boot</td><td class="e-tdnum">75 / 100<span class="e-sq"></span></td></tr><tr><td class="e-tdname">MySQL</td><td class="e-tdnum">72 / 100<span class="e-sq"></span></td></tr><tr><td class="e-tdname">HTML / CSS</td><td class="e-tdnum">82 / 100<span class="e-sq"></span></td></tr><tr><td class="e-tdname">JavaScript</td><td class="e-tdnum">74 / 100<span class="e-sq"></span></td></tr><tr><td class="e-tdname">Vue 3</td><td class="e-tdnum">65 / 100<span class="e-sq"></span></td></tr><tr><td class="e-tdname">Next.js</td><td class="e-tdnum">62 / 100<span class="e-sq"></span></td></tr><tr><td class="e-tdname">Linux</td><td class="e-tdnum">68 / 100<span class="e-sq"></span></td></tr></table></section>
-      <section class="e-sec" id="projects"><div class="e-sechead"><span class="e-num">02</span><h2 class="e-h2">项目特稿</h2><span class="e-hline"></span></div><div class="e-features"><article class="e-feat"><span class="e-fnum">01</span>
+      <section class="e-sec" id="projects"><div class="e-sechead"><span class="e-num">01</span><h2 class="e-h2">项目</h2><span class="e-hline"></span></div><div class="e-features"><article class="e-feat"><span class="e-fnum">01</span>
   <div class="e-fhead">
-    <h3>音乐网站 music-web</h3>
+    <span class="e-topmark">头条</span><h3>音乐网站 music-web</h3>
     <p class="e-fdek">基于 Jakarta EE 的个人音乐站点：歌曲上传、在线播放、歌单管理与评论互动，外置 Tomcat 10 部署。</p>
+    <ul class="e-ppoints"><li>300+ 首曲目上传后并发播放不卡顿</li><li>手写 JDBC 连接池，QPS 提升约 3 倍</li><li>外置 Tomcat 10 完成课程答辩部署</li></ul>
     <ul class="e-fmeta"><li>Java</li><li>Jakarta EE</li><li>Tomcat</li><li>MySQL</li></ul>
   </div></article><article class="e-feat"><span class="e-fnum">02</span>
   <div class="e-fhead">
     <h3>教室预约系统</h3>
     <p class="e-fdek">Java Web 课程设计：教室查询、时段预约、审批管理与冲突检测，含完整 UI 规范文档。</p>
+    
     <ul class="e-fmeta"><li>Servlet</li><li>JSP</li><li>MySQL</li></ul>
   </div></article><article class="e-feat"><span class="e-fnum">03</span>
   <div class="e-fhead">
-    <h3>个人官网生成器</h3>
-    <p class="e-fdek">Next.js 14 全栈应用：可视化编辑、十二套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+    <span class="e-topmark">头条</span><h3>个人官网生成器</h3>
+    <p class="e-fdek">Next.js 14 全栈应用：可视化编辑、十三套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。</p>
+    <ul class="e-ppoints"><li>13 套版式共用一份渲染器，导出零依赖单文件</li><li>182 项版面断言纳入 CI，回归当场拦下</li></ul>
     <ul class="e-fmeta"><li>Next.js</li><li>TypeScript</li><li>Prisma</li><li>Tailwind</li></ul>
   </div></article><article class="e-feat"><span class="e-fnum">04</span>
   <div class="e-fhead">
     <h3>操作系统实验笔记</h3>
     <p class="e-fdek">Linux 0.11 内核实验记录：系统启动、系统调用与信号量应用的完整实现与实验报告。</p>
+    
     <ul class="e-fmeta"><li>C</li><li>Assembly</li><li>Linux</li></ul>
   </div></article></div></section>
-      <section class="e-sec" id="experience"><div class="e-sechead"><span class="e-num">03</span><h2 class="e-h2">经历</h2><span class="e-hline"></span></div><div class="e-class"><article class="e-citem"><span class="e-cwhen">2024.09 - 至今</span>
+      <section class="e-sec" id="experience"><div class="e-sechead"><span class="e-num">02</span><h2 class="e-h2">经历</h2><span class="e-hline"></span></div><div class="e-class"><article class="e-citem"><span class="e-cwhen">2024.09 - 至今</span>
   <h3 class="e-crole">本科生 · 计算机科学与技术</h3>
   <p class="e-corg">计算机学院</p>
-  <p class="e-cdesc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p></article><article class="e-citem"><span class="e-cwhen">2025.03 - 至今</span>
+  <p class="e-cdesc">主修 JavaEE、操作系统、数据库原理；独立完成多个课程项目的全流程开发，从需求分析到部署上线。</p>
+  <ul class="e-epoints"><li>专业课均分 88 / 100</li><li>独立完成 4 个课程项目并全部部署上线</li><li>担任课程设计小组负责人</li></ul></article><article class="e-citem"><span class="e-cwhen">2025.03 - 至今</span>
   <h3 class="e-crole">独立开发者</h3>
   <p class="e-corg">个人项目</p>
-  <p class="e-cdesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p></article></div></section>
+  <p class="e-cdesc">课余持续交付个人项目，实践前后端分离、数据库设计与 Linux 运维，积累工程化经验。</p>
+  </article></div></section>
+      <section class="e-sec" id="skills"><div class="e-sechead"><span class="e-num">03</span><h2 class="e-h2">技能</h2><span class="e-hline"></span></div><table class="e-table"><tr><td class="e-tdname">Java</td><td class="e-tdbar"><span class="e-bar"><i style="width:85%;animation-delay:160ms"></i></span></td><td class="e-tdnum">85</td></tr><tr><td class="e-tdname">Spring Boot</td><td class="e-tdbar"><span class="e-bar"><i style="width:75%;animation-delay:200ms"></i></span></td><td class="e-tdnum">75</td></tr><tr><td class="e-tdname">MySQL</td><td class="e-tdbar"><span class="e-bar"><i style="width:72%;animation-delay:240ms"></i></span></td><td class="e-tdnum">72</td></tr><tr><td class="e-tdname">HTML / CSS</td><td class="e-tdbar"><span class="e-bar"><i style="width:82%;animation-delay:280ms"></i></span></td><td class="e-tdnum">82</td></tr><tr><td class="e-tdname">JavaScript</td><td class="e-tdbar"><span class="e-bar"><i style="width:74%;animation-delay:320ms"></i></span></td><td class="e-tdnum">74</td></tr><tr><td class="e-tdname">Vue 3</td><td class="e-tdbar"><span class="e-bar"><i style="width:65%;animation-delay:360ms"></i></span></td><td class="e-tdnum">65</td></tr><tr><td class="e-tdname">Next.js</td><td class="e-tdbar"><span class="e-bar"><i style="width:62%;animation-delay:400ms"></i></span></td><td class="e-tdnum">62</td></tr><tr><td class="e-tdname">Linux</td><td class="e-tdbar"><span class="e-bar"><i style="width:68%;animation-delay:440ms"></i></span></td><td class="e-tdnum">68</td></tr></table></section>
       <section class="e-letter" id="contact">
         <h2 class="e-h2" style="font-style:italic">一起聊聊？</h2>
-        <p class="e-lead">无论是实习机会、项目合作，还是单纯想打个招呼，都欢迎来信。</p>
-        <a class="e-mail" href="mailto:zhangliang@example.com">zhangliang@example.com</a>
+        <p class="e-lead">实习、项目合作，或者只是打个招呼，都写信给我。</p>
+        <a class="e-mail" href="mailto:lead@example.com">lead@example.com</a>
         <div class="e-soc"><a class="e-soc-a" href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a><a class="e-soc-a" href="https://www.bilibili.com" target="_blank" rel="noopener noreferrer" aria-label="哔哩哔哩" title="哔哩哔哩"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 3 3 3m7-3-3 3"/><rect x="2" y="6" width="20" height="15" rx="3"/><path d="M9 11v3m6-3v3"/></svg></a></div>
       </section>
-      <footer class="e-foot"><span>© 2026 张亮</span><span>由 SiteCraft 个人官网生成器构建</span></footer>
+      <footer class="e-foot"><span>© 2026 Lead</span><span>由 SiteCraft 个人官网生成器构建</span></footer>
     </main>
   </div>
 </div>

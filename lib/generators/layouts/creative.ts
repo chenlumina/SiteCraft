@@ -7,14 +7,32 @@ import type { SiteData } from '@/types'
 import { esc } from '../escape'
 import { socialLinks } from '../icons'
 import { FONT_MONO, FONT_SANS } from '../theme-consts'
-import { avatarHTML, chipsHTML, clampLevel, getSections, mailBtn, projectLinks, tagItems } from './shared'
+import {
+  avatarHTML,
+  chipsHTML,
+  clampLevel,
+  getSections,
+  mailBtn,
+  projectLinks,
+  tagItems,
+  orderSections,
+} from './shared'
 
 export const CREATIVE_CSS = `
+.c-hl{display:inline-block;margin-right:8px;padding:1px 5px;font-size:10.5px;letter-spacing:.12em;
+  color:var(--sp-ink);border:1px solid currentColor;border-radius:2px;vertical-align:2px;}
 .site-creative{--bg:#fff8f0;--fg:#292524;--muted:#78716c;--line:#292524;--panel:#ffffff;--shadow:rgba(41,37,36,.16);--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO}}
 .c-nav{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;padding:18px 20px;border-bottom:3px solid var(--fg)}
 .c-nav a{border:2px solid var(--fg);background:#fff;padding:7px 16px;border-radius:999px;font-weight:800;font-size:13px;box-shadow:3px 3px 0 var(--fg);transition:transform .15s,box-shadow .15s}
 .c-nav a:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--fg)}
 .c-hero{position:relative;text-align:center;padding:76px 24px 60px;border-bottom:3px solid var(--fg);background-image:radial-gradient(rgba(41,37,36,.08) 1.5px,transparent 1.5px);background-size:22px 22px;overflow:hidden}
+/* 主视觉锚点：马克笔手绘圈注。路径是手画的、故意不闭合，
+   描边用 dashoffset 从"笔尖落下"画出来；reduced-motion 下直接是画好的圈 */
+.c-namewrap{position:relative;display:inline-block;padding:6px 18px}
+.c-circle{position:absolute;inset:-6% -4%;width:108%;height:112%;overflow:visible;pointer-events:none}
+.c-circle path{fill:none;stroke:var(--sp);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:920;stroke-dashoffset:0;animation:c-draw .85s .25s cubic-bezier(.4,.1,.3,1) both}
+@keyframes c-draw{from{stroke-dashoffset:920}to{stroke-dashoffset:0}}
 .c-hero::before{content:'';position:absolute;right:-70px;top:-70px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,var(--sp-soft),transparent 70%);pointer-events:none}
 .c-status{display:inline-block;transform:rotate(-2deg);border:2px solid var(--fg);background:var(--sp);color:var(--on-sp);font-weight:800;padding:8px 18px;border-radius:12px;box-shadow:4px 4px 0 var(--fg);font-size:14px}
 .c-name{margin-top:26px;font-size:clamp(46px,8cqw,78px);font-weight:900;letter-spacing:-.02em;transform:rotate(-1.5deg);background:linear-gradient(100deg,var(--sp),var(--sp2));-webkit-background-clip:text;background-clip:text;color:transparent;font-style:normal}
@@ -66,15 +84,26 @@ export const CREATIVE_CSS = `
 .c-polos{grid-template-columns:1fr}
 .c-note{max-width:none}
 }
+/* 入场：只做一次，落在名字上 */
+.c-name{animation:sf-land .7s cubic-bezier(.34,1.3,.64,1) .05s both}
 `
 
 export function renderCreative(data: SiteData): string {
   const sections = getSections(data)
-  const nav = sections.map((s) => `<a href="#${s.id}">${s.navLabel}</a>`).join('')
+  const NAV: Record<string, string> = {
+    skills: '贴纸',
+    projects: '拍立得',
+    experience: '便签',
+    contact: '来信',
+  }
+  const nav = orderSections(sections, ['projects', 'skills', 'experience', 'contact'])
+    .map((s) => `<a href="#${s.id}">${NAV[s.id]}</a>`)
+    .join('')
 
   const skills = data.skills
     .map(
-      (s) => `<div class="c-ring"><span class="c-disc" style="--p:${clampLevel(s.level)}"><i>${clampLevel(s.level)}</i></span><b>${esc(s.name)}</b></div>`
+      (s) =>
+        `<div class="c-ring"><span class="c-disc" style="--p:${clampLevel(s.level)}"><i>${clampLevel(s.level)}</i></span><b>${esc(s.name)}</b></div>`
     )
     .join('')
 
@@ -82,7 +111,7 @@ export function renderCreative(data: SiteData): string {
     .map((p) => {
       const links = projectLinks(p.link, p.repo)
       return `<article class="c-polo"><div class="c-polo-head"></div>
-  <h3 class="c-pname">${esc(p.name)}</h3>
+  ${p.highlight ? `<span class="c-hl">精选</span>` : ''}<h3 class="c-pname">${esc(p.name)}</h3>
   ${p.description.trim() ? `<p class="c-pdesc">${esc(p.description.trim())}</p>` : ''}
   ${p.tags.some((t) => t.trim()) ? `<ul class="c-ptags">${tagItems(p.tags, 'c-ptag')}</ul>` : ''}
   ${links ? `<div class="c-plinks">${links}</div>` : ''}</article>`
@@ -106,14 +135,19 @@ export function renderCreative(data: SiteData): string {
   <main>
     <section class="c-hero">
       ${data.status.trim() ? `<p class="c-status">${esc(data.status.trim())}</p>` : ''}
-      <h1 class="s-name c-name">${esc(data.name)}</h1>
+      <div class="c-namewrap">
+        <h1 class="s-name c-name">${esc(data.name)}</h1>
+        <svg class="c-circle" viewBox="0 0 320 150" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M26,78 C22,34 118,10 205,14 C284,18 312,56 298,88 C284,120 158,138 88,128 C40,121 8,108 26,78 C34,64 58,54 88,48"/>
+        </svg>
+      </div>
       <p class="c-role">${esc(data.title)}</p>
       ${avatarHTML(data, 'c-face', 'c-monogram')}
       <div class="c-chips">${chipsHTML(data, 'c-chip')}</div>
     </section>
     <div class="c-wrap">
-      ${sections.some((s) => s.id === 'skills') ? `<section id="skills"><h2 class="c-h2">技能贴纸</h2><div class="c-rings">${skills}</div></section>` : ''}
       ${sections.some((s) => s.id === 'projects') ? `<section id="projects"><h2 class="c-h2">作品拍立得</h2><div class="c-polos">${projects}</div></section>` : ''}
+      ${sections.some((s) => s.id === 'skills') ? `<section id="skills"><h2 class="c-h2">技能贴纸</h2><div class="c-rings">${skills}</div></section>` : ''}
       ${sections.some((s) => s.id === 'experience') ? `<section id="experience"><h2 class="c-h2">足迹便签</h2><div class="c-notes">${experience}</div></section>` : ''}
       <section class="c-big" id="contact">
         <h2 class="c-h2">一起聊聊？</h2>

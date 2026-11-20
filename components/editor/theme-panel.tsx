@@ -7,12 +7,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Palette, RotateCcw } from 'lucide-react'
+import { ArrowRight, Palette, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { useEditorStore } from '@/lib/stores/editor-store'
 import { TEMPLATES, getTemplate } from '@/lib/templates'
 import { isValidHexColor } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { contrastInk } from '@/lib/generators/color'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { FormSection } from '@/components/editor/form-section'
@@ -36,6 +37,22 @@ export function ThemePanel() {
       setHexError('格式应为 #RRGGBB，例如 #22d3ee')
     }
   }
+
+  // 与生成器同源的派生：文字用色 = 强调色按模板底色压到 ≥4.8:1
+  const isHex = isValidHexColor(primaryColor)
+  const baseColor = isHex ? primaryColor : meta.defaultColor
+  const inkColor = contrastInk(baseColor, '#ffffff')
+  const contrastRatio = (() => {
+    const rel = (hex: string) => {
+      const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+      return c.map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+    }
+    const [a, b] = [rel(inkColor), rel('#ffffff')].map(
+      (c) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    )
+    const [hi, lo] = [a, b].sort((x, y) => y - x)
+    return (Math.round(((hi + 0.05) / (lo + 0.05)) * 10) / 10).toFixed(1)
+  })()
 
   return (
     <div className="space-y-4">
@@ -73,7 +90,7 @@ export function ThemePanel() {
               className={cn(
                 'aspect-square rounded-lg border-2 transition-transform hover:scale-110',
                 primaryColor.toLowerCase() === color.toLowerCase()
-                  ? 'border-foreground scale-110'
+                  ? 'scale-110 border-foreground'
                   : 'border-transparent'
               )}
               style={{ backgroundColor: color }}
@@ -111,7 +128,35 @@ export function ThemePanel() {
         {hexError && <p className="mt-1 text-xs text-danger">{hexError}</p>}
       </FormSection>
 
-      <FormSection title="模板风格" description="十二套模板各自拥有独立的版式与气质">
+      <FormSection
+        title="文字用色"
+        description="强调色用于底色、刻度与线条；当它被用作正文文字时，会自动压暗到可读"
+      >
+        <div className="flex items-center gap-3 rounded-lg border bg-background px-3 py-2.5">
+          <div className="flex items-center gap-1.5" aria-hidden="true">
+            <span
+              className="h-5 w-5 rounded-full border border-border"
+              style={{ backgroundColor: isHex ? primaryColor : meta.defaultColor }}
+            />
+            <ArrowRight className="h-3 w-3 text-muted-foreground" />
+            <span
+              className="h-5 w-5 rounded-full border border-border"
+              style={{ backgroundColor: inkColor }}
+            />
+          </div>
+          <div className="min-w-0 text-[11px] leading-relaxed text-muted-foreground">
+            <span className="font-mono text-foreground">
+              {(isHex ? primaryColor : meta.defaultColor).toLowerCase()}
+            </span>
+            {' → '}
+            <span className="font-mono text-foreground">{inkColor}</span>
+            <br />
+            正文对比度 {contrastRatio}:1（低于 4.8 会自动压暗，避免看不清）
+          </div>
+        </div>
+      </FormSection>
+
+      <FormSection title="模板风格" description="十三套模板各自拥有独立的版式与气质">
         <div className="grid grid-cols-2 gap-2">
           {TEMPLATES.map((t) => {
             const active = template === t.name
