@@ -23,7 +23,7 @@ interface ArtistEditorState {
   removeArtwork: (id: string) => void
   moveArtwork: (from: number, to: number) => void
   setFeatured: (id: string) => void
-  addMedia: (artworkId: string) => void
+  addMedia: (artworkId: string, seed?: { url?: string; title?: string }) => void
   updateMedia: (artworkId: string, mediaId: string, patch: Partial<Omit<MediaItem, 'id'>>) => void
   removeMedia: (artworkId: string, mediaId: string) => void
   moveMedia: (artworkId: string, from: number, to: number) => void
@@ -113,7 +113,7 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
           },
         })),
 
-      addMedia: (artworkId) =>
+      addMedia: (artworkId, seed) =>
         set((state) => ({
           dirty: true,
           data: {
@@ -121,7 +121,13 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
             artworks: state.data.artworks.map((artwork) => {
               if (artwork.id !== artworkId || artwork.media.length >= MAX_MEDIA_PER_ARTWORK)
                 return artwork
-              const media: MediaItem = { id: uid(), type: 'image', url: '', poster: '', title: '' }
+              const media: MediaItem = {
+                id: uid(),
+                type: 'image',
+                url: seed?.url ?? '',
+                poster: '',
+                title: seed?.title ?? '',
+              }
               return { ...artwork, media: [...artwork.media, media] }
             }),
           },

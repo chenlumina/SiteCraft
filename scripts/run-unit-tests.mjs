@@ -42,6 +42,7 @@ const result = spawnSync(
     'tests/artist-schema.test.ts',
     'tests/artist-generator.test.ts',
     'tests/artist-site-service.test.ts',
+    'tests/artist-image-intake.test.ts',
   ],
   { stdio: 'inherit', cwd: root, env: testEnv }
 )

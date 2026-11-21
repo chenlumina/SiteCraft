@@ -4,10 +4,21 @@
  */
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { ArrowDown, ArrowUp, Download, Eye, Loader2, Plus, Save, Star, Trash2 } from 'lucide-react'
+import {
+  ArrowDown,
+  ArrowUp,
+  Download,
+  Eye,
+  Loader2,
+  Plus,
+  Save,
+  Star,
+  Trash2,
+  Upload,
+} from 'lucide-react'
 import { toast } from 'sonner'
 import type { ApiResponse } from '@/types'
 import type { ArtistSiteRecord } from '@/types/artist'
@@ -15,6 +26,7 @@ import { BrandLogo } from '@/components/brand-logo'
 import { ArtistSiteFrame } from '@/components/artist-editor/artist-site-frame'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { fileToDataUri, formatBytes } from '@/lib/artist/image-intake'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useArtistEditorStore } from '@/lib/stores/artist-editor-store'
@@ -252,11 +264,66 @@ function Field({
 function ArtworkList() {
   const artworks = useArtistEditorStore((state) => state.data.artworks)
   const store = useArtistEditorStore.getState()
+
+  // 上传目标放 ref 而不是 state：文件选择器回调可能在 re-render 之前触发，
+  // 读 state 会拿到 null 导致"点了上传没反应"。
+  const pendingRef = useRef<string | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  function pickFiles(artworkId: string) {
+    pendingRef.current = artworkId
+    fileRef.current?.click()
+  }
+
+  async function handleFiles(files: FileList | null) {
+    const artworkId = pendingRef.current
+    pendingRef.current = null
+    if (!files || !artworkId) return
+    const artwork = artworks.find((a) => a.id === artworkId)
+    if (!artwork) return
+    let added = 0
+    for (const file of Array.from(files)) {
+      if (artwork.media.length + added >= MAX_MEDIA_PER_ARTWORK) {
+        toast.error('这件作品的图片已达上限')
+        break
+      }
+      try {
+        const result = await fileToDataUri(file)
+        store.addMedia(artworkId, { url: result.uri, title: result.name })
+        // 封面留空时，第一张上传的图自动成为封面
+        if (!artwork.cover.trim() && added === 0) {
+          store.updateArtwork(artworkId, { cover: result.uri })
+        }
+        toast.success(
+          (result.downscaled ? '已自动压缩并内联：' : '已内联：') +
+            result.name +
+            ' · ' +
+            formatBytes(result.bytes)
+        )
+        added += 1
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : '图片处理失败')
+      }
+    }
+  }
   return (
     <div className="space-y-3">
       <p className="text-xs leading-6 text-muted-foreground">
-        重点作品会首先出现在展厅。图片使用 URL，封面未指定时使用第一张图片。
+        重点作品会首先出现在展厅。图片可上传本地文件（自动内联进导出文件）或直接填
+        URL；封面未指定时使用第一张图片。
       </p>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        aria-label="选择图片文件"
+        onChange={(event) => {
+          void handleFiles(event.target.files)
+          event.target.value = ''
+        }}
+      />
       {artworks.map((artwork, index) => (
         <section key={artwork.id} className="rounded-lg border bg-background p-3">
           <div className="flex items-center justify-between gap-2 text-sm font-semibold">
@@ -398,16 +465,28 @@ function ArtworkList() {
                   </button>
                 </div>
               ))}
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                disabled={artwork.media.length >= MAX_MEDIA_PER_ARTWORK}
-                onClick={() => store.addMedia(artwork.id)}
-                className="mt-1 w-full border-dashed"
-              >
-                <Plus /> 添加图片
-              </Button>
+              <div className="mt-1 grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={artwork.media.length >= MAX_MEDIA_PER_ARTWORK}
+                  onClick={() => pickFiles(artwork.id)}
+                  className="border-dashed"
+                >
+                  <Upload /> 上传图片
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  disabled={artwork.media.length >= MAX_MEDIA_PER_ARTWORK}
+                  onClick={() => store.addMedia(artwork.id)}
+                  className="border-dashed"
+                >
+                  <Plus /> 添加图片
+                </Button>
+              </div>
             </div>
           </div>
         </section>
