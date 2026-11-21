@@ -4,7 +4,7 @@
  */
 import type { SiteStatus, SiteTheme, SocialLinks } from './index'
 
-export type ArtistTemplateName = 'gallery'
+export type ArtistTemplateName = 'gallery' | 'exhibition'
 export type MediaType = 'image' | 'audio' | 'video'
 
 export interface MediaItem {

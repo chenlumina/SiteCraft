@@ -43,6 +43,8 @@ function ArtistEditorInner() {
   const params = useSearchParams()
   const [ready, setReady] = useState(false)
   const [tab, setTab] = useState<'profile' | 'artworks' | 'exhibitions' | 'theme'>('artworks')
+  const template = useArtistEditorStore((state) => state.template)
+  const setTemplate = useArtistEditorStore((state) => state.setTemplate)
   const [mobilePreview, setMobilePreview] = useState(false)
   const { saveSite, exportHtml } = useArtistSiteActions()
   const { data, siteName, dirty, saving } = useArtistEditorStore()
@@ -160,6 +162,35 @@ function ArtistEditorInner() {
           {tab === 'exhibitions' && <ExhibitionList />}
           {tab === 'theme' && (
             <div>
+              <Label>版式</Label>
+              <div className="mb-5 mt-2 grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setTemplate('gallery')}
+                  className={cn(
+                    'rounded-lg border p-3 text-left transition-colors',
+                    template === 'gallery'
+                      ? 'border-foreground bg-muted/60'
+                      : 'border-border text-muted-foreground hover:border-foreground/40'
+                  )}
+                >
+                  <span className="block text-sm font-medium">画廊</span>
+                  <span className="mt-0.5 block text-[11px] leading-5">竖排画册，一次看很多</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('exhibition')}
+                  className={cn(
+                    'rounded-lg border p-3 text-left transition-colors',
+                    template === 'exhibition'
+                      ? 'border-foreground bg-muted/60'
+                      : 'border-border text-muted-foreground hover:border-foreground/40'
+                  )}
+                >
+                  <span className="block text-sm font-medium">展览</span>
+                  <span className="mt-0.5 block text-[11px] leading-5">横向动线，一面墙一件</span>
+                </button>
+              </div>
               <Label htmlFor="artist-color">强调色</Label>
               <div className="mt-2 flex items-center gap-3">
                 <input

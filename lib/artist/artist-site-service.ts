@@ -1,13 +1,16 @@
 /** 艺术站点保存与列表：与开发站点 API 分离，避免两套内容契约互相污染 */
 import type { Site } from '@prisma/client'
-import type { ArtistSiteData, ArtistSiteRecord } from '@/types/artist'
+import type { ArtistSiteData, ArtistSiteRecord, ArtistTemplateName } from '@/types/artist'
 import type { SiteStatus } from '@/types'
 import { prisma } from '@/lib/prisma'
+
+/** 艺术方向当前的版式集合：两套共用同一份内容契约，列表查询按这个集合过滤 */
+export const ARTIST_TEMPLATES: ArtistTemplateName[] = ['gallery', 'exhibition']
 
 export interface SaveArtistSiteInput {
   id?: string
   name: string
-  template: 'gallery'
+  template: ArtistTemplateName
   content: ArtistSiteData
   status?: SiteStatus
 }
@@ -23,7 +26,9 @@ export function artistSiteToRecord(site: Site): ArtistSiteRecord {
   return {
     id: site.id,
     name: site.name,
-    template: 'gallery',
+    template: (ARTIST_TEMPLATES.includes(site.template as ArtistTemplateName)
+      ? site.template
+      : 'gallery') as ArtistTemplateName,
     status: site.status === 'published' ? 'published' : 'draft',
     content: JSON.parse(site.content) as ArtistSiteRecord['content'],
     createdAt: site.createdAt.toISOString(),
@@ -33,14 +38,16 @@ export function artistSiteToRecord(site: Site): ArtistSiteRecord {
 
 export async function listArtistSites(userId: string): Promise<ArtistSiteRecord[]> {
   const sites = await prisma.site.findMany({
-    where: { userId, template: 'gallery' },
+    where: { userId, template: { in: ARTIST_TEMPLATES } },
     orderBy: { updatedAt: 'desc' },
   })
   return sites.map(artistSiteToRecord)
 }
 
 export async function getArtistSite(userId: string, id: string): Promise<ArtistSiteRecord | null> {
-  const site = await prisma.site.findFirst({ where: { id, userId, template: 'gallery' } })
+  const site = await prisma.site.findFirst({
+    where: { id, userId, template: { in: ARTIST_TEMPLATES } },
+  })
   return site ? artistSiteToRecord(site) : null
 }
 
@@ -50,13 +57,13 @@ export async function saveArtistSite(
 ): Promise<ArtistSiteRecord> {
   const data = {
     name: input.name,
-    template: 'gallery',
+    template: input.template,
     content: JSON.stringify(input.content),
     ...(input.status !== undefined ? { status: input.status } : {}),
   }
   if (input.id) {
     const existing = await prisma.site.findFirst({
-      where: { id: input.id, userId, template: 'gallery' },
+      where: { id: input.id, userId, template: { in: ARTIST_TEMPLATES } },
     })
     if (!existing) throw new ArtistSiteNotFoundError()
     const site = await prisma.site.update({ where: { id: input.id }, data })

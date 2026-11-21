@@ -90,7 +90,7 @@ export const artistSiteDataSchema = siteDataSchema
 export const artistSaveSiteSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().trim().min(1, '站点名称不能为空').max(60, '站点名称最多 60 字'),
-  template: z.literal('gallery'),
+  template: z.enum(['gallery', 'exhibition']),
   content: artistSiteDataSchema,
   status: z.enum(['draft', 'published']).optional(),
 })

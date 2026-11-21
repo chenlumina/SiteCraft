@@ -33,6 +33,10 @@ for (const template of [
   process.stdout.write(`snapshot: ${template}.html (${html.length} chars)\n`)
 }
 
-const artistHtml = generateArtistSiteHTML(createGallerySampleData())
+const artistHtml = generateArtistSiteHTML(createGallerySampleData(), 'gallery')
 writeFileSync(path.join(outDir, 'artist-gallery.html'), artistHtml, 'utf-8')
 process.stdout.write(`snapshot: artist-gallery.html (${artistHtml.length} chars)\n`)
+
+const exhibitionHtml = generateArtistSiteHTML(createGallerySampleData(), 'exhibition')
+writeFileSync(path.join(outDir, 'artist-exhibition.html'), exhibitionHtml, 'utf-8')
+process.stdout.write(`snapshot: artist-exhibition.html (${exhibitionHtml.length} chars)\n`)

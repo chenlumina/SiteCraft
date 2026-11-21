@@ -9,6 +9,7 @@ import { inlineArtistAssets } from '@/lib/artist/inline-assets'
 import { downloadTextFile, safeFileName } from '@/lib/utils'
 
 export function useArtistSiteActions() {
+  const template = useArtistEditorStore((state) => state.template)
   async function saveSite(): Promise<ArtistSiteRecord | null> {
     const { siteId, siteName, data, markSaved, setSaving } = useArtistEditorStore.getState()
     if (!siteName.trim()) {
@@ -23,7 +24,7 @@ export function useArtistSiteActions() {
         body: JSON.stringify({
           id: siteId ?? undefined,
           name: siteName,
-          template: 'gallery',
+          template,
           content: data,
         }),
       })
@@ -46,7 +47,7 @@ export function useArtistSiteActions() {
   async function exportHtml() {
     const { data, siteName } = useArtistEditorStore.getState()
     const resolved = await inlineArtistAssets(data)
-    downloadTextFile(`${safeFileName(siteName)}.html`, generateArtistSiteHTML(resolved))
+    downloadTextFile(`${safeFileName(siteName)}.html`, generateArtistSiteHTML(resolved, template))
     toast.success('已导出 Gallery 单文件')
   }
 

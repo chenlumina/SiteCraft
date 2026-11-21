@@ -69,4 +69,24 @@ describe('Gallery 真实渲染器', () => {
     assert.ok(html.includes('个展') || html.includes('群展'), '应标注展览类型')
     assert.ok(html.includes('href="#exhibitions"'), '导航应指向展览区块')
   })
+
+  it('展览版式：横向作品墙、可聚焦、展览履历与尺寸都在', () => {
+    const html = generateArtistSiteHTML(createGallerySampleData(), 'exhibition')
+    assert.ok(html.includes('class="ex-wall"'), '应有作品墙容器')
+    assert.ok(html.includes('scroll-snap'), '作品墙应使用 scroll-snap')
+    assert.ok(/tabindex="0"/.test(html), '作品墙应可聚焦（键盘左右切换）')
+    assert.ok(html.includes('id="cv"'), '应有展览履历区块')
+    assert.ok(html.includes('120 × 90 cm'), '尺寸应出现在展览版式')
+    assert.equal((html.match(/<script/g) || []).length, 0, '展览版式同样零脚本')
+    assert.ok(!html.includes('/images/artworks'), '展览版式同样自包含')
+  })
+
+  it('两套艺术版式共用同一份数据，产物结构不同', () => {
+    const data = createGallerySampleData()
+    const gallery = generateArtistSiteHTML(data, 'gallery')
+    const exhibition = generateArtistSiteHTML(data, 'exhibition')
+    assert.notEqual(gallery, exhibition)
+    assert.ok(gallery.includes('artist-gallery'))
+    assert.ok(exhibition.includes('artist-exhibition'))
+  })
 })

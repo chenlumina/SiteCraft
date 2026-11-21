@@ -9,6 +9,7 @@ import type {
   Artwork,
   MediaItem,
   Exhibition,
+  ArtistTemplateName,
 } from '@/types/artist'
 import { createGallerySampleData } from '@/lib/artist/sample-gallery'
 import { moveItem, uid } from '@/lib/utils'
@@ -21,12 +22,14 @@ import {
 interface ArtistEditorState {
   siteId: string | null
   siteName: string
+  template: ArtistTemplateName
   data: ArtistSiteData
   dirty: boolean
   saving: boolean
   newArtistSite: (name?: string) => void
   loadArtistSite: (record: ArtistSiteRecord) => void
   setSiteName: (name: string) => void
+  setTemplate: (template: ArtistTemplateName) => void
   updateData: (patch: Partial<ArtistSiteData>) => void
   addArtwork: () => void
   updateArtwork: (id: string, patch: Partial<Omit<Artwork, 'id'>>) => void
@@ -49,6 +52,7 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
     (set) => ({
       siteId: null,
       siteName: '我的作品集',
+      template: 'gallery' as ArtistTemplateName,
       data: createGallerySampleData(),
       dirty: false,
       saving: false,
@@ -57,6 +61,7 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
         set({
           siteId: null,
           siteName: '我的作品集',
+          template: 'gallery',
           data: { ...createGallerySampleData(), name: name?.trim() || '林墨' },
           dirty: false,
           saving: false,
@@ -65,11 +70,13 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
         set({
           siteId: record.id,
           siteName: record.name,
+          template: record.template,
           data: record.content,
           dirty: false,
           saving: false,
         }),
       setSiteName: (siteName) => set({ siteName, dirty: true }),
+      setTemplate: (template) => set({ template, dirty: true }),
       updateData: (patch) => set((state) => ({ data: { ...state.data, ...patch }, dirty: true })),
 
       addArtwork: () =>

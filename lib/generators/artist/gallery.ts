@@ -64,7 +64,7 @@ export const GALLERY_CSS = `
 @media (prefers-reduced-motion:reduce){.artist-gallery *{animation:none!important;transition:none!important}}
 `
 
-function safeImageSource(value: string): string {
+export function safeImageSource(value: string): string {
   const standard = safeUrl(value)
   if (standard) return standard
   // 仅导出流程生成的图片 data URI 放行；用户输入仍受 Zod 的 http(s)/站内路径限制
