@@ -89,9 +89,9 @@ export function SiteNav({
         )}
         <Button asChild size="sm" className="gap-1.5">
           {mode === 'artist' ? (
-            <a href="#curation">
+            <Link href="/artist-editor?new=1">
               开始策展 <ArrowRight />
-            </a>
+            </Link>
           ) : (
             <Link href="/editor">
               开始创建 <ArrowRight />

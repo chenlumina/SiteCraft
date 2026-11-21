@@ -105,7 +105,7 @@ export function MySites() {
       const res = await fetch('/api/sites')
       const json = (await res.json()) as ApiResponse<SiteRecord[]>
       if (!json.success || !json.data) throw new Error(json.error ?? '加载失败')
-      setSites(json.data)
+      setSites(json.data.filter((site) => site.content.archetype !== 'artist'))
     } catch (error) {
       setLoadError(error instanceof Error ? error.message : '加载失败')
     } finally {
@@ -184,7 +184,9 @@ export function MySites() {
       })
       const json = (await res.json()) as ApiResponse<SiteRecord>
       if (!json.success) throw new Error(json.error)
-      toast.success(nextStatus === 'published' ? `「${site.name}」已发布` : `「${site.name}」已转为草稿`)
+      toast.success(
+        nextStatus === 'published' ? `「${site.name}」已发布` : `「${site.name}」已转为草稿`
+      )
     } catch {
       setSites((prev) => prev.map((s) => (s.id === site.id ? { ...s, status: site.status } : s)))
       toast.error('状态更新失败，已回滚')
@@ -206,7 +208,9 @@ export function MySites() {
     <section id="sites" className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-20">
       <div className="reveal mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">My Sites</p>
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+            My Sites
+          </p>
           <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             我的站点
           </h2>
@@ -248,7 +252,10 @@ export function MySites() {
             ))}
           </SelectContent>
         </Select>
-        <Select value={view.sort} onValueChange={(value) => setView((v) => ({ ...v, sort: value as SortKey }))}>
+        <Select
+          value={view.sort}
+          onValueChange={(value) => setView((v) => ({ ...v, sort: value as SortKey }))}
+        >
           <SelectTrigger className="w-36" aria-label="排序方式">
             <ArrowDownUp className="mr-1 h-3.5 w-3.5 text-muted-foreground" />
             <SelectValue />
@@ -259,7 +266,12 @@ export function MySites() {
             <SelectItem value="name">名称 A → Z</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" size="icon" aria-label="刷新列表" onClick={() => void fetchSites()}>
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label="刷新列表"
+          onClick={() => void fetchSites()}
+        >
           <RefreshCw className={cn(loading && 'animate-spin')} />
         </Button>
       </div>
@@ -307,9 +319,7 @@ export function MySites() {
       ) : visible.length === 0 ? (
         <div className="rounded-xl border border-dashed p-12 text-center">
           <Globe className="mx-auto h-10 w-10 text-muted-foreground" />
-          <p className="mt-4 font-medium">
-            {sites.length === 0 ? '还没有站点' : '没有匹配的站点'}
-          </p>
+          <p className="mt-4 font-medium">{sites.length === 0 ? '还没有站点' : '没有匹配的站点'}</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {sites.length === 0 ? '创建你的第一个个人官网吧' : '试试调整搜索或筛选条件'}
           </p>
@@ -418,7 +428,10 @@ export function MySites() {
       <Dialog open={confirmIds !== null} onOpenChange={(open) => !open && setConfirmIds(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>确认删除{confirmIds && confirmIds.length > 1 ? ` ${confirmIds.length} 个站点` : '站点'}？</DialogTitle>
+            <DialogTitle>
+              确认删除
+              {confirmIds && confirmIds.length > 1 ? ` ${confirmIds.length} 个站点` : '站点'}？
+            </DialogTitle>
             <DialogDescription>
               删除后 {UNDO_WINDOW_MS / 1000} 秒内可在提示中撤销，超时将从数据库永久移除。
             </DialogDescription>

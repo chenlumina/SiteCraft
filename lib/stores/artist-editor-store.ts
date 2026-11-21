@@ -1,0 +1,184 @@
+/** 艺术编辑器独立状态：只管理作品与媒体，不混入开发站点的技能/项目操作 */
+'use client'
+
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import type { ArtistSiteData, ArtistSiteRecord, Artwork, MediaItem } from '@/types/artist'
+import { createGallerySampleData } from '@/lib/artist/sample-gallery'
+import { moveItem, uid } from '@/lib/utils'
+import { MAX_ARTWORK_COUNT, MAX_MEDIA_PER_ARTWORK } from '@/lib/validators/artist-schema'
+
+interface ArtistEditorState {
+  siteId: string | null
+  siteName: string
+  data: ArtistSiteData
+  dirty: boolean
+  saving: boolean
+  newArtistSite: (name?: string) => void
+  loadArtistSite: (record: ArtistSiteRecord) => void
+  setSiteName: (name: string) => void
+  updateData: (patch: Partial<ArtistSiteData>) => void
+  addArtwork: () => void
+  updateArtwork: (id: string, patch: Partial<Omit<Artwork, 'id'>>) => void
+  removeArtwork: (id: string) => void
+  moveArtwork: (from: number, to: number) => void
+  setFeatured: (id: string) => void
+  addMedia: (artworkId: string) => void
+  updateMedia: (artworkId: string, mediaId: string, patch: Partial<Omit<MediaItem, 'id'>>) => void
+  removeMedia: (artworkId: string, mediaId: string) => void
+  moveMedia: (artworkId: string, from: number, to: number) => void
+  markSaved: (id: string) => void
+  setSaving: (saving: boolean) => void
+}
+
+export const useArtistEditorStore = create<ArtistEditorState>()(
+  persist(
+    (set) => ({
+      siteId: null,
+      siteName: '我的作品集',
+      data: createGallerySampleData(),
+      dirty: false,
+      saving: false,
+
+      newArtistSite: (name) =>
+        set({
+          siteId: null,
+          siteName: '我的作品集',
+          data: { ...createGallerySampleData(), name: name?.trim() || '林墨' },
+          dirty: false,
+          saving: false,
+        }),
+      loadArtistSite: (record) =>
+        set({
+          siteId: record.id,
+          siteName: record.name,
+          data: record.content,
+          dirty: false,
+          saving: false,
+        }),
+      setSiteName: (siteName) => set({ siteName, dirty: true }),
+      updateData: (patch) => set((state) => ({ data: { ...state.data, ...patch }, dirty: true })),
+
+      addArtwork: () =>
+        set((state) => {
+          if (state.data.artworks.length >= MAX_ARTWORK_COUNT) return state
+          const artwork: Artwork = {
+            id: uid(),
+            title: '',
+            series: '',
+            year: new Date().getFullYear().toString(),
+            medium: '',
+            description: '',
+            cover: '',
+            media: [],
+            featured: false,
+          }
+          return {
+            dirty: true,
+            data: { ...state.data, artworks: [...state.data.artworks, artwork] },
+          }
+        }),
+      updateArtwork: (id, patch) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            artworks: state.data.artworks.map((artwork) =>
+              artwork.id === id ? { ...artwork, ...patch } : artwork
+            ),
+          },
+        })),
+      removeArtwork: (id) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            artworks: state.data.artworks.filter((artwork) => artwork.id !== id),
+          },
+        })),
+      moveArtwork: (from, to) =>
+        set((state) => ({
+          dirty: true,
+          data: { ...state.data, artworks: moveItem(state.data.artworks, from, to) },
+        })),
+      setFeatured: (id) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            artworks: state.data.artworks.map((artwork) => ({
+              ...artwork,
+              featured: artwork.id === id ? !artwork.featured : false,
+            })),
+          },
+        })),
+
+      addMedia: (artworkId) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            artworks: state.data.artworks.map((artwork) => {
+              if (artwork.id !== artworkId || artwork.media.length >= MAX_MEDIA_PER_ARTWORK)
+                return artwork
+              const media: MediaItem = { id: uid(), type: 'image', url: '', poster: '', title: '' }
+              return { ...artwork, media: [...artwork.media, media] }
+            }),
+          },
+        })),
+      updateMedia: (artworkId, mediaId, patch) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            artworks: state.data.artworks.map((artwork) =>
+              artwork.id === artworkId
+                ? {
+                    ...artwork,
+                    media: artwork.media.map((media) =>
+                      media.id === mediaId ? { ...media, ...patch } : media
+                    ),
+                  }
+                : artwork
+            ),
+          },
+        })),
+      removeMedia: (artworkId, mediaId) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            artworks: state.data.artworks.map((artwork) =>
+              artwork.id === artworkId
+                ? { ...artwork, media: artwork.media.filter((media) => media.id !== mediaId) }
+                : artwork
+            ),
+          },
+        })),
+      moveMedia: (artworkId, from, to) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            artworks: state.data.artworks.map((artwork) =>
+              artwork.id === artworkId
+                ? { ...artwork, media: moveItem(artwork.media, from, to) }
+                : artwork
+            ),
+          },
+        })),
+      markSaved: (id) => set({ siteId: id, dirty: false, saving: false }),
+      setSaving: (saving) => set({ saving }),
+    }),
+    {
+      name: 'sitecraft-artist-editor',
+      version: 1,
+      partialize: (state) => ({
+        siteId: state.siteId,
+        siteName: state.siteName,
+        data: state.data,
+        dirty: state.dirty,
+      }),
+    }
+  )
+)

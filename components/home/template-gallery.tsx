@@ -73,7 +73,7 @@ export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) 
           Templates
         </p>
         <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          十二套版式，十二种性格
+          十三套版式，十三种性格
         </h2>
         <p className="mt-3 text-muted-foreground">
           像翻样册一样浏览：索引悬停即换，样张为真实渲染——看到的就是选用后得到的。

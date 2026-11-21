@@ -350,7 +350,7 @@ function MarginaliaNote({ className }: { className?: string }) {
         className="marginalia-draw"
       />
       <text x="6" y="80" fill={SEAL} fontSize="13" fontStyle="italic" className="font-display">
-        十二套，全部真实渲染
+        十三套，全部真实渲染
       </text>
     </svg>
   )

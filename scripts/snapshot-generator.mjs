@@ -8,6 +8,8 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { generateSiteHTML } from '../lib/generators/html-generator'
 import { createSampleData } from '../lib/sample-data'
+import { generateArtistSiteHTML } from '../lib/generators/artist/html-generator'
+import { createGallerySampleData } from '../lib/artist/sample-gallery'
 
 const outDir = path.resolve('tests/__snapshots__')
 mkdirSync(outDir, { recursive: true })
@@ -30,3 +32,7 @@ for (const template of [
   writeFileSync(path.join(outDir, `${template}.html`), html, 'utf-8')
   process.stdout.write(`snapshot: ${template}.html (${html.length} chars)\n`)
 }
+
+const artistHtml = generateArtistSiteHTML(createGallerySampleData())
+writeFileSync(path.join(outDir, 'artist-gallery.html'), artistHtml, 'utf-8')
+process.stdout.write(`snapshot: artist-gallery.html (${artistHtml.length} chars)\n`)

@@ -32,10 +32,16 @@ const result = spawnSync(
   [
     '--import', 'tsx',
     '--test',
+    // 多个测试文件共用 prisma/test.db：node:test 默认并行跑文件，
+    // 两个文件都会 deleteMany({}) 清表 → INTERNAL 争用导致偶发失败。串行即可。
+    '--test-concurrency=1',
     'tests/generator.test.ts',
     'tests/site-service.test.ts',
     'tests/archetypes.test.ts',
     'tests/ai-pipeline.test.ts',
+    'tests/artist-schema.test.ts',
+    'tests/artist-generator.test.ts',
+    'tests/artist-site-service.test.ts',
   ],
   { stdio: 'inherit', cwd: root, env: testEnv }
 )
