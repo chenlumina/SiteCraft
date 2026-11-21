@@ -18,6 +18,7 @@ import {
   Star,
   Trash2,
   Upload,
+  ImageIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { ApiResponse } from '@/types'
@@ -81,7 +82,7 @@ function ArtistEditorInner() {
   if (!ready) return <EditorSkeleton />
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-background">
+    <div className="flex min-h-[100dvh] flex-col bg-background lg:h-[100dvh]">
       <header className="flex min-h-16 flex-wrap items-center gap-3 border-b px-4 py-2">
         <Link href="/" aria-label="返回展厅">
           <BrandLogo withText={false} />
@@ -128,7 +129,10 @@ function ArtistEditorInner() {
       </div>
 
       <div className="grid min-h-0 flex-1 lg:grid-cols-[420px_minmax(0,1fr)]">
-        <aside className={cn('overflow-y-auto border-r p-4', mobilePreview && 'hidden lg:block')}>
+        {/* 移动端交给整页滚动：嵌套滚动条会让人以为"滑不动" */}
+        <aside
+          className={cn('border-r p-4 lg:overflow-y-auto', mobilePreview && 'hidden lg:block')}
+        >
           <div className="mb-5 grid grid-cols-3 rounded-lg bg-muted p-1 text-xs">
             {(['profile', 'artworks', 'theme'] as const).map((item) => (
               <button
@@ -331,13 +335,22 @@ function ArtworkList() {
             <span className="flex shrink-0 items-center gap-1">
               <button
                 type="button"
+                aria-label={`上传图片到 ${artwork.title || index + 1}`}
+                disabled={artwork.media.length >= MAX_MEDIA_PER_ARTWORK}
+                onClick={() => pickFiles(artwork.id)}
+                className="grid h-7 w-7 shrink-0 place-items-center rounded text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-20"
+              >
+                <Upload className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
                 aria-label={`前移 ${artwork.title}`}
                 disabled={index === 0}
                 onClick={(e) => {
                   e.preventDefault()
                   store.moveArtwork(index, index - 1)
                 }}
-                className="grid h-6 w-6 place-items-center disabled:opacity-20"
+                className="grid h-7 w-7 shrink-0 place-items-center disabled:opacity-20"
               >
                 <ArrowUp className="h-3.5 w-3.5" />
               </button>
@@ -349,7 +362,7 @@ function ArtworkList() {
                   e.preventDefault()
                   store.moveArtwork(index, index + 1)
                 }}
-                className="grid h-6 w-6 place-items-center disabled:opacity-20"
+                className="grid h-7 w-7 shrink-0 place-items-center disabled:opacity-20"
               >
                 <ArrowDown className="h-3.5 w-3.5" />
               </button>
@@ -428,6 +441,21 @@ function ArtworkList() {
               </p>
               {artwork.media.map((media, mediaIndex) => (
                 <div key={media.id} className="mb-2 flex items-center gap-1.5">
+                  {/* 缩略图：data URI 与远程 URL 都能显示，加载失败显示占位 */}
+                  <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded border bg-muted">
+                    {media.url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={media.url}
+                        alt=""
+                        aria-hidden="true"
+                        loading="lazy"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <ImageIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                    )}
+                  </span>
                   <Input
                     aria-label={`图片 ${mediaIndex + 1} URL`}
                     placeholder="图片 URL"
@@ -442,7 +470,7 @@ function ArtworkList() {
                     aria-label="上移图片"
                     disabled={mediaIndex === 0}
                     onClick={() => store.moveMedia(artwork.id, mediaIndex, mediaIndex - 1)}
-                    className="grid h-6 w-6 place-items-center disabled:opacity-20"
+                    className="grid h-7 w-7 shrink-0 place-items-center disabled:opacity-20"
                   >
                     <ArrowUp className="h-3.5 w-3.5" />
                   </button>
@@ -451,7 +479,7 @@ function ArtworkList() {
                     aria-label="下移图片"
                     disabled={mediaIndex === artwork.media.length - 1}
                     onClick={() => store.moveMedia(artwork.id, mediaIndex, mediaIndex + 1)}
-                    className="grid h-6 w-6 place-items-center disabled:opacity-20"
+                    className="grid h-7 w-7 shrink-0 place-items-center disabled:opacity-20"
                   >
                     <ArrowDown className="h-3.5 w-3.5" />
                   </button>
@@ -459,7 +487,7 @@ function ArtworkList() {
                     type="button"
                     aria-label="删除图片"
                     onClick={() => store.removeMedia(artwork.id, media.id)}
-                    className="grid h-6 w-6 place-items-center text-muted-foreground"
+                    className="grid h-7 w-7 shrink-0 place-items-center text-muted-foreground"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>

@@ -289,20 +289,32 @@ function EditorInner() {
             <NewSiteButton />
           </div>
           <Tabs defaultValue="profile">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="profile" aria-label="资料">
+            <TabsList className="grid h-auto w-full grid-cols-5 sm:h-9">
+              <TabsTrigger className="min-h-11 sm:min-h-0" value="profile" aria-label="资料">
                 <User /> <span className="hidden xl:inline">资料</span>
               </TabsTrigger>
-              <TabsTrigger value="skills" aria-label={archetype.copy.skills}>
+              <TabsTrigger
+                className="min-h-11 sm:min-h-0"
+                value="skills"
+                aria-label={archetype.copy.skills}
+              >
                 <Sparkles /> <span className="hidden xl:inline">{archetype.copy.skills}</span>
               </TabsTrigger>
-              <TabsTrigger value="projects" aria-label={archetype.copy.projects}>
+              <TabsTrigger
+                className="min-h-11 sm:min-h-0"
+                value="projects"
+                aria-label={archetype.copy.projects}
+              >
                 <FolderGit2 /> <span className="hidden xl:inline">{archetype.copy.projects}</span>
               </TabsTrigger>
-              <TabsTrigger value="experience" aria-label={archetype.copy.experience}>
+              <TabsTrigger
+                className="min-h-11 sm:min-h-0"
+                value="experience"
+                aria-label={archetype.copy.experience}
+              >
                 <Briefcase /> <span className="hidden xl:inline">{archetype.copy.experience}</span>
               </TabsTrigger>
-              <TabsTrigger value="theme" aria-label="主题">
+              <TabsTrigger className="min-h-11 sm:min-h-0" value="theme" aria-label="主题">
                 <Palette /> <span className="hidden xl:inline">主题</span>
               </TabsTrigger>
             </TabsList>

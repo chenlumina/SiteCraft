@@ -95,7 +95,7 @@ export function WelcomeScreen({ onComplete }: { onComplete?: (profile: VisitorPr
         </Link>
         <Link
           href="/"
-          className="flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground"
+          className="flex min-h-11 items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground sm:min-h-0"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> 返回当前首页
         </Link>
