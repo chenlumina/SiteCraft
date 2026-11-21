@@ -49,4 +49,12 @@ describe('艺术数据契约', () => {
     assert.equal(artworkSchema.safeParse({ ...artwork, title: '' }).success, false)
     assert.equal(artworkSchema.safeParse({ ...artwork, title: '作'.repeat(61) }).success, false)
   })
+
+  it('展览履历缺省为空数组，尺寸可留空', () => {
+    const data = createGallerySampleData()
+    delete (data as { exhibitions?: unknown }).exhibitions
+    const parsed = artistSiteDataSchema.parse(data)
+    assert.deepEqual(parsed.exhibitions, [])
+    assert.equal(typeof parsed.artworks[0].dimensions, 'string')
+  })
 })

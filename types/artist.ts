@@ -21,10 +21,21 @@ export interface Artwork {
   series: string
   year: string
   medium: string
+  /** 尺寸，自由文本（"120 × 90 cm"、"可变尺寸"、"A2"），艺术评论第一眼看的就是它 */
+  dimensions: string
   description: string
   cover: string
   media: MediaItem[]
   featured: boolean
+}
+
+/** 展览履历：艺术家的 CV，等价于开发者的仓库链接。role 用于区分个展/群展 */
+export interface Exhibition {
+  id: string
+  year: string
+  title: string
+  venue: string
+  role: string
 }
 
 export interface ArtistSiteRecord {
@@ -48,4 +59,5 @@ export interface ArtistSiteData {
   socials: SocialLinks
   theme: SiteTheme
   artworks: Artwork[]
+  exhibitions: Exhibition[]
 }

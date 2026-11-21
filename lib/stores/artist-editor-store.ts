@@ -3,10 +3,20 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { ArtistSiteData, ArtistSiteRecord, Artwork, MediaItem } from '@/types/artist'
+import type {
+  ArtistSiteData,
+  ArtistSiteRecord,
+  Artwork,
+  MediaItem,
+  Exhibition,
+} from '@/types/artist'
 import { createGallerySampleData } from '@/lib/artist/sample-gallery'
 import { moveItem, uid } from '@/lib/utils'
-import { MAX_ARTWORK_COUNT, MAX_MEDIA_PER_ARTWORK } from '@/lib/validators/artist-schema'
+import {
+  MAX_ARTWORK_COUNT,
+  MAX_EXHIBITION_COUNT,
+  MAX_MEDIA_PER_ARTWORK,
+} from '@/lib/validators/artist-schema'
 
 interface ArtistEditorState {
   siteId: string | null
@@ -23,6 +33,9 @@ interface ArtistEditorState {
   removeArtwork: (id: string) => void
   moveArtwork: (from: number, to: number) => void
   setFeatured: (id: string) => void
+  addExhibition: () => void
+  updateExhibition: (id: string, patch: Partial<Omit<Exhibition, 'id'>>) => void
+  removeExhibition: (id: string) => void
   addMedia: (artworkId: string, seed?: { url?: string; title?: string }) => void
   updateMedia: (artworkId: string, mediaId: string, patch: Partial<Omit<MediaItem, 'id'>>) => void
   removeMedia: (artworkId: string, mediaId: string) => void
@@ -68,6 +81,7 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
             series: '',
             year: new Date().getFullYear().toString(),
             medium: '',
+            dimensions: '',
             description: '',
             cover: '',
             media: [],
@@ -110,6 +124,46 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
               ...artwork,
               featured: artwork.id === id ? !artwork.featured : false,
             })),
+          },
+        })),
+
+      addExhibition: () =>
+        set((state) => {
+          const list = state.data.exhibitions ?? []
+          if (list.length >= MAX_EXHIBITION_COUNT) return state
+          return {
+            dirty: true,
+            data: {
+              ...state.data,
+              exhibitions: [
+                ...list,
+                {
+                  id: uid(),
+                  year: String(new Date().getFullYear()),
+                  title: '',
+                  venue: '',
+                  role: 'group' as const,
+                },
+              ],
+            },
+          }
+        }),
+      updateExhibition: (id, patch) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            exhibitions: (state.data.exhibitions ?? []).map((x) =>
+              x.id === id ? { ...x, ...patch } : x
+            ),
+          },
+        })),
+      removeExhibition: (id) =>
+        set((state) => ({
+          dirty: true,
+          data: {
+            ...state.data,
+            exhibitions: (state.data.exhibitions ?? []).filter((x) => x.id !== id),
           },
         })),
 

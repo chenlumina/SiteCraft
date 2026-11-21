@@ -42,7 +42,7 @@ function EditorSkeleton() {
 function ArtistEditorInner() {
   const params = useSearchParams()
   const [ready, setReady] = useState(false)
-  const [tab, setTab] = useState<'profile' | 'artworks' | 'theme'>('artworks')
+  const [tab, setTab] = useState<'profile' | 'artworks' | 'exhibitions' | 'theme'>('artworks')
   const [mobilePreview, setMobilePreview] = useState(false)
   const { saveSite, exportHtml } = useArtistSiteActions()
   const { data, siteName, dirty, saving } = useArtistEditorStore()
@@ -133,8 +133,8 @@ function ArtistEditorInner() {
         <aside
           className={cn('border-r p-4 lg:overflow-y-auto', mobilePreview && 'hidden lg:block')}
         >
-          <div className="mb-5 grid grid-cols-3 rounded-lg bg-muted p-1 text-xs">
-            {(['profile', 'artworks', 'theme'] as const).map((item) => (
+          <div className="mb-5 grid grid-cols-4 rounded-lg bg-muted p-1 text-xs">
+            {(['profile', 'artworks', 'exhibitions', 'theme'] as const).map((item) => (
               <button
                 key={item}
                 type="button"
@@ -144,13 +144,20 @@ function ArtistEditorInner() {
                   tab === item ? 'bg-card shadow-sm' : 'text-muted-foreground'
                 )}
               >
-                {item === 'profile' ? '个人资料' : item === 'artworks' ? '作品管理' : '主题'}
+                {item === 'profile'
+                  ? '个人资料'
+                  : item === 'artworks'
+                    ? '作品管理'
+                    : item === 'exhibitions'
+                      ? '履历'
+                      : '主题'}
               </button>
             ))}
           </div>
 
           {tab === 'profile' && <ProfileForm />}
           {tab === 'artworks' && <ArtworkList />}
+          {tab === 'exhibitions' && <ExhibitionList />}
           {tab === 'theme' && (
             <div>
               <Label htmlFor="artist-color">强调色</Label>
@@ -403,13 +410,24 @@ function ArtworkList() {
                 />
               </Field>
             </div>
-            <Field label="媒介" htmlFor={`medium-${artwork.id}`}>
-              <Input
-                id={`medium-${artwork.id}`}
-                value={artwork.medium}
-                onChange={(e) => store.updateArtwork(artwork.id, { medium: e.target.value })}
-              />
-            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="媒介" htmlFor={`medium-${artwork.id}`}>
+                <Input
+                  id={`medium-${artwork.id}`}
+                  placeholder="水彩、数字拼贴"
+                  value={artwork.medium}
+                  onChange={(e) => store.updateArtwork(artwork.id, { medium: e.target.value })}
+                />
+              </Field>
+              <Field label="尺寸" htmlFor={`dim-${artwork.id}`}>
+                <Input
+                  id={`dim-${artwork.id}`}
+                  placeholder="120 × 90 cm"
+                  value={artwork.dimensions}
+                  onChange={(e) => store.updateArtwork(artwork.id, { dimensions: e.target.value })}
+                />
+              </Field>
+            </div>
             <Field label="创作说明" htmlFor={`desc-${artwork.id}`}>
               <Textarea
                 id={`desc-${artwork.id}`}
@@ -527,6 +545,91 @@ function ArtworkList() {
         className="w-full border-dashed"
       >
         <Plus /> 添加作品（{artworks.length}/{MAX_ARTWORK_COUNT}）
+      </Button>
+    </div>
+  )
+}
+
+function ExhibitionList() {
+  const exhibitions = useArtistEditorStore((state) => state.data.exhibitions ?? [])
+  const store = useArtistEditorStore.getState()
+  const roleLabel: Record<string, string> = { solo: '个展', group: '群展', other: '其他' }
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs leading-6 text-muted-foreground">
+        展览履历是艺术家的一张 CV。按年份倒序填写，展厅会把它排在「全部作品」之后。
+      </p>
+      {exhibitions.length === 0 && (
+        <p className="rounded border border-dashed px-3 py-6 text-center text-xs text-muted-foreground">
+          还没有展览记录。第一次个展、参与的联展，都可以列在这里。
+        </p>
+      )}
+      {exhibitions.map((item, index) => (
+        <section key={item.id} className="rounded-lg border bg-background p-3">
+          <div className="mb-2 flex items-center justify-between gap-2 text-sm font-semibold">
+            <span className="truncate">
+              {item.year || '—'} · {roleLabel[item.role] ?? ''} · {item.title || '未命名展览'}
+            </span>
+            <button
+              type="button"
+              aria-label={`删除履历 ${index + 1}`}
+              onClick={() => store.removeExhibition(item.id)}
+              className="grid h-7 w-7 shrink-0 place-items-center text-muted-foreground hover:text-destructive"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <Field label="年份" htmlFor={`ex-year-${item.id}`}>
+              <Input
+                id={`ex-year-${item.id}`}
+                value={item.year}
+                onChange={(e) => store.updateExhibition(item.id, { year: e.target.value })}
+              />
+            </Field>
+            <Field label="类型" htmlFor={`ex-role-${item.id}`}>
+              <select
+                id={`ex-role-${item.id}`}
+                value={item.role}
+                onChange={(e) =>
+                  store.updateExhibition(item.id, {
+                    role: e.target.value as 'solo' | 'group' | 'other',
+                  })
+                }
+                className="mt-1 h-9 w-full rounded-md border bg-background px-2 text-xs"
+              >
+                <option value="solo">个展</option>
+                <option value="group">群展</option>
+                <option value="other">其他</option>
+              </select>
+            </Field>
+            <Field label="场馆" htmlFor={`ex-venue-${item.id}`}>
+              <Input
+                id={`ex-venue-${item.id}`}
+                value={item.venue}
+                onChange={(e) => store.updateExhibition(item.id, { venue: e.target.value })}
+              />
+            </Field>
+          </div>
+          <div className="mt-2">
+            <Field label="展览名" htmlFor={`ex-title-${item.id}`}>
+              <Input
+                id={`ex-title-${item.id}`}
+                value={item.title}
+                onChange={(e) => store.updateExhibition(item.id, { title: e.target.value })}
+              />
+            </Field>
+          </div>
+        </section>
+      ))}
+      <Button
+        type="button"
+        variant="outline"
+        onClick={store.addExhibition}
+        className="w-full border-dashed"
+      >
+        <Plus /> 添加展览（{exhibitions.length}）
       </Button>
     </div>
   )

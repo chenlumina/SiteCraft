@@ -61,4 +61,12 @@ describe('Gallery 真实渲染器', () => {
     const dataUri = (html.match(/data:image\/svg\+xml;base64,/g) || []).length
     assert.ok(dataUri >= 4, '四张示例作品应内联为 data URI，实际 ' + dataUri)
   })
+
+  it('作品尺寸与展览履历进入产物，且导航出现展览入口', () => {
+    const html = generateArtistSiteHTML(createGallerySampleData())
+    assert.ok(html.includes('120 × 90 cm'), '作品尺寸应出现在产物中')
+    assert.ok(html.includes('id="exhibitions"'), '应有展览区块')
+    assert.ok(html.includes('个展') || html.includes('群展'), '应标注展览类型')
+    assert.ok(html.includes('href="#exhibitions"'), '导航应指向展览区块')
+  })
 })

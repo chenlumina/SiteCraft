@@ -27,6 +27,13 @@ export const GALLERY_CSS = `
 .ag-caption p{margin:12px 0 0;font-size:13px;line-height:1.8;color:var(--ag-muted)}
 .ag-meta{font-family:ui-monospace,monospace;font-size:10px!important;letter-spacing:.12em;text-transform:uppercase}
 .ag-works{margin-top:64px;padding-top:20px;border-top:1px solid var(--ag-line)}
+.ag-exhibitions{padding:56px 0 8px}
+.ag-ex-list{list-style:none;margin:0;padding:0;border-top:1px solid rgba(0,0,0,.14)}
+.ag-ex-list li{display:grid;grid-template-columns:64px 52px 1fr;gap:14px;align-items:baseline;padding:11px 0;border-bottom:1px solid rgba(0,0,0,.09)}
+.ag-ex-year{font-variant-numeric:tabular-nums;color:rgba(0,0,0,.55);font-size:13px}
+.ag-ex-role{font-size:11px;letter-spacing:.08em;color:rgba(0,0,0,.45)}
+.ag-ex-title{font-size:14.5px;line-height:1.6}
+@container (max-width:560px){.ag-ex-list li{grid-template-columns:52px 1fr;gap:8px}.ag-ex-role{grid-column:2;font-size:10.5px}.ag-ex-title{grid-column:2}}
 .ag-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:22px}
 .ag-section-head h2{margin:0;font-family:Georgia,serif;font-size:24px}
 .ag-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:42px 24px}
@@ -87,7 +94,7 @@ function renderWork(artwork: Artwork, featured = false): string {
     .join('')
   return `<figure class="${featured ? 'ag-hero-media' : 'ag-work'}">
     ${cover ? `<img class="${featured ? '' : 'ag-work-cover'}" src="${cover}" alt="${esc(artwork.title)}"${featured ? '' : ' loading="lazy"'}>` : ''}
-    ${!featured ? `<figcaption><p class="ag-meta">${esc(artwork.series)}${artwork.year ? ` · ${esc(artwork.year)}` : ''}</p><h3>${esc(artwork.title)}</h3><p>${esc(artwork.medium)}</p>${description ? `<p>${esc(description)}</p>` : ''}</figcaption>${extraMedia ? `<div class="ag-media-list">${extraMedia}</div>` : ''}` : ''}
+    ${!featured ? `<figcaption><p class="ag-meta">${esc(artwork.series)}${artwork.year ? ` · ${esc(artwork.year)}` : ''}</p><h3>${esc(artwork.title)}</h3><p>${esc(artwork.medium)}${artwork.dimensions ? ` · ${esc(artwork.dimensions)}` : ''}</p>${description ? `<p>${esc(description)}</p>` : ''}</figcaption>${extraMedia ? `<div class="ag-media-list">${extraMedia}</div>` : ''}` : ''}
   </figure>`
 }
 
@@ -96,13 +103,22 @@ export function renderGalleryBody(data: ArtistSiteData): string {
   const featured = ordered[0]
   const rest = featured ? ordered.slice(1) : []
   const mail = data.email.trim()
+  const roleLabel: Record<string, string> = { solo: '个展', group: '群展', other: '其他' }
+  const exhibitions = (data.exhibitions ?? [])
+    .filter((item) => item.title.trim())
+    .map(
+      (item) =>
+        `<li><span class="ag-ex-year">${esc(item.year || '—')}</span><span class="ag-ex-role">${esc(roleLabel[item.role] ?? '')}</span><span class="ag-ex-title">${esc(item.title)}${item.venue ? `，${esc(item.venue)}` : ''}</span></li>`
+    )
+    .join('')
   return `<div class="artist-gallery">
-<header class="ag-header"><a class="ag-brand" href="#top">${esc(data.name)}</a><nav class="ag-nav" aria-label="作品导航">${featured ? '<a href="#works">作品</a>' : ''}<a href="#about">关于</a>${mail ? `<a href="mailto:${esc(mail)}">联系</a>` : ''}</nav></header>
+<header class="ag-header"><a class="ag-brand" href="#top">${esc(data.name)}</a><nav class="ag-nav" aria-label="作品导航">${featured ? '<a href="#works">作品</a>' : ''}${exhibitions ? '<a href="#exhibitions">展览</a>' : ''}<a href="#about">关于</a>${mail ? `<a href="mailto:${esc(mail)}">联系</a>` : ''}</nav></header>
 <main id="top" class="ag-main">
   <p class="ag-kicker">Selected works · ${esc(data.title)}</p>
   <h1 class="ag-hero-title">${esc(featured?.series || data.name)}</h1>
-  ${featured ? `<div class="ag-hero">${renderWork(featured, true)}<div class="ag-caption"><p class="ag-meta">${esc(featured.series)}${featured.year ? ` · ${esc(featured.year)}` : ''}</p><h2>${esc(featured.title)}</h2><p>${esc(featured.medium)}</p>${featured.description ? `<p>${esc(featured.description)}</p>` : ''}</div></div>` : ''}
+  ${featured ? `<div class="ag-hero">${renderWork(featured, true)}<div class="ag-caption"><p class="ag-meta">${esc(featured.series)}${featured.year ? ` · ${esc(featured.year)}` : ''}</p><h2>${esc(featured.title)}</h2><p>${esc(featured.medium)}${featured.dimensions ? ` · ${esc(featured.dimensions)}` : ''}</p>${featured.description ? `<p>${esc(featured.description)}</p>` : ''}</div></div>` : ''}
   ${rest.length ? `<section id="works" class="ag-works"><div class="ag-section-head"><h2>全部作品</h2><span class="ag-kicker">${rest.length} pieces</span></div><div class="ag-grid">${rest.map((artwork) => renderWork(artwork)).join('')}</div></section>` : ''}
+${exhibitions.length ? `<section id="exhibitions" class="ag-exhibitions"><div class="ag-section-head"><h2>展览</h2><span class="ag-kicker">Exhibitions</span></div><ul class="ag-ex-list">${exhibitions}</ul></section>` : ''}
   <section id="about" class="ag-about"><div><p class="ag-kicker">About the artist</p><h2>${esc(data.name)}</h2></div><div><p>${esc(data.bio)}</p>${data.location ? `<p style="margin-top:14px">${esc(data.location)}</p>` : ''}${mail ? `<p style="margin-top:14px"><a href="mailto:${esc(mail)}">${esc(mail)}</a></p>` : ''}</div></section>
 </main>
 <footer class="ag-footer"><span>© ${new Date().getFullYear()} ${esc(data.name)}</span><span>Digital Gallery · SiteCraft</span></footer>

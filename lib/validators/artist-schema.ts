@@ -48,12 +48,23 @@ export const artworkSchema = z.object({
   series: z.string().trim().max(40, '系列名最多 40 字'),
   year: z.string().trim().max(12, '年份最多 12 字'),
   medium: z.string().trim().max(60, '媒介最多 60 字'),
+  dimensions: z.string().trim().max(24, '尺寸最多 24 字'),
   description: z.string().trim().max(600, '创作说明最多 600 字'),
   cover: optionalMediaUrl,
   media: z
     .array(mediaItemSchema)
     .max(MAX_MEDIA_PER_ARTWORK, `每件作品最多 ${MAX_MEDIA_PER_ARTWORK} 个媒体`),
   featured: z.boolean(),
+})
+
+export const MAX_EXHIBITION_COUNT = 12
+
+export const exhibitionSchema = z.object({
+  id: z.string().min(1),
+  year: z.string().trim().max(12, '年份最多 12 字'),
+  title: z.string().trim().min(1, '展览名不能为空').max(60, '展览名最多 60 字'),
+  venue: z.string().trim().max(60, '展出场馆最多 60 字'),
+  role: z.enum(['solo', 'group', 'other']),
 })
 
 export const artistSiteDataSchema = siteDataSchema
@@ -70,6 +81,10 @@ export const artistSiteDataSchema = siteDataSchema
   .extend({
     archetype: z.literal('artist'),
     artworks: z.array(artworkSchema).max(MAX_ARTWORK_COUNT, `最多 ${MAX_ARTWORK_COUNT} 件作品`),
+    exhibitions: z
+      .array(exhibitionSchema)
+      .max(MAX_EXHIBITION_COUNT, `最多 ${MAX_EXHIBITION_COUNT} 条展览履历`)
+      .default([]),
   })
 
 export const artistSaveSiteSchema = z.object({
