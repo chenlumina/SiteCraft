@@ -20,6 +20,8 @@ import { fileURLToPath } from 'node:url'
 // 快照可能过期，拿过期产物量版面会把门变成自欺欺人的绿灯。
 import { generateSiteHTML } from '../lib/generators/html-generator'
 import { createSampleData } from '../lib/sample-data'
+import { generateArtistSiteHTML } from '../lib/generators/artist/html-generator'
+import { createGallerySampleData } from '../lib/artist/sample-gallery'
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
 const outDir = path.join(root, 'screenshots')
@@ -27,7 +29,21 @@ const htmlDir = path.join(root, '.design-out')
 fs.mkdirSync(outDir, { recursive: true })
 fs.mkdirSync(htmlDir, { recursive: true })
 
-const ALL = ['minimal', 'tech', 'creative', 'professional', 'ink', 'brutal', 'aurora', 'editorial', 'gold', 'vapor', 'swiss', 'kraft', 'metro']
+const ALL = ['minimal', 'tech', 'creative', 'professional', 'ink', 'brutal', 'aurora', 'editorial', 'gold', 'vapor', 'swiss', 'kraft', 'metro', 'gallery']
+
+/**
+ * 每个被检查的对象：标签 + 产物 HTML。
+ * gallery 走的是艺术专用渲染器，但视觉规矩和 13 套一致——
+ * 所以它必须吃同一批断言，否则"导出引用外部路径"这种漏网还会再犯。
+ */
+function buildCases() {
+  const cases = ALL.filter((name) => name !== 'gallery').map((name) => ({
+    label: name,
+    html: generateSiteHTML(createSampleData(), name),
+  }))
+  cases.push({ label: 'gallery', html: generateArtistSiteHTML(createGallerySampleData()) })
+  return cases
+}
 const targets = process.argv.slice(2).length ? process.argv.slice(2) : ALL
 
 const results = []
@@ -51,9 +67,10 @@ const exeCandidates = [
 const exe = exeCandidates.find((p) => p && fs.existsSync(p))
 const browser = await chromium.launch(exe ? { executablePath: exe, headless: true } : { channel: 'msedge', headless: true })
 
-for (const tpl of targets) {
+const CASES = buildCases()
+const selected = CASES.filter((c) => targets.includes(c.label))
+for (const { label: tpl, html } of selected) {
   process.stdout.write('\n--- ' + tpl + ' ---\n')
-  const html = generateSiteHTML(createSampleData(), tpl)
   const file = path.join(htmlDir, tpl + '.html')
   fs.writeFileSync(file, html, 'utf8')
 

@@ -27,6 +27,14 @@ export const GALLERY_CSS = `
 .ag-caption p{margin:12px 0 0;font-size:13px;line-height:1.8;color:var(--ag-muted)}
 .ag-meta{font-family:ui-monospace,monospace;font-size:10px!important;letter-spacing:.12em;text-transform:uppercase}
 .ag-works{margin-top:64px;padding-top:20px;border-top:1px solid var(--ag-line)}
+/* 入场：只落在标题上，一次；reduced-motion 由下面的媒体查询关掉 */
+@keyframes ag-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ag-hero-title{animation:ag-rise .7s cubic-bezier(.3,1.1,.64,1) both}
+.ag-work-cover,.ag-hero-media img{transition:transform .5s cubic-bezier(.2,.7,.3,1),opacity .3s ease}
+.ag-work:hover .ag-work-cover{transform:scale(1.015)}
+.ag-nav a,.ag-brand{display:inline-flex;min-height:24px;align-items:center;transition:opacity .2s ease,color .2s ease}
+.ag-nav a:hover{opacity:.62}
+@media (prefers-reduced-motion:reduce){.ag-hero-title{animation:none}.ag-work-cover,.ag-hero-media img,.ag-nav a,.ag-brand{transition:none}.ag-work:hover .ag-work-cover{transform:none}}
 .ag-exhibitions{padding:56px 0 8px}
 .ag-ex-list{list-style:none;margin:0;padding:0;border-top:1px solid rgba(0,0,0,.14)}
 .ag-ex-list li{display:grid;grid-template-columns:64px 52px 1fr;gap:14px;align-items:baseline;padding:11px 0;border-bottom:1px solid rgba(0,0,0,.09)}
@@ -111,7 +119,7 @@ export function renderGalleryBody(data: ArtistSiteData): string {
         `<li><span class="ag-ex-year">${esc(item.year || '—')}</span><span class="ag-ex-role">${esc(roleLabel[item.role] ?? '')}</span><span class="ag-ex-title">${esc(item.title)}${item.venue ? `，${esc(item.venue)}` : ''}</span></li>`
     )
     .join('')
-  return `<div class="artist-gallery">
+  return `<div class="site-root artist-gallery site-gallery">
 <header class="ag-header"><a class="ag-brand" href="#top">${esc(data.name)}</a><nav class="ag-nav" aria-label="作品导航">${featured ? '<a href="#works">作品</a>' : ''}${exhibitions ? '<a href="#exhibitions">展览</a>' : ''}<a href="#about">关于</a>${mail ? `<a href="mailto:${esc(mail)}">联系</a>` : ''}</nav></header>
 <main id="top" class="ag-main">
   <p class="ag-kicker">Selected works · ${esc(data.title)}</p>

@@ -29,7 +29,7 @@ pnpm dev            # http://localhost:3000
 | `pnpm test:unit` | 单元测试（Node 内置运行器 + tsx，自动建独立 test.db，不碰开发库） |
 | `pnpm snapshot` | 重录四模板黄金快照（仅模板视觉有意变更时执行） |
 | `pnpm test:e2e` | 无头 Edge 端到端验证（需先 `pnpm start`，截图存 screenshots/） |
-| `pnpm design:check` | 设计门：无头浏览器量 12 套模板的溢出 / 字号 / 对比度 / 动效降级 / 触摸尺寸，168 项断言 |
+| `pnpm design:check` | 设计门：无头浏览器量 12 套模板的溢出 / 字号 / 对比度 / 动效降级 / 触摸尺寸，196 项断言 |
 | `pnpm check` | 一把梭：typecheck → lint → 单测 → 设计门（提交前想全绿就跑这个） |
 
 提交前 Husky + lint-staged 自动执行 ESLint 与 Prettier；**推送前** Husky 自动执行 `pnpm design:check`，

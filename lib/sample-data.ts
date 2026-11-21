@@ -59,7 +59,7 @@ export const SAMPLE_SITE_DATA: SiteData = {
       name: '个人官网生成器',
       description:
         'Next.js 14 全栈应用：可视化编辑、十三套模板、实时预览，一键导出静态 HTML 并部署到 GitHub Pages。',
-      points: ['13 套版式共用一份渲染器，导出零依赖单文件', '182 项版面断言纳入 CI，回归当场拦下'],
+      points: ['13 套版式共用一份渲染器，导出零依赖单文件', '196 项版面断言纳入 CI，回归当场拦下'],
       tags: ['Next.js', 'TypeScript', 'Prisma', 'Tailwind'],
       link: '',
       repo: '',
