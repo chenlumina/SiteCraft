@@ -12,6 +12,7 @@ import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { generateSiteHTML, renderSiteFragment } from '../lib/generators/html-generator'
 import { createSampleData } from '../lib/sample-data'
+import { createArtistSampleData } from '../lib/sample-artist'
 import type { SiteData, TemplateName } from '../types'
 
 const TEMPLATES: TemplateName[] = [
@@ -134,6 +135,33 @@ describe('主题色派生', () => {
     const data = { ...createSampleData(), theme: { primaryColor: '#ffffff' } }
     const { css } = renderSiteFragment(data, 'minimal')
     assert.ok(css.includes('--on-sp:#0b1220'))
+  })
+})
+
+describe('内容方向渲染：艺术创作媒介不输出掌握度', () => {
+  const levelMarkers: Array<[TemplateName, string]> = [
+    ['minimal', 'm-pct'],
+    ['creative', 'c-disc'],
+    ['aurora', 'a-num'],
+    ['editorial', 'e-tdnum'],
+    ['gold', 'g-cnum'],
+    ['vapor', 'v-track'],
+    ['swiss', 'sw-v'],
+    ['kraft', 'k-dots'],
+  ]
+
+  it('艺术方向八套推荐版式只展示媒介名称', () => {
+    for (const [template, marker] of levelMarkers) {
+      const { body } = renderSiteFragment(createArtistSampleData(), template)
+      assert.ok(body.includes('水彩与综合材料'), template)
+      assert.ok(!body.includes(`class="${marker}"`), `${template} 不应出现 ${marker}`)
+    }
+  })
+
+  it('同一模板切回技术人仍保留等级展示', () => {
+    const { body } = renderSiteFragment(createSampleData(), 'minimal')
+    assert.ok(body.includes('class="m-pct"'))
+    assert.ok(body.includes('85 / 100'))
   })
 })
 

@@ -14,7 +14,14 @@ import type { SiteData } from '@/types'
 import { esc } from '../escape'
 import { socialLinks } from '../icons'
 import { FONT_SERIF } from '../theme-consts'
-import { clampLevel, getSections, projectLinks, type SectionDef, orderSections } from './shared'
+import {
+  clampLevel,
+  getSections,
+  projectLinks,
+  type SectionDef,
+  orderSections,
+  skillLevelVisible,
+} from './shared'
 
 export const EDITORIAL_CSS = `
 .e-epoints{margin-top:6px;display:grid;gap:2px;list-style:none}
@@ -138,9 +145,10 @@ export function renderEditorial(data: SiteData): string {
   const year = new Date().getFullYear()
 
   const skills = data.skills
-    .map(
-      (s, i) =>
-        `<tr><td class="e-tdname">${esc(s.name)}</td><td class="e-tdbar"><span class="e-bar"><i style="width:${clampLevel(s.level)}%;animation-delay:${160 + i * 40}ms"></i></span></td><td class="e-tdnum">${clampLevel(s.level)}</td></tr>`
+    .map((s, i) =>
+      skillLevelVisible(data)
+        ? `<tr><td class="e-tdname">${esc(s.name)}</td><td class="e-tdbar"><span class="e-bar"><i style="width:${clampLevel(s.level)}%;animation-delay:${160 + i * 40}ms"></i></span></td><td class="e-tdnum">${clampLevel(s.level)}</td></tr>`
+        : `<tr><td class="e-tdname" colspan="3">${esc(s.name)}</td></tr>`
     )
     .join('')
 

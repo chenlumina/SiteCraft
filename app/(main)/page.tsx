@@ -1,11 +1,10 @@
 /**
- * 首页组装：纸面设计系统（globals :root 全局纸面令牌）→ 底纹层 → 固定导航 → 五大区块 → 页脚。
- * 视觉语言：印刷品式的克制——暖纸底、墨色文字、发丝线分隔、衬线标题、单一强调色。
- * 底纹层（PaperTexture）：点阵稿纸 + 纸浆颗粒 + 团花水印，打破纯色底的单调。
- * 无光斑/无聚光灯/无渐变字；动效只保留滚动显现、橱窗轮换与倾斜（尊重 reduced-motion）。
+ * 首页入口：首次访问先完成轻量登记，再按身份进入技术或艺术板块。
+ * 技术首页保留原有纸面设计系统；身份仅保存在 localStorage，数据库不被触碰。
  */
 'use client'
 
+import { useCallback, useEffect, useState } from 'react'
 import { useReveal } from '@/lib/hooks/use-reveal'
 import { ScrollProgress } from '@/components/home/page-chrome'
 import { PaperTexture } from '@/components/home/paper-texture'
@@ -16,23 +15,65 @@ import { Playground } from '@/components/home/playground'
 import { Workflow } from '@/components/home/workflow'
 import { MySites } from '@/components/home/my-sites'
 import { SiteFooter } from '@/components/home/site-footer'
+import { ArtistBoard } from '@/components/home/artist-board'
+import { PROFILE_KEY, WelcomeScreen, type VisitorProfile } from '@/components/home/welcome-screen'
 
-export default function HomePage() {
+function DeveloperHome({ visitorName, onReset }: { visitorName: string; onReset: () => void }) {
   useReveal()
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-background text-foreground">
       <PaperTexture />
       <ScrollProgress />
-      <SiteNav />
+      <SiteNav onEditProfile={onReset} />
       <main className="relative">
         <Hero />
-        <TemplateGallery />
-        <Playground />
+        <TemplateGallery visitorName={visitorName} />
+        <Playground visitorName={visitorName} />
         <Workflow />
         <MySites />
       </main>
       <SiteFooter />
     </div>
   )
+}
+
+export default function HomePage() {
+  // undefined = 尚未读取本地身份；null = 确认为新访客
+  const [profile, setProfile] = useState<VisitorProfile | null | undefined>(undefined)
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(PROFILE_KEY)
+      if (!raw) {
+        setProfile(null)
+        return
+      }
+      const saved = JSON.parse(raw) as Partial<VisitorProfile>
+      if (
+        typeof saved.name === 'string' &&
+        saved.name.trim() &&
+        (saved.archetype === 'developer' || saved.archetype === 'artist')
+      ) {
+        setProfile({ name: saved.name.trim(), archetype: saved.archetype })
+      } else {
+        setProfile(null)
+      }
+    } catch {
+      setProfile(null)
+    }
+  }, [])
+
+  const complete = useCallback((next: VisitorProfile) => setProfile(next), [])
+  const reset = useCallback(() => {
+    window.localStorage.removeItem(PROFILE_KEY)
+    setProfile(null)
+    window.scrollTo({ top: 0 })
+  }, [])
+
+  // 读取前不渲染技术模板，避免新访客看到一闪而过的旧首页
+  if (profile === undefined) return <div className="min-h-[100dvh] bg-background" />
+  if (profile === null) return <WelcomeScreen onComplete={complete} />
+  if (profile.archetype === 'artist') return <ArtistBoard name={profile.name} onReset={reset} />
+  return <DeveloperHome visitorName={profile.name} onReset={reset} />
 }

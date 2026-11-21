@@ -11,6 +11,7 @@ import { FONT_MONO, FONT_SERIF } from '../theme-consts'
 import {
   avatarHTML,
   clampLevel,
+  skillLevelVisible,
   getSections,
   mailBtn,
   projectLinks,
@@ -132,6 +133,9 @@ export function renderGold(data: SiteData): string {
   const skills = data.skills
     .map((s) =>
       (() => {
+        if (!skillLevelVisible(data)) {
+          return `<div class="g-medal"><span class="g-cap"><b class="g-cname">${esc(s.name)}</b></span></div>`
+        }
         const lv = clampLevel(s.level)
         // 液面高度：viewBox 是 100×100，水面基线在 y = 100 - 熟练度；
         // 路径自带 ±7 的波峰，翻译到这条基线上就是一池水

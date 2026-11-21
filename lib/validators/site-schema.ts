@@ -75,7 +75,10 @@ export const experienceSchema = z.object({
     .default([]),
 })
 
+export const archetypeSchema = z.enum(['developer', 'artist'])
+
 export const siteDataSchema = z.object({
+  archetype: archetypeSchema.optional(),
   name: z.string().trim().min(1, '姓名不能为空').max(30, '姓名最多 30 字'),
   title: z.string().trim().min(1, '头衔不能为空').max(60, '头衔最多 60 字'),
   status: z.string().trim().max(40, '状态最多 40 字'),

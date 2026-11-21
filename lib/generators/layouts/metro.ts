@@ -12,7 +12,15 @@ import type { SiteData } from '@/types'
 import { esc } from '../escape'
 import { icon, socialLinks } from '../icons'
 import { FONT_MONO, FONT_SANS } from '../theme-consts'
-import { avatarHTML, clampLevel, getSections, mailBtn, projectLinks, tagItems } from './shared'
+import {
+  avatarHTML,
+  clampLevel,
+  getSections,
+  mailBtn,
+  projectLinks,
+  tagItems,
+  skillLevelVisible,
+} from './shared'
 
 export const METRO_CSS = `
 .site-metro{position:relative;--bg:#ffffff;--fg:#101418;--fg2:#5b6570;--rule:#e3e8ee;--panel:#f6f8fa;--rail:#101418;
@@ -165,9 +173,10 @@ export function renderMetro(data: SiteData): string {
   const code = () => 'S' + String(stopNo++).padStart(2, '0')
 
   const skills = data.skills
-    .map(
-      (s) =>
-        `<li class="mt-sk"><b></b><span>${esc(s.name)}</span><em>${clampLevel(s.level)}</em><span class="mt-bar"><i style="width:${clampLevel(s.level)}%"></i></span></li>`
+    .map((s) =>
+      skillLevelVisible(data)
+        ? `<li class="mt-sk"><b></b><span>${esc(s.name)}</span><em>${clampLevel(s.level)}</em><span class="mt-bar"><i style="width:${clampLevel(s.level)}%"></i></span></li>`
+        : `<li class="mt-sk"><b></b><span>${esc(s.name)}</span></li>`
     )
     .join('')
 

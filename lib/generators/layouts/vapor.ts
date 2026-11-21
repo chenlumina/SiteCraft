@@ -8,7 +8,15 @@ import type { SiteData } from '@/types'
 import { esc } from '../escape'
 import { socialLinks } from '../icons'
 import { FONT_MONO, FONT_SANS } from '../theme-consts'
-import { clampLevel, getSections, mailBtn, projectLinks, tagItems, orderSections } from './shared'
+import {
+  clampLevel,
+  getSections,
+  mailBtn,
+  projectLinks,
+  tagItems,
+  orderSections,
+  skillLevelVisible,
+} from './shared'
 
 export const VAPOR_CSS = `
 .site-vapor{--bg:#12071f;--fg:#fdf4ff;--muted:#b6a3d9;--line:#37205a;--panel:rgba(55,32,90,.45);--track:#1c1030;--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO}}
@@ -95,11 +103,11 @@ export function renderVapor(data: SiteData): string {
     .join('')
 
   const skills = data.skills
-    .map(
-      (
-        s
-      ) => `<div class="v-bar"><div class="v-bartop"><span>${esc(s.name)}</span><em>${clampLevel(s.level)}%</em></div>
+    .map((s) =>
+      skillLevelVisible(data)
+        ? `<div class="v-bar"><div class="v-bartop"><span>${esc(s.name)}</span><em>${clampLevel(s.level)}%</em></div>
   <div class="v-track"><span class="v-fill" style="width:${clampLevel(s.level)}%"></span></div></div>`
+        : `<div class="v-bar"><div class="v-bartop"><span>${esc(s.name)}</span></div></div>`
     )
     .join('')
 

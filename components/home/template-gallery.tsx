@@ -37,7 +37,7 @@ function CropMarks() {
   )
 }
 
-export function TemplateGallery() {
+export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) {
   const [active, setActive] = useState(0)
   const boxRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(0.4)
@@ -58,10 +58,11 @@ export function TemplateGallery() {
   const data = useMemo<SiteData>(
     () => ({
       ...SAMPLE_SITE_DATA,
+      name: visitorName || SAMPLE_SITE_DATA.name,
       template: meta.name,
       theme: { primaryColor: meta.defaultColor },
     }),
-    [meta]
+    [meta, visitorName]
   )
   const plateNo = String(active + 1).padStart(2, '0')
 

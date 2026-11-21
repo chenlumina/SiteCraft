@@ -15,6 +15,7 @@ import {
   tagItems,
   type SectionDef,
   orderSections,
+  skillLevelVisible,
 } from './shared'
 
 export const MINIMAL_CSS = `
@@ -101,9 +102,10 @@ export function renderMinimal(data: SiteData): string {
     .join('')
 
   const skills = data.skills
-    .map(
-      (s) =>
-        `<li class="m-skill"><b>${esc(s.name)}</b><i class="m-leader"></i><span class="m-pct">${clampLevel(s.level)} / 100</span></li>`
+    .map((s) =>
+      skillLevelVisible(data)
+        ? `<li class="m-skill"><b>${esc(s.name)}</b><i class="m-leader"></i><span class="m-pct">${clampLevel(s.level)} / 100</span></li>`
+        : `<li class="m-skill"><b>${esc(s.name)}</b></li>`
     )
     .join('')
 

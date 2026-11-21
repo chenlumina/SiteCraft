@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type {
+  ArchetypeId,
   DeviceMode,
   Experience,
   Project,
@@ -22,7 +23,8 @@ import type {
   Skill,
   TemplateName,
 } from '@/types'
-import { createSampleData, migrateLegacySample } from '@/lib/sample-data'
+import { migrateLegacySample } from '@/lib/sample-data'
+import { createArchetypeSample } from '@/lib/archetypes'
 import { getTemplate } from '@/lib/templates'
 import { moveItem, uid } from '@/lib/utils'
 import {
@@ -51,6 +53,8 @@ interface EditorState {
   saving: boolean
   dirty: boolean
   lastSavedAt: number | null
+  /** 外部整体替换内容的版本号：驱动 RHF 表单重挂载，不持久化 */
+  contentVersion: number
   setTemplate: (template: TemplateName) => void
   setDevice: (device: DeviceMode) => void
   setSiteName: (name: string) => void
@@ -68,7 +72,9 @@ interface EditorState {
   updateExperience: (id: string, patch: Partial<Omit<Experience, 'id'>>) => void
   removeExperience: (id: string) => void
   moveExperience: (from: number, to: number) => void
-  newSite: (template?: TemplateName) => void
+  newSite: (template?: TemplateName, archetype?: ArchetypeId) => void
+  setArchetype: (archetype: ArchetypeId) => void
+  applyAiDraft: (data: SiteData, template: TemplateName) => void
   loadSite: (record: SiteRecord) => void
   markSaved: (id: string) => void
   setSaving: (saving: boolean) => void
@@ -80,11 +86,12 @@ export const useEditorStore = create<EditorState>()(
       siteId: null,
       siteName: '我的个人官网',
       template: 'minimal',
-      data: createSampleData(),
+      data: createArchetypeSample('developer'),
       device: 'desktop',
       saving: false,
       dirty: false,
       lastSavedAt: null,
+      contentVersion: 0,
 
       // 切模板同时套用该模板默认主题色（用户随后可在主题 Tab 再自定义）
       setTemplate: (template) =>
@@ -193,20 +200,35 @@ export const useEditorStore = create<EditorState>()(
         })),
 
       /** 新建：重置为示例内容但保留当前模板选择；dirty=false 因为尚未相对数据库产生差异 */
-      newSite: (template) => {
+      newSite: (template, archetype = 'developer') => {
         const chosen = template ?? get().template
         set({
           siteId: null,
           siteName: '我的个人官网',
           template: chosen,
           data: {
-            ...createSampleData(),
+            ...createArchetypeSample(archetype),
             theme: { primaryColor: getTemplate(chosen).defaultColor },
           },
           dirty: false,
           lastSavedAt: null,
+          contentVersion: get().contentVersion + 1,
         })
       },
+      /** 切换内容方向只改变编辑语义，不重写用户已填写的内容 */
+      setArchetype: (archetype) =>
+        set((state) => ({
+          dirty: true,
+          data: { ...state.data, archetype },
+        })),
+      /** AI 草稿经用户确认后整体替换；递增版本号让 RHF 从 store 重新初始化 */
+      applyAiDraft: (data, template) =>
+        set((state) => ({
+          template,
+          data,
+          dirty: true,
+          contentVersion: state.contentVersion + 1,
+        })),
       /** 从数据库记录恢复编辑现场（首页「编辑」入口 /editor?id=xxx 调用） */
       loadSite: (record) =>
         set({
@@ -216,6 +238,7 @@ export const useEditorStore = create<EditorState>()(
           data: record.content,
           dirty: false,
           lastSavedAt: new Date(record.updatedAt).getTime(),
+          contentVersion: get().contentVersion + 1,
         }),
       markSaved: (id) => set({ siteId: id, dirty: false, saving: false, lastSavedAt: Date.now() }),
       setSaving: (saving) => set({ saving }),

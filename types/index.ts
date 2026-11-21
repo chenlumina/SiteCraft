@@ -28,6 +28,9 @@ export type TemplateName =
 
 export type SiteStatus = 'draft' | 'published'
 
+/** 内容方向：决定编辑器词汇、字段显隐、推荐版式与示例数据；与视觉模板正交 */
+export type ArchetypeId = 'developer' | 'artist'
+
 export type DeviceMode = 'desktop' | 'mobile'
 
 export interface SocialLinks {
@@ -75,6 +78,8 @@ export interface SiteTheme {
 
 /** 站点全部内容。注意：数组项都带 id，供拖拽排序 / 删除撤销时稳定定位（React key 也用它） */
 export interface SiteData {
+  /** 缺省视为 developer：保证旧数据库 JSON 与旧 localStorage 快照无需迁移 */
+  archetype?: ArchetypeId
   name: string
   title: string
   status: string

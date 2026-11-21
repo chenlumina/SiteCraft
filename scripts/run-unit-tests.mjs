@@ -29,7 +29,14 @@ if (!existsSync(path.join(root, 'prisma', 'test.db'))) {
 
 const result = spawnSync(
   process.execPath,
-  ['--import', 'tsx', '--test', 'tests/generator.test.ts', 'tests/site-service.test.ts'],
+  [
+    '--import', 'tsx',
+    '--test',
+    'tests/generator.test.ts',
+    'tests/site-service.test.ts',
+    'tests/archetypes.test.ts',
+    'tests/ai-pipeline.test.ts',
+  ],
   { stdio: 'inherit', cwd: root, env: testEnv }
 )
 process.exit(result.status ?? 1)

@@ -20,7 +20,14 @@ import type { SiteData } from '@/types'
 import { esc } from '../escape'
 import { icon, socialLinks } from '../icons'
 import { FONT_SANS } from '../theme-consts'
-import { avatarHTML, clampLevel, getSections, projectLinks, tagItems } from './shared'
+import {
+  avatarHTML,
+  clampLevel,
+  getSections,
+  projectLinks,
+  tagItems,
+  skillLevelVisible,
+} from './shared'
 
 export const SWISS_CSS = `
 .sw-epoints{margin-top:6px;display:grid;gap:2px;list-style:none}
@@ -177,6 +184,8 @@ export function renderSwiss(data: SiteData): string {
   const skills = data.skills
     .map((s, i) => {
       const lv = clampLevel(s.level)
+      if (!skillLevelVisible(data))
+        return `<li class="sw-row"><span class="sw-k">${esc(s.name)}</span></li>`
       return `<li class="sw-row"><span class="sw-k">${esc(s.name)}</span><span class="sw-v">${lv}</span><span class="sw-track"><span class="sw-fill" style="width:${lv}%;animation-delay:${140 + i * 45}ms"></span></span></li>`
     })
     .join('')

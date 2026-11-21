@@ -46,9 +46,9 @@ function useFitScale(innerW: number, innerH: number) {
   return { boxRef, scale, boxH }
 }
 
-export function Playground() {
+export function Playground({ visitorName = '' }: { visitorName?: string }) {
   const [template, setTemplate] = useState<TemplateName>('ink')
-  const [name, setName] = useState('')
+  const [name, setName] = useState(visitorName)
   const [color, setColor] = useState(() => getTemplate('ink').defaultColor)
   const [device, setDevice] = useState<Device>('desktop')
 

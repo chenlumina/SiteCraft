@@ -11,6 +11,7 @@ import {
   avatarHTML,
   chipsHTML,
   clampLevel,
+  skillLevelVisible,
   getSections,
   mailBtn,
   projectLinks,
@@ -117,9 +118,10 @@ export function renderAurora(data: SiteData): string {
     .join('')
 
   const skills = data.skills
-    .map(
-      (s) =>
-        `<div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:${clampLevel(s.level)}"></span><span class="a-num">${clampLevel(s.level)}</span></span><span class="a-rname">${esc(s.name)}</span></div>`
+    .map((s) =>
+      skillLevelVisible(data)
+        ? `<div class="a-ring"><span class="a-discbox"><span class="a-disc" style="--p:${clampLevel(s.level)}"></span><span class="a-num">${clampLevel(s.level)}</span></span><span class="a-rname">${esc(s.name)}</span></div>`
+        : `<div class="a-ring"><span class="a-rname">${esc(s.name)}</span></div>`
     )
     .join('')
 

@@ -14,7 +14,15 @@ import type { SiteData } from '@/types'
 import { esc, monogram } from '../escape'
 import { socialLinks } from '../icons'
 import { FONT_MONO, FONT_SERIF } from '../theme-consts'
-import { avatarHTML, clampLevel, getSections, mailBtn, projectLinks, tagItems } from './shared'
+import {
+  avatarHTML,
+  clampLevel,
+  getSections,
+  mailBtn,
+  projectLinks,
+  tagItems,
+  skillLevelVisible,
+} from './shared'
 
 export const INK_CSS = `
 .site-ink{--bg:#f8f4e9;--panel:#fbf8f0;
@@ -179,10 +187,12 @@ export function renderInk(data: SiteData): string {
   const place = data.location.trim().replace(/[·・]/g, ' ').trim()
 
   const skills = data.skills
-    .map(
-      (s) => `<div class="i-skill"><span class="i-sname">${esc(s.name)}</span>
+    .map((s) =>
+      skillLevelVisible(data)
+        ? `<div class="i-skill"><span class="i-sname">${esc(s.name)}</span>
   <span class="i-bar"><span class="i-brush" style="width:${clampLevel(s.level)}%"></span></span>
   <span class="i-spct">${clampLevel(s.level)}</span></div>`
+        : `<div class="i-skill"><span class="i-sname">${esc(s.name)}</span></div>`
     )
     .join('')
 

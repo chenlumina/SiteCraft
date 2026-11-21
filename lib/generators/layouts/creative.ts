@@ -11,6 +11,7 @@ import {
   avatarHTML,
   chipsHTML,
   clampLevel,
+  skillLevelVisible,
   getSections,
   mailBtn,
   projectLinks,
@@ -101,9 +102,10 @@ export function renderCreative(data: SiteData): string {
     .join('')
 
   const skills = data.skills
-    .map(
-      (s) =>
-        `<div class="c-ring"><span class="c-disc" style="--p:${clampLevel(s.level)}"><i>${clampLevel(s.level)}</i></span><b>${esc(s.name)}</b></div>`
+    .map((s) =>
+      skillLevelVisible(data)
+        ? `<div class="c-ring"><span class="c-disc" style="--p:${clampLevel(s.level)}"><i>${clampLevel(s.level)}</i></span><b>${esc(s.name)}</b></div>`
+        : `<div class="c-ring"><b>${esc(s.name)}</b></div>`
     )
     .join('')
 

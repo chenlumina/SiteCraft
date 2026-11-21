@@ -5,6 +5,7 @@
  * 安全边界不变：所有用户文本必须过 esc()，URL 必须过 safeUrl()。
  */
 import type { SiteData } from '@/types'
+import { getArchetypeForData } from '@/lib/archetypes'
 import { esc, monogram, safeUrl } from '../escape'
 import { icon } from '../icons'
 import { DEFAULT_AVATAR_DATA_URI, DEFAULT_AVATAR_PATH } from '../theme-consts'
@@ -45,6 +46,11 @@ export function orderSections(sections: SectionDef[], order: readonly string[]):
 
 export function clampLevel(level: number): number {
   return Math.max(0, Math.min(100, Math.round(level)))
+}
+
+/** 内容方向决定是否表达"掌握度"；艺术创作媒介只列名称，不输出百分比/评分 */
+export function skillLevelVisible(data: Pick<SiteData, 'archetype'>): boolean {
+  return getArchetypeForData(data).fields.skillLevel === 'bar'
 }
 
 /** 头像：有 avatar 用 img，否则用首字徽标。两个 class 由各版式传入 */

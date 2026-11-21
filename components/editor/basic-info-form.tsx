@@ -14,6 +14,7 @@ import { Github, Globe, Link2, Mail, MapPin, Tv } from 'lucide-react'
 import type { BasicInfoValues } from '@/lib/validators/site-schema'
 import { basicInfoSchema } from '@/lib/validators/site-schema'
 import { useEditorStore } from '@/lib/stores/editor-store'
+import { getArchetype } from '@/lib/archetypes'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -22,6 +23,7 @@ import { FieldError, FormSection } from '@/components/editor/form-section'
 export function BasicInfoForm() {
   const data = useEditorStore((s) => s.data)
   const updateData = useEditorStore((s) => s.updateData)
+  const archetype = useEditorStore((s) => getArchetype(s.data.archetype))
 
   const {
     register,
@@ -59,14 +61,24 @@ export function BasicInfoForm() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label htmlFor="field-name">姓名 *</Label>
-              <Input id="field-name" className="mt-1.5" placeholder="你的姓名" {...register('name')} />
+              <Input
+                id="field-name"
+                className="mt-1.5"
+                placeholder="你的姓名"
+                {...register('name')}
+              />
               <FieldError message={errors.name?.message} />
             </div>
             <div>
               <Label htmlFor="field-location">所在地</Label>
               <div className="relative mt-1.5">
                 <MapPin className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input id="field-location" className="pl-8" placeholder="城市 · 国家" {...register('location')} />
+                <Input
+                  id="field-location"
+                  className="pl-8"
+                  placeholder="城市 · 国家"
+                  {...register('location')}
+                />
               </div>
               <FieldError message={errors.location?.message} />
             </div>
@@ -110,7 +122,12 @@ export function BasicInfoForm() {
               <Label htmlFor="field-email">邮箱</Label>
               <div className="relative mt-1.5">
                 <Mail className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input id="field-email" className="pl-8" placeholder="you@example.com" {...register('email')} />
+                <Input
+                  id="field-email"
+                  className="pl-8"
+                  placeholder="you@example.com"
+                  {...register('email')}
+                />
               </div>
               <FieldError message={errors.email?.message} />
             </div>
@@ -118,7 +135,12 @@ export function BasicInfoForm() {
               <Label htmlFor="field-avatar">头像 URL</Label>
               <div className="relative mt-1.5">
                 <Link2 className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input id="field-avatar" className="pl-8" placeholder="https:// 或 /images/..." {...register('avatar')} />
+                <Input
+                  id="field-avatar"
+                  className="pl-8"
+                  placeholder="https:// 或 /images/..."
+                  {...register('avatar')}
+                />
               </div>
               <FieldError message={errors.avatar?.message} />
             </div>
@@ -128,19 +150,31 @@ export function BasicInfoForm() {
 
       <FormSection title="社交链接" description="留空即不展示，仅支持 http(s) 链接">
         <div className="space-y-3">
-          <div>
-            <Label htmlFor="field-github">GitHub</Label>
-            <div className="relative mt-1.5">
-              <Github className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <Input id="field-github" className="pl-8" placeholder="https://github.com/username" {...register('socials.github')} />
+          {archetype.fields.github && (
+            <div>
+              <Label htmlFor="field-github">GitHub</Label>
+              <div className="relative mt-1.5">
+                <Github className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="field-github"
+                  className="pl-8"
+                  placeholder="https://github.com/username"
+                  {...register('socials.github')}
+                />
+              </div>
+              <FieldError message={errors.socials?.github?.message} />
             </div>
-            <FieldError message={errors.socials?.github?.message} />
-          </div>
+          )}
           <div>
             <Label htmlFor="field-twitter">X / Twitter</Label>
             <div className="relative mt-1.5">
               <Tv className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <Input id="field-twitter" className="pl-8" placeholder="https://x.com/username" {...register('socials.twitter')} />
+              <Input
+                id="field-twitter"
+                className="pl-8"
+                placeholder="https://x.com/username"
+                {...register('socials.twitter')}
+              />
             </div>
             <FieldError message={errors.socials?.twitter?.message} />
           </div>
@@ -148,7 +182,12 @@ export function BasicInfoForm() {
             <Label htmlFor="field-bilibili">哔哩哔哩</Label>
             <div className="relative mt-1.5">
               <Tv className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <Input id="field-bilibili" className="pl-8" placeholder="https://space.bilibili.com/..." {...register('socials.bilibili')} />
+              <Input
+                id="field-bilibili"
+                className="pl-8"
+                placeholder="https://space.bilibili.com/..."
+                {...register('socials.bilibili')}
+              />
             </div>
             <FieldError message={errors.socials?.bilibili?.message} />
           </div>
@@ -156,7 +195,12 @@ export function BasicInfoForm() {
             <Label htmlFor="field-website">个人网站</Label>
             <div className="relative mt-1.5">
               <Globe className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <Input id="field-website" className="pl-8" placeholder="https://your-blog.com" {...register('socials.website')} />
+              <Input
+                id="field-website"
+                className="pl-8"
+                placeholder="https://your-blog.com"
+                {...register('socials.website')}
+              />
             </div>
             <FieldError message={errors.socials?.website?.message} />
           </div>

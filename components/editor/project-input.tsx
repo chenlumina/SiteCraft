@@ -23,6 +23,7 @@ import {
 import { toast } from 'sonner'
 import type { Project } from '@/types'
 import { useEditorStore } from '@/lib/stores/editor-store'
+import { getArchetype } from '@/lib/archetypes'
 import {
   MAX_POINT_COUNT,
   MAX_PROJECT_COUNT,
@@ -79,6 +80,8 @@ function ProjectDialog({
 }) {
   const addProject = useEditorStore((s) => s.addProject)
   const updateProject = useEditorStore((s) => s.updateProject)
+  const archetype = useEditorStore((s) => getArchetype(s.data.archetype))
+  const itemName = archetype.id === 'artist' ? '作品' : '项目'
   const template = useEditorStore((s) => s.template)
   const support = FEATURE_SUPPORT[template].points
   const highlightShown = FEATURE_SUPPORT[template].highlight
@@ -144,29 +147,35 @@ function ProjectDialog({
     >
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>{editing ? '编辑项目' : '添加项目'}</DialogTitle>
+          <DialogTitle>{editing ? `编辑${itemName}` : `添加${itemName}`}</DialogTitle>
           <DialogDescription>
-            展示在官网「项目作品」区块，精选项目会获得徽章标记。
+            展示在官网「{archetype.copy.projects}」区块，精选内容会获得徽章标记。
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <div>
-            <Label htmlFor="project-name">项目名称 *</Label>
+            <Label htmlFor="project-name">{itemName}名称 *</Label>
             <Input
               id="project-name"
               className="mt-1.5"
-              placeholder="例如：个人博客系统"
+              placeholder={
+                archetype.id === 'artist' ? '例如：《城市呼吸》插画系列' : '例如：个人博客系统'
+              }
               {...register('name')}
             />
             <FieldError message={errors.name?.message} />
           </div>
           <div>
-            <Label htmlFor="project-desc">项目描述</Label>
+            <Label htmlFor="project-desc">{itemName}描述</Label>
             <Textarea
               id="project-desc"
               className="mt-1.5"
               rows={3}
-              placeholder="一句话说明项目做了什么、用了什么技术"
+              placeholder={
+                archetype.id === 'artist'
+                  ? '一句话说明这组作品的主题、媒介与创作背景'
+                  : '一句话说明项目做了什么、用了什么技术'
+              }
               {...register('description')}
             />
             <FieldError message={errors.description?.message} />
@@ -199,7 +208,10 @@ function ProjectDialog({
               <FieldError message={errors.pointsText?.message} />
             </div>
 
-            <Label htmlFor="project-tags">技术标签（逗号分隔，最多 {MAX_TAG_COUNT} 个）</Label>
+            <Label htmlFor="project-tags">
+              {archetype.id === 'artist' ? '分类标签' : '技术标签'}（逗号分隔，最多 {MAX_TAG_COUNT}{' '}
+              个）
+            </Label>
             <Input
               id="project-tags"
               className="mt-1.5"
@@ -208,9 +220,11 @@ function ProjectDialog({
             />
             <FieldError message={errors.tagsText?.message} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className={cn('grid gap-3', archetype.fields.repo ? 'grid-cols-2' : 'grid-cols-1')}>
             <div>
-              <Label htmlFor="project-link">演示链接</Label>
+              <Label htmlFor="project-link">
+                {archetype.id === 'artist' ? '作品链接' : '演示链接'}
+              </Label>
               <Input
                 id="project-link"
                 className="mt-1.5"
@@ -219,16 +233,18 @@ function ProjectDialog({
               />
               <FieldError message={errors.link?.message} />
             </div>
-            <div>
-              <Label htmlFor="project-repo">源码链接</Label>
-              <Input
-                id="project-repo"
-                className="mt-1.5"
-                placeholder="https://"
-                {...register('repo')}
-              />
-              <FieldError message={errors.repo?.message} />
-            </div>
+            {archetype.fields.repo && (
+              <div>
+                <Label htmlFor="project-repo">源码链接</Label>
+                <Input
+                  id="project-repo"
+                  className="mt-1.5"
+                  placeholder="https://"
+                  {...register('repo')}
+                />
+                <FieldError message={errors.repo?.message} />
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-between rounded-lg border bg-background px-3 py-2.5">
             <Label htmlFor="project-highlight" className="flex items-center gap-2 text-sm">

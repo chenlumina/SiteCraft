@@ -13,13 +13,25 @@ import { BrandLogo } from '@/components/brand-logo'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-const NAV_LINKS = [
+const DEVELOPER_NAV_LINKS = [
   { href: '#templates', label: '模板' },
   { href: '#workflow', label: '流程' },
   { href: '#sites', label: '我的站点' },
 ]
 
-export function SiteNav() {
+const ARTIST_NAV_LINKS = [
+  { href: '#gallery', label: '展厅' },
+  { href: '#curation', label: '策展' },
+]
+
+export function SiteNav({
+  onEditProfile,
+  mode = 'developer',
+}: {
+  onEditProfile?: () => void
+  mode?: 'developer' | 'artist'
+}) {
+  const navLinks = mode === 'artist' ? ARTIST_NAV_LINKS : DEVELOPER_NAV_LINKS
   const [scrolled, setScrolled] = useState(false)
   const [active, setActive] = useState('')
 
@@ -27,7 +39,7 @@ export function SiteNav() {
     function onScroll() {
       setScrolled(window.scrollY > 24)
       let current = ''
-      for (const link of NAV_LINKS) {
+      for (const link of navLinks) {
         const el = document.querySelector(link.href)
         if (el && el.getBoundingClientRect().top <= 140) current = link.href
       }
@@ -36,7 +48,7 @@ export function SiteNav() {
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [navLinks])
 
   return (
     <header
@@ -50,7 +62,7 @@ export function SiteNav() {
           <BrandLogo />
         </Link>
         <nav className="hidden items-center gap-1 md:flex" aria-label="主导航">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -65,10 +77,26 @@ export function SiteNav() {
             </a>
           ))}
         </nav>
+        {onEditProfile && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onEditProfile}
+            className="hidden text-muted-foreground sm:inline-flex"
+          >
+            切换身份
+          </Button>
+        )}
         <Button asChild size="sm" className="gap-1.5">
-          <Link href="/editor">
-            开始创建 <ArrowRight />
-          </Link>
+          {mode === 'artist' ? (
+            <a href="#curation">
+              开始策展 <ArrowRight />
+            </a>
+          ) : (
+            <Link href="/editor">
+              开始创建 <ArrowRight />
+            </Link>
+          )}
         </Button>
       </div>
     </header>

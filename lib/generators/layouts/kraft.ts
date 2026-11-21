@@ -8,7 +8,15 @@ import type { SiteData } from '@/types'
 import { esc, monogram } from '../escape'
 import { icon, socialLinks } from '../icons'
 import { FONT_MONO, FONT_SANS } from '../theme-consts'
-import { avatarHTML, getSections, levelDots, projectLinks, tagItems, orderSections } from './shared'
+import {
+  avatarHTML,
+  getSections,
+  levelDots,
+  projectLinks,
+  tagItems,
+  orderSections,
+  skillLevelVisible,
+} from './shared'
 
 export const KRAFT_CSS = `
 .site-kraft{--bg:#f6ecdd;--fg:#3d2f22;--muted:#6e6252;--line:#e0d2bc;--panel:#fffbf2;--tape:rgba(255,252,240,.7);--dashed:#c9b691;--shadow:rgba(61,47,34,.14);--fd:${FONT_SANS};--fb:${FONT_SANS};--fm:${FONT_MONO}}
@@ -105,9 +113,10 @@ export function renderKraft(data: SiteData): string {
     .join('')
 
   const skills = data.skills
-    .map(
-      (s) =>
-        `<div class="k-tagrow"><span class="k-tag">${esc(s.name)}</span><span class="k-dots">${levelDots(s.level)}</span></div>`
+    .map((s) =>
+      skillLevelVisible(data)
+        ? `<div class="k-tagrow"><span class="k-tag">${esc(s.name)}</span><span class="k-dots">${levelDots(s.level)}</span></div>`
+        : `<div class="k-tagrow"><span class="k-tag">${esc(s.name)}</span></div>`
     )
     .join('')
 
