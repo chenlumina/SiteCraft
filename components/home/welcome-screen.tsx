@@ -33,7 +33,7 @@ const DIRECTIONS = [
     code: 'ART / MEDIA',
     title: '艺术创作人员',
     description: '让作品图成为主角，文字退到作品旁边，尺寸与展览履历替你说可信度。',
-    detail: '画廊 · 展览 · 作品履历',
+    detail: '画廊 · 展览 · 合作约稿',
     icon: Palette,
   },
 ]

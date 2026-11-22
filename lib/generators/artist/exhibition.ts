@@ -56,10 +56,25 @@ function renderPiece(artwork: Artwork, index: number): string {
   return lines.filter(Boolean).join('\n    ')
 }
 
+/** 合作条目：只输出有内容的行 */
+function commissionRows(commissions: ArtistSiteData['commissions']): string[][] {
+  if (!commissions) return []
+  const rows: Array<[string, string]> = [
+    ['范围', commissions.scope.trim()],
+    ['流程', commissions.process.trim()],
+    ['档期', commissions.leadTime.trim()],
+    ['起价', commissions.priceFrom.trim()],
+  ]
+  return rows.filter(([, value]) => value !== '').map(([k, value]) => [k, value])
+}
+
 export function renderExhibitionBody(data: ArtistSiteData): string {
   const works = [...data.artworks].sort((a, b) => Number(b.featured) - Number(a.featured))
   const mail = data.email.trim()
   const lead = data.bio.trim().split('。')[0] + (data.bio.trim().includes('。') ? '。' : '')
+  const city = data.location ? ' · ' + esc(data.location) : ''
+
+  // 展览履历
   const cv = (data.exhibitions ?? [])
     .filter((item) => item.title.trim())
     .sort((a, b) => (b.year || '').localeCompare(a.year || ''))
@@ -78,13 +93,32 @@ export function renderExhibitionBody(data: ArtistSiteData): string {
       )
     })
     .join('')
-  const wall = works.map((artwork, index) => renderPiece(artwork, index)).join('\n')
 
-  const nav = [
-    '<a href="#wall">作品墙</a>',
-    cv ? '<a href="#cv">展览履历</a>' : '',
-    mail ? '<a href="mailto:' + esc(mail) + '">联系</a>' : '',
-  ].join('')
+  // 合作/约稿
+  const rows = commissionRows(data.commissions)
+  const commissionsHtml = rows
+    .map((pair) => '<div><dt>' + esc(pair[0]) + '</dt><dd>' + esc(pair[1]) + '</dd></div>')
+    .join('')
+  const commissionBlock = rows.length
+    ? '<section id="commissions" class="ex-commissions"><div class="ex-cvhead"><h2>合作</h2>' +
+      '<span class="ex-kicker">' +
+      (data.commissions?.open ? 'Open for commissions' : 'Closed') +
+      '</span></div>' +
+      '<p class="ex-cm-state">' +
+      (data.commissions?.open ? '目前接单中' : '暂不接单，仍欢迎来信交流') +
+      '</p>' +
+      '<dl class="ex-cm-list">' +
+      commissionsHtml +
+      '</dl>' +
+      (mail
+        ? '<p class="ex-cm-cta"><a href="mailto:' +
+          esc(mail) +
+          '?subject=' +
+          encodeURIComponent('合作咨询') +
+          '">来信谈合作 →</a></p>'
+        : '') +
+      '</section>'
+    : ''
 
   const cvBlock = cv
     ? '<section id="cv" class="ex-cv"><div class="ex-cvhead"><h2>展览履历</h2>' +
@@ -92,6 +126,13 @@ export function renderExhibitionBody(data: ArtistSiteData): string {
       cv +
       '</ul></section>'
     : ''
+
+  const navItems = [
+    '<a href="#wall">作品墙</a>',
+    cv ? '<a href="#cv">展览履历</a>' : '',
+    commissionBlock ? '<a href="#commissions">合作</a>' : '',
+    mail ? '<a href="mailto:' + esc(mail) + '">联系</a>' : '',
+  ].join('')
 
   const contact = [
     mail ? '<a href="mailto:' + esc(mail) + '">' + esc(mail) + '</a>' : '',
@@ -102,13 +143,13 @@ export function renderExhibitionBody(data: ArtistSiteData): string {
     .filter(Boolean)
     .join('')
 
-  const city = data.location ? ' · ' + esc(data.location) : ''
+  const wall = works.map((artwork, index) => renderPiece(artwork, index)).join('\n')
 
   return [
     '<div class="site-root artist-exhibition site-exhibition">',
     '  <header class="ex-bar">',
     '    <a class="ex-brand" href="#top">' + esc(data.name) + '</a>',
-    '    <nav class="ex-nav" aria-label="展览导航">' + nav + '</nav>',
+    '    <nav class="ex-nav" aria-label="展览导航">' + navItems + '</nav>',
     '  </header>',
     '  <main id="top" class="ex-main">',
     '    <section class="ex-intro">',
@@ -123,6 +164,7 @@ export function renderExhibitionBody(data: ArtistSiteData): string {
     '      </div>',
     '    </section>',
     cvBlock,
+    commissionBlock,
     '    <section class="ex-outro">',
     '      <div>',
     '        <p class="ex-kicker">Contact</p>',
@@ -142,7 +184,6 @@ export function renderExhibitionBody(data: ArtistSiteData): string {
     .filter(Boolean)
     .join('\n')
 }
-
 export function renderExhibitionCSS(): string {
   return `body{margin:0;background:#eeeee9}
 .artist-exhibition,.artist-exhibition *{box-sizing:border-box}
@@ -192,6 +233,15 @@ export function renderExhibitionCSS(): string {
 .ex-year{font-variant-numeric:tabular-nums;font-size:13px;color:var(--ex-mute)}
 .ex-role{font-size:11px;letter-spacing:.08em;color:var(--ex-mute)}
 .ex-show{font-size:14.5px;line-height:1.6}
+.ex-commissions{margin-top:clamp(36px,6vw,72px);border-top:1px solid var(--ex-line);padding-top:26px}
+.ex-cm-state{margin:0 0 14px;font-size:13.5px;color:var(--ex-mute)}
+.ex-cm-list{margin:0;display:grid;gap:10px}
+.ex-cm-list > div{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:baseline;padding-bottom:10px;border-bottom:1px solid rgba(25,24,23,.09)}
+.ex-cm-list dt{font-size:11px;letter-spacing:.1em;color:var(--ex-mute);text-transform:uppercase}
+.ex-cm-list dd{margin:0;font-size:14px;line-height:1.75}
+.ex-cm-c2{}
+.ex-cm-cta{margin:18px 0 0;font-size:15px}
+.ex-cm-cta a{display:inline-flex;align-items:center;min-height:24px;border-bottom:1px solid rgba(25,24,23,.35)}
 .ex-outro{margin-top:clamp(36px,6vw,72px);border-top:1px solid var(--ex-line);padding-top:26px;
   display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-end}
 .ex-outro h2{margin:0;font-size:28px;font-weight:400}

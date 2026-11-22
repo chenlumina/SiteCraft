@@ -65,6 +65,14 @@ export const exhibitionSchema = z.object({
   role: z.enum(['solo', 'group', 'other']),
 })
 
+export const commissionsSchema = z.object({
+  open: z.boolean().default(false),
+  scope: z.string().trim().max(120, '接单范围最多 120 字').default(''),
+  process: z.string().trim().max(200, '合作流程最多 200 字').default(''),
+  leadTime: z.string().trim().max(40, '档期最多 40 字').default(''),
+  priceFrom: z.string().trim().max(40, '起价最多 40 字').default(''),
+})
+
 export const artistSiteDataSchema = siteDataSchema
   .pick({
     name: true,
@@ -83,6 +91,13 @@ export const artistSiteDataSchema = siteDataSchema
       .array(exhibitionSchema)
       .max(MAX_EXHIBITION_COUNT, `最多 ${MAX_EXHIBITION_COUNT} 条展览履历`)
       .default([]),
+    commissions: commissionsSchema.default({
+      open: false,
+      scope: '',
+      process: '',
+      leadTime: '',
+      priceFrom: '',
+    }),
   })
 
 export const artistSaveSiteSchema = z.object({

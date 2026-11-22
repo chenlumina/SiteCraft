@@ -35,6 +35,15 @@
 .ag-nav a,.ag-brand{display:inline-flex;min-height:24px;align-items:center;transition:opacity .2s ease,color .2s ease}
 .ag-nav a:hover{opacity:.62}
 @media (prefers-reduced-motion:reduce){.ag-hero-title{animation:none}.ag-work-cover,.ag-hero-media img,.ag-nav a,.ag-brand{transition:none}.ag-work:hover .ag-work-cover{transform:none}}
+.ag-commissions{padding:56px 0 8px}
+.ag-commissions-state{display:flex;align-items:center;gap:8px;margin:0 0 16px;font-size:13.5px;color:rgba(0,0,0,.62)}
+.ag-dot{width:7px;height:7px;border-radius:50%;background:#2f9e63}
+.ag-commission-list{margin:0;display:grid;gap:10px}
+.ag-commission-list > div{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:baseline;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,.09)}
+.ag-commission-list dt{font-size:11px;letter-spacing:.1em;color:rgba(0,0,0,.5);text-transform:uppercase}
+.ag-commission-list dd{margin:0;font-size:14px;line-height:1.75}
+.ag-commission-cta{margin:18px 0 0;font-size:15px}
+.ag-commission-cta a{display:inline-flex;align-items:center;min-height:24px;border-bottom:1px solid rgba(0,0,0,.35)}
 .ag-exhibitions{padding:56px 0 8px}
 .ag-ex-list{list-style:none;margin:0;padding:0;border-top:1px solid rgba(0,0,0,.14)}
 .ag-ex-list li{display:grid;grid-template-columns:64px 52px 1fr;gap:14px;align-items:baseline;padding:11px 0;border-bottom:1px solid rgba(0,0,0,.09)}
@@ -67,7 +76,7 @@
 </head>
 <body style="margin:0;background:#f3f3f0">
 <div class="site-root artist-gallery site-gallery">
-<header class="ag-header"><a class="ag-brand" href="#top">林墨</a><nav class="ag-nav" aria-label="作品导航"><a href="#works">作品</a><a href="#exhibitions">展览</a><a href="#about">关于</a><a href="mailto:artist@example.com">联系</a></nav></header>
+<header class="ag-header"><a class="ag-brand" href="#top">林墨</a><nav class="ag-nav" aria-label="作品导航"><a href="#works">作品</a><a href="#exhibitions">展览</a><a href="#commissions">合作</a><a href="#about">关于</a><a href="mailto:artist@example.com">联系</a></nav></header>
 <main id="top" class="ag-main">
   <p class="ag-kicker">Selected works · 独立插画师 · 视觉创作者</p>
   <h1 class="ag-hero-title">城市呼吸</h1>
@@ -86,6 +95,11 @@
     <figcaption><p class="ag-meta">柔软标本 · 2025</p><h3>无声花园</h3><p>丙烯、纸面 · 直径 80 cm</p><p>一组关于生长速度的标本：有些花在开放，有些颜色正在退场。</p></figcaption>
   </figure></div></section>
 <section id="exhibitions" class="ag-exhibitions"><div class="ag-section-head"><h2>展览</h2><span class="ag-kicker">Exhibitions</span></div><ul class="ag-ex-list"><li><span class="ag-ex-year">2025</span><span class="ag-ex-role">个展</span><span class="ag-ex-title">城市呼吸，拾光画廊</span></li><li><span class="ag-ex-year">2024</span><span class="ag-ex-role">群展</span><span class="ag-ex-title">纸上城市 · 青年插画联展，市立美术馆</span></li><li><span class="ag-ex-year">2023</span><span class="ag-ex-role">群展</span><span class="ag-ex-title">植物的间隙，独立艺术书展</span></li></ul></section>
+  <section id="commissions" class="ag-commissions"><div class="ag-section-head"><h2>合作</h2><span class="ag-kicker">Open for commissions</span></div>
+        <p class="ag-commissions-state"><span class="ag-dot" aria-hidden="true"></span>目前接单中</p>
+        <dl class="ag-commission-list"><div><dt>范围</dt><dd>编辑插画、书籍封面、品牌视觉；暂不接游戏美术。</dd></div><div><dt>流程</dt><dd>邮件说明需求与参考 → 三个工作日内回报价与排期 → 定金 50% 后排入档期。</dd></div><div><dt>档期</dt><dd>2027 春季档期，常规交付 3–4 周。</dd></div><div><dt>起价</dt><dd>单张 3,000 元起</dd></div></dl>
+        <p class="ag-commission-cta"><a href="mailto:artist@example.com?subject=%E5%90%88%E4%BD%9C%E5%92%A8%E8%AF%A2">来信谈合作 →</a></p>
+      </section>
   <section id="about" class="ag-about"><div><p class="ag-kicker">About the artist</p><h2>林墨</h2></div><div><p>以水彩、综合材料与数字绘画记录城市日常，关注建筑、植物和人的微小情绪。</p><p style="margin-top:14px">浙江 · 杭州</p><p style="margin-top:14px"><a href="mailto:artist@example.com">artist@example.com</a></p></div></section>
 </main>
 <footer class="ag-footer"><span>© 2026 林墨</span><span>Digital Gallery · SiteCraft</span></footer>

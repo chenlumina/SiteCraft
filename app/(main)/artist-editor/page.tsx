@@ -151,7 +151,7 @@ function ArtistEditorInner() {
                   : item === 'artworks'
                     ? '作品管理'
                     : item === 'exhibitions'
-                      ? '履历'
+                      ? '履历·合作'
                       : '主题'}
               </button>
             ))}
@@ -159,7 +159,13 @@ function ArtistEditorInner() {
 
           {tab === 'profile' && <ProfileForm />}
           {tab === 'artworks' && <ArtworkList />}
-          {tab === 'exhibitions' && <ExhibitionList />}
+          {tab === 'exhibitions' && (
+            <>
+              <ExhibitionList />
+              <div className="my-6 h-px bg-border" />
+              <CommissionForm />
+            </>
+          )}
           {tab === 'theme' && (
             <div>
               <Label>版式</Label>
@@ -577,6 +583,74 @@ function ArtworkList() {
       >
         <Plus /> 添加作品（{artworks.length}/{MAX_ARTWORK_COUNT}）
       </Button>
+    </div>
+  )
+}
+
+function CommissionForm() {
+  const commissions = useArtistEditorStore((state) => state.data.commissions)
+  const updateData = useArtistEditorStore((state) => state.updateData)
+  const set = (patch: Partial<typeof commissions>) =>
+    updateData({ commissions: { ...commissions, ...patch } })
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <h3 className="text-sm font-medium">合作约稿</h3>
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          作品看完之后，访客想知道的就是「怎么找你做活」。这里只写接单范围和流程，
+          不报价目表、不做结算——具体金额靠邮件谈。
+        </p>
+      </div>
+
+      <label className="flex items-center gap-2 rounded-lg border p-3 text-sm">
+        <input
+          type="checkbox"
+          checked={commissions.open}
+          onChange={(e) => set({ open: e.target.checked })}
+          className="h-4 w-4"
+        />
+        目前接单中
+        <span className="ml-auto text-[11px] text-muted-foreground">
+          {commissions.open ? '页面显示「目前接单中」' : '页面显示「暂不接单」'}
+        </span>
+      </label>
+
+      <Field label="接单范围" htmlFor="cm-scope">
+        <Input
+          id="cm-scope"
+          placeholder="编辑插画、书籍封面、品牌视觉；暂不接游戏美术"
+          value={commissions.scope}
+          onChange={(e) => set({ scope: e.target.value })}
+        />
+      </Field>
+      <Field label="合作流程" htmlFor="cm-process">
+        <Textarea
+          id="cm-process"
+          rows={2}
+          placeholder="邮件说明需求与参考 → 三个工作日内回报价与排期 → 定金 50% 后排期"
+          value={commissions.process}
+          onChange={(e) => set({ process: e.target.value })}
+        />
+      </Field>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="档期 / 周期" htmlFor="cm-lead">
+          <Input
+            id="cm-lead"
+            placeholder="2027 春季档期，交付 3–4 周"
+            value={commissions.leadTime}
+            onChange={(e) => set({ leadTime: e.target.value })}
+          />
+        </Field>
+        <Field label="起价（可选）" htmlFor="cm-price">
+          <Input
+            id="cm-price"
+            placeholder="单张 3,000 元起"
+            value={commissions.priceFrom}
+            onChange={(e) => set({ priceFrom: e.target.value })}
+          />
+        </Field>
+      </div>
     </div>
   )
 }

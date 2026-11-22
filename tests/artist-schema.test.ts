@@ -57,4 +57,12 @@ describe('艺术数据契约', () => {
     assert.deepEqual(parsed.exhibitions, [])
     assert.equal(typeof parsed.artworks[0].dimensions, 'string')
   })
+
+  it('缺省 commissions 时给出安全默认值（老数据可直接通过）', () => {
+    const data = createGallerySampleData()
+    delete (data as { commissions?: unknown }).commissions
+    const parsed = artistSiteDataSchema.parse(data)
+    assert.equal(parsed.commissions.open, false)
+    assert.equal(parsed.commissions.scope, '')
+  })
 })

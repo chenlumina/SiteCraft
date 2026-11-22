@@ -36,6 +36,24 @@ export interface Exhibition {
   role: string
 }
 
+/**
+ * 合作/约稿：艺术家对外的"接活"信息。
+ * 不做价目表和结算——一旦有购物车，这就不是个人站生成器了，
+ * 所以报价只留一句"起价"，具体靠邮件谈。
+ */
+export interface Commissions {
+  /** 当前是否接单：false 时页面显示"暂不接单"，其余字段仍展示给人看 */
+  open: boolean
+  /** 接单范围 */
+  scope: string
+  /** 合作流程 */
+  process: string
+  /** 档期 / 周期 */
+  leadTime: string
+  /** 报价起点（自由文本） */
+  priceFrom: string
+}
+
 export interface ArtistSiteRecord {
   id: string
   name: string
@@ -58,4 +76,5 @@ export interface ArtistSiteData {
   theme: SiteTheme
   artworks: Artwork[]
   exhibitions: Exhibition[]
+  commissions: Commissions
 }

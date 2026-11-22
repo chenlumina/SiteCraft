@@ -11,6 +11,13 @@ export const GALLERY_SAMPLE_DATA: ArtistSiteData = {
   location: '浙江 · 杭州',
   email: 'artist@example.com',
   socials: { github: '', twitter: '', website: '', bilibili: '' },
+  commissions: {
+    open: true,
+    scope: '编辑插画、书籍封面、品牌视觉；暂不接游戏美术。',
+    process: '邮件说明需求与参考 → 三个工作日内回报价与排期 → 定金 50% 后排入档期。',
+    leadTime: '2027 春季档期，常规交付 3–4 周。',
+    priceFrom: '单张 3,000 元起',
+  },
   exhibitions: [
     { id: 'ex-1', year: '2025', title: '城市呼吸', venue: '拾光画廊', role: 'solo' },
     {

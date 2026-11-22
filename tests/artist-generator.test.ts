@@ -89,4 +89,28 @@ describe('Gallery 真实渲染器', () => {
     assert.ok(gallery.includes('artist-gallery'))
     assert.ok(exhibition.includes('artist-exhibition'))
   })
+
+  it('合作区块：有内容才渲染，接单状态可切换，邮件带主题', () => {
+    const data = createGallerySampleData()
+    for (const tpl of ['gallery', 'exhibition'] as const) {
+      const html = generateArtistSiteHTML(data, tpl)
+      assert.ok(html.includes('id="commissions"'), tpl + ' 应有合作区块')
+      assert.ok(html.includes('接单中'), tpl + ' 应显示接单状态')
+      assert.ok(html.includes('3,000'), tpl + ' 应显示起价')
+      assert.ok(/subject=/.test(html), tpl + ' 邮件应带主题')
+    }
+    const closed = generateArtistSiteHTML(
+      { ...data, commissions: { ...data.commissions, open: false } },
+      'gallery'
+    )
+    assert.ok(closed.includes('暂不接单'), '关闭接单后应改为暂不接单')
+    const empty = generateArtistSiteHTML(
+      {
+        ...data,
+        commissions: { open: false, scope: '', process: '', leadTime: '', priceFrom: '' },
+      },
+      'gallery'
+    )
+    assert.ok(!empty.includes('id="commissions"'), '四项全空时不应渲染空区块')
+  })
 })

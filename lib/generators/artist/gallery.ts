@@ -35,6 +35,15 @@ export const GALLERY_CSS = `
 .ag-nav a,.ag-brand{display:inline-flex;min-height:24px;align-items:center;transition:opacity .2s ease,color .2s ease}
 .ag-nav a:hover{opacity:.62}
 @media (prefers-reduced-motion:reduce){.ag-hero-title{animation:none}.ag-work-cover,.ag-hero-media img,.ag-nav a,.ag-brand{transition:none}.ag-work:hover .ag-work-cover{transform:none}}
+.ag-commissions{padding:56px 0 8px}
+.ag-commissions-state{display:flex;align-items:center;gap:8px;margin:0 0 16px;font-size:13.5px;color:rgba(0,0,0,.62)}
+.ag-dot{width:7px;height:7px;border-radius:50%;background:#2f9e63}
+.ag-commission-list{margin:0;display:grid;gap:10px}
+.ag-commission-list > div{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:baseline;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,.09)}
+.ag-commission-list dt{font-size:11px;letter-spacing:.1em;color:rgba(0,0,0,.5);text-transform:uppercase}
+.ag-commission-list dd{margin:0;font-size:14px;line-height:1.75}
+.ag-commission-cta{margin:18px 0 0;font-size:15px}
+.ag-commission-cta a{display:inline-flex;align-items:center;min-height:24px;border-bottom:1px solid rgba(0,0,0,.35)}
 .ag-exhibitions{padding:56px 0 8px}
 .ag-ex-list{list-style:none;margin:0;padding:0;border-top:1px solid rgba(0,0,0,.14)}
 .ag-ex-list li{display:grid;grid-template-columns:64px 52px 1fr;gap:14px;align-items:baseline;padding:11px 0;border-bottom:1px solid rgba(0,0,0,.09)}
@@ -105,6 +114,23 @@ export function renderGalleryBody(data: ArtistSiteData): string {
   const featured = ordered[0]
   const rest = featured ? ordered.slice(1) : []
   const mail = data.email.trim()
+  const cm = data.commissions
+  const commissionRows = cm
+    ? [
+        cm.scope.trim() ? ['范围', cm.scope.trim()] : null,
+        cm.process.trim() ? ['流程', cm.process.trim()] : null,
+        cm.leadTime.trim() ? ['档期', cm.leadTime.trim()] : null,
+        cm.priceFrom.trim() ? ['起价', cm.priceFrom.trim()] : null,
+      ].filter((row): row is string[] => row !== null)
+    : []
+  const commissionBlock =
+    commissionRows.length > 0
+      ? `<section id="commissions" class="ag-commissions"><div class="ag-section-head"><h2>合作</h2><span class="ag-kicker">${cm?.open ? 'Open for commissions' : 'Closed'}</span></div>
+        <p class="ag-commissions-state">${cm?.open ? '<span class="ag-dot" aria-hidden="true"></span>目前接单中' : '暂不接单，仍欢迎来信交流'}</p>
+        <dl class="ag-commission-list">${commissionRows.map(([k, val]) => `<div><dt>${esc(k)}</dt><dd>${esc(val)}</dd></div>`).join('')}</dl>
+        ${mail ? `<p class="ag-commission-cta"><a href="mailto:${esc(mail)}?subject=${encodeURIComponent('合作咨询')}">来信谈合作 →</a></p>` : ''}
+      </section>`
+      : ''
   const roleLabel: Record<string, string> = { solo: '个展', group: '群展', other: '其他' }
   const exhibitions = (data.exhibitions ?? [])
     .filter((item) => item.title.trim())
@@ -114,13 +140,14 @@ export function renderGalleryBody(data: ArtistSiteData): string {
     )
     .join('')
   return `<div class="site-root artist-gallery site-gallery">
-<header class="ag-header"><a class="ag-brand" href="#top">${esc(data.name)}</a><nav class="ag-nav" aria-label="作品导航">${featured ? '<a href="#works">作品</a>' : ''}${exhibitions ? '<a href="#exhibitions">展览</a>' : ''}<a href="#about">关于</a>${mail ? `<a href="mailto:${esc(mail)}">联系</a>` : ''}</nav></header>
+<header class="ag-header"><a class="ag-brand" href="#top">${esc(data.name)}</a><nav class="ag-nav" aria-label="作品导航">${featured ? '<a href="#works">作品</a>' : ''}${exhibitions ? '<a href="#exhibitions">展览</a>' : ''}${commissionBlock ? '<a href="#commissions">合作</a>' : ''}<a href="#about">关于</a>${mail ? `<a href="mailto:${esc(mail)}">联系</a>` : ''}</nav></header>
 <main id="top" class="ag-main">
   <p class="ag-kicker">Selected works · ${esc(data.title)}</p>
   <h1 class="ag-hero-title">${esc(featured?.series || data.name)}</h1>
   ${featured ? `<div class="ag-hero">${renderWork(featured, true)}<div class="ag-caption"><p class="ag-meta">${esc(featured.series)}${featured.year ? ` · ${esc(featured.year)}` : ''}</p><h2>${esc(featured.title)}</h2><p>${esc(featured.medium)}${featured.dimensions ? ` · ${esc(featured.dimensions)}` : ''}</p>${featured.description ? `<p>${esc(featured.description)}</p>` : ''}</div></div>` : ''}
   ${rest.length ? `<section id="works" class="ag-works"><div class="ag-section-head"><h2>全部作品</h2><span class="ag-kicker">${rest.length} pieces</span></div><div class="ag-grid">${rest.map((artwork) => renderWork(artwork)).join('')}</div></section>` : ''}
 ${exhibitions.length ? `<section id="exhibitions" class="ag-exhibitions"><div class="ag-section-head"><h2>展览</h2><span class="ag-kicker">Exhibitions</span></div><ul class="ag-ex-list">${exhibitions}</ul></section>` : ''}
+  ${commissionBlock}
   <section id="about" class="ag-about"><div><p class="ag-kicker">About the artist</p><h2>${esc(data.name)}</h2></div><div><p>${esc(data.bio)}</p>${data.location ? `<p style="margin-top:14px">${esc(data.location)}</p>` : ''}${mail ? `<p style="margin-top:14px"><a href="mailto:${esc(mail)}">${esc(mail)}</a></p>` : ''}</div></section>
 </main>
 <footer class="ag-footer"><span>© ${new Date().getFullYear()} ${esc(data.name)}</span><span>Digital Gallery · SiteCraft</span></footer>
