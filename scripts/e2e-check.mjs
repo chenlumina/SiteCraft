@@ -9,7 +9,8 @@
 import { chromium } from 'playwright-core'
 import fs from 'node:fs'
 
-const BASE = 'http://localhost:3000'
+// 允许用 E2E_BASE 指向非 3000 端口（例如 3000 被占用时另起的验证服务）
+const BASE = process.env.E2E_BASE || 'http://localhost:3000'
 const OUT = 'screenshots'
 fs.mkdirSync(OUT, { recursive: true })
 
@@ -26,6 +27,12 @@ const context = await browser.newContext({
   viewport: { width: 1440, height: 900 },
   acceptDownloads: true,
   locale: 'zh-CN',
+})
+// 首页现在有身份门禁：主上下文预置开发者身份，直达开发者首页（欢迎页流程单独用新上下文测）
+await context.addInitScript(() => {
+  try {
+    localStorage.setItem('sitecraft-profile', JSON.stringify({ name: '张亮', archetype: 'developer' }))
+  } catch {}
 })
 const page = await context.newPage()
 page.on('console', (msg) => {
@@ -49,8 +56,9 @@ await step('首页加载与关键内容', async () => {
   await page.waitForSelector('h1')
   const headline = (await page.locator('h1').first().textContent()) || ''
   if (!/把你自己|DEPLOY/.test(headline)) throw new Error(`首屏标语异常: ${headline.slice(0, 40)}`)
+  // 开发者样册 = 13 套开发者版式（艺术版式只在艺术首页陈列，不再混排）
   const cards = await page.locator('#templates [data-template-row]').count()
-  if (cards !== 12) throw new Error(`样册索引行数 ${cards} != 12`)
+  if (cards !== 13) throw new Error(`样册索引行数 ${cards} != 13`)
   await page.waitForSelector('#sites article')
   const sites = await page.locator('#sites article').count()
   if (sites < 2) throw new Error(`种子站点数量 ${sites} < 2`)
@@ -69,12 +77,36 @@ await page.evaluate(async () => {
 await page.waitForTimeout(1300)
 await page.screenshot({ path: `${OUT}/01-home.png`, fullPage: true })
 
+// 欢迎页登记主旅程（独立上下文，无预置身份）：移动端首屏可达、进入首页回顶、埋点触发
+await step('首次登记流程', async () => {
+  const wctx = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'zh-CN' })
+  const wp = await wctx.newPage()
+  await wp.goto(BASE, { waitUntil: 'networkidle' })
+  await wp.waitForSelector('text=先认识一下')
+  const nameBox = await wp.locator('#welcome-name').boundingBox()
+  if (!nameBox) throw new Error('姓名输入框缺失')
+  if (nameBox.y > 844) throw new Error(`移动端首屏看不到姓名输入框: y=${Math.round(nameBox.y)}`)
+  await wp.fill('#welcome-name', '张亮')
+  await wp.click('[role="radio"]:has-text("开发人员")')
+  await wp.click('button[type="submit"]')
+  await wp.getByRole('button', { name: /进入我的首页/ }).click()
+  await wp.waitForSelector('[data-workbench-strip]')
+  await wp.waitForTimeout(400)
+  const after = await wp.evaluate(() => ({
+    scrollY: window.scrollY,
+    events: (window.__sitecraftEvents || []).map((e) => e.event),
+  }))
+  if (after.scrollY > 2) throw new Error(`进入首页未回到顶部: scrollY=${after.scrollY}`)
+  if (!after.events.includes('registration_complete')) throw new Error('缺少 registration_complete 埋点')
+  await wctx.close()
+})
+
 await step('首页 API 数据', async () => {
   const templates = await page.evaluate(async () => {
     const res = await fetch('/api/templates')
     return res.json()
   })
-  if (!templates.success || templates.data.length !== 12) throw new Error('templates API 异常')
+  if (!templates.success || templates.data.length !== 13) throw new Error('templates API 异常')
   const sites = await page.evaluate(async () => {
     const res = await fetch('/api/sites')
     return res.json()
@@ -120,6 +152,26 @@ await step('移动端预览切换', async () => {
   if (!box || box.width > 420) throw new Error(`移动预览宽度异常: ${box?.width}`)
 })
 await page.screenshot({ path: `${OUT}/03-editor-mobile-preview.png` })
+
+// 体检与分享卡：本地纯函数/Canvas，验证清单渲染与 PNG 下载
+await step('站点体检与分享卡片', async () => {
+  await page.getByRole('button', { name: /体检/ }).click()
+  await page.waitForSelector('[data-checkup-item]')
+  const itemCount = await page.locator('[data-checkup-item]').count()
+  const score = await page.locator('[data-checkup-score]').innerText()
+  if (itemCount < 8) throw new Error(`体检项过少: ${itemCount}`)
+  if (!/通过 \d+ \/ \d+/.test(score)) throw new Error(`体检评分异常: ${score}`)
+  await page.getByRole('tab', { name: '分享卡片' }).click()
+  await page.waitForSelector('[data-share-preview]')
+  await page.fill('[data-share-url]', 'https://example.github.io/demo')
+  await page.waitForTimeout(900)
+  const downloadPromise = page.waitForEvent('download')
+  await page.getByRole('button', { name: /下载分享卡/ }).click()
+  const file = await downloadPromise
+  if (!file.suggestedFilename().endsWith('.png')) throw new Error('分享卡文件名异常')
+  await page.keyboard.press('Escape')
+  await page.waitForTimeout(300)
+})
 
 await step('添加技能', async () => {
   await page.click('button[aria-label="桌面预览"]')
@@ -219,6 +271,37 @@ await step('移动端首页布局', async () => {
 })
 await page.screenshot({ path: `${OUT}/05-home-mobile.png`, fullPage: true })
 
+// 艺术首页完整性：七套版式、作品集站点板块、工作台条、页脚、无运行错误与横向溢出
+await step('艺术首页完整性', async () => {
+  const actx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'zh-CN' })
+  await actx.addInitScript(() => {
+    try {
+      localStorage.setItem('sitecraft-profile', JSON.stringify({ name: '张亮', archetype: 'artist' }))
+    } catch {}
+  })
+  const ap = await actx.newPage()
+  const artistErrors = []
+  ap.on('pageerror', (e) => artistErrors.push(String(e)))
+  await ap.goto(BASE, { waitUntil: 'networkidle' })
+  await ap.waitForSelector('#templates')
+  const info = await ap.evaluate(() => ({
+    rows: document.querySelectorAll('#templates [data-template-row]').length,
+    title: document.querySelector('#templates h2')?.textContent || '',
+    hasSites: !!document.querySelector('#sites'),
+    hasStrip: !!document.querySelector('[data-workbench-strip]'),
+    hasFooter: document.body.innerText.includes('本地运行，数据属于你'),
+    overflow: document.documentElement.scrollWidth > window.innerWidth,
+  }))
+  if (info.rows !== 7) throw new Error(`艺术样册行数 ${info.rows} != 7`)
+  if (!info.title.includes('七套')) throw new Error(`艺术样册标题异常: ${info.title}`)
+  if (!info.hasSites) throw new Error('缺少作品集站点板块')
+  if (!info.hasStrip) throw new Error('缺少工作台提示条')
+  if (!info.hasFooter) throw new Error('缺少统一页脚')
+  if (info.overflow) throw new Error('艺术首页横向溢出')
+  if (artistErrors.length) throw new Error(`艺术首页运行错误: ${artistErrors[0]}`)
+  await actx.close()
+})
+
 await step('移动端编辑器布局', async () => {
   await page.goto(`${BASE}/editor`, { waitUntil: 'networkidle' })
   await page.waitForSelector('#field-name', { timeout: 15000 })
@@ -230,6 +313,52 @@ await step('移动端编辑器布局', async () => {
   await page.waitForSelector('.site-root', { timeout: 8000 })
 })
 await page.screenshot({ path: `${OUT}/06-editor-mobile.png` })
+
+// 两个编辑器分家后的回归：旧快照残留 artist 方向时，开发编辑器必须仍按「技能/项目/经历」渲染，
+// 并由 persist 迁移 v3 把数据矫正回 developer（否则界面会变成「创作媒介/作品与系列」）。
+await step('开发编辑器方向残留矫正', async () => {
+  const ectx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'zh-CN' })
+  await ectx.addInitScript(() => {
+    try {
+      localStorage.setItem('sitecraft-profile', JSON.stringify({ name: '张亮', archetype: 'developer' }))
+    } catch {}
+  })
+  const ep = await ectx.newPage()
+  await ep.goto(`${BASE}/editor`, { waitUntil: 'networkidle' })
+  await ep.waitForSelector('#field-name', { timeout: 15000 })
+  // 首次访问 persist 还没落盘，先改一次站点名把快照写进 localStorage，再伪造 artist 残留
+  await ep.fill('input[aria-label="站点名称"]', '方向残留测试')
+  await ep.waitForTimeout(300)
+  const seeded = await ep.evaluate(() => {
+    const raw = localStorage.getItem('sitecraft-editor')
+    if (!raw) return false
+    const parsed = JSON.parse(raw)
+    parsed.version = 2
+    parsed.state.data.archetype = 'artist'
+    localStorage.setItem('sitecraft-editor', JSON.stringify(parsed))
+    return true
+  })
+  if (!seeded) throw new Error('未能种入旧版编辑器快照')
+  await ep.reload({ waitUntil: 'networkidle' })
+  await ep.waitForSelector('#field-name', { timeout: 15000 })
+  const state = await ep.evaluate(() => {
+    const parsed = JSON.parse(localStorage.getItem('sitecraft-editor'))
+    return {
+      version: parsed.version,
+      archetype: parsed.state.data.archetype,
+      labels: Array.from(document.querySelectorAll('[role="tab"]')).map((el) =>
+        el.getAttribute('aria-label')
+      ),
+    }
+  })
+  if (state.version !== 3) throw new Error(`迁移后版本号 ${state.version} != 3`)
+  if (state.archetype !== 'developer') throw new Error(`迁移后方向 ${state.archetype} != developer`)
+  for (const label of ['资料', '技能', '项目', '经历', '主题']) {
+    if (!state.labels.includes(label)) throw new Error(`缺少板块「${label}」: ${state.labels.join('/')}`)
+  }
+  if (state.labels.includes('创作媒介')) throw new Error(`仍渲染艺术方向词汇: ${state.labels.join('/')}`)
+  await ectx.close()
+})
 
 // ---------- 清理测试数据 ----------
 await step('清理 E2E 产生的测试站点', async () => {

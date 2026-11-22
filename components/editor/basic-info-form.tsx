@@ -14,7 +14,6 @@ import { Github, Globe, Link2, Mail, MapPin, Tv } from 'lucide-react'
 import type { BasicInfoValues } from '@/lib/validators/site-schema'
 import { basicInfoSchema } from '@/lib/validators/site-schema'
 import { useEditorStore } from '@/lib/stores/editor-store'
-import { getArchetype } from '@/lib/archetypes'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -23,7 +22,6 @@ import { FieldError, FormSection } from '@/components/editor/form-section'
 export function BasicInfoForm() {
   const data = useEditorStore((s) => s.data)
   const updateData = useEditorStore((s) => s.updateData)
-  const archetype = useEditorStore((s) => getArchetype(s.data.archetype))
 
   const {
     register,
@@ -150,21 +148,19 @@ export function BasicInfoForm() {
 
       <FormSection title="社交链接" description="留空即不展示，仅支持 http(s) 链接">
         <div className="space-y-3">
-          {archetype.fields.github && (
-            <div>
-              <Label htmlFor="field-github">GitHub</Label>
-              <div className="relative mt-1.5">
-                <Github className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="field-github"
-                  className="pl-8"
-                  placeholder="https://github.com/username"
-                  {...register('socials.github')}
-                />
-              </div>
-              <FieldError message={errors.socials?.github?.message} />
+          <div>
+            <Label htmlFor="field-github">GitHub</Label>
+            <div className="relative mt-1.5">
+              <Github className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                id="field-github"
+                className="pl-8"
+                placeholder="https://github.com/username"
+                {...register('socials.github')}
+              />
             </div>
-          )}
+            <FieldError message={errors.socials?.github?.message} />
+          </div>
           <div>
             <Label htmlFor="field-twitter">X / Twitter</Label>
             <div className="relative mt-1.5">

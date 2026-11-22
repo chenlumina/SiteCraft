@@ -7,11 +7,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Download, Eye, Loader2, Rocket, Save, Sparkles } from 'lucide-react'
+import { Download, Eye, Loader2, Rocket, Save, Sparkles, Stethoscope } from 'lucide-react'
 import { useEditorStore } from '@/lib/stores/editor-store'
 import { useSiteActions } from '@/lib/hooks/use-site-actions'
 import { TEMPLATES } from '@/lib/templates'
-import { ARCHETYPE_LIST, getArchetype } from '@/lib/archetypes'
 import { formatDateTime } from '@/lib/utils'
 import { BrandLogo } from '@/components/brand-logo'
 import { Button } from '@/components/ui/button'
@@ -26,8 +25,9 @@ import {
 } from '@/components/ui/select'
 import { DeployDialog } from '@/components/editor/deploy-dialog'
 import { AiFillDialog } from '@/components/editor/ai-fill-dialog'
+import { SiteToolsDialog } from '@/components/editor/site-tools-dialog'
 import { FEATURES } from '@/lib/features'
-import type { ArchetypeId, TemplateName } from '@/types'
+import type { TemplateName } from '@/types'
 
 export function EditorToolbar() {
   const siteName = useEditorStore((s) => s.siteName)
@@ -37,15 +37,10 @@ export function EditorToolbar() {
   const lastSavedAt = useEditorStore((s) => s.lastSavedAt)
   const setSiteName = useEditorStore((s) => s.setSiteName)
   const setTemplate = useEditorStore((s) => s.setTemplate)
-  const setArchetype = useEditorStore((s) => s.setArchetype)
-  const archetype = useEditorStore((s) => getArchetype(s.data.archetype))
-  // 白名单只收窄新选择；当前模板即使不在名单内也保留，避免旧站点选择器失效
-  const availableTemplates = TEMPLATES.filter(
-    (t) => archetype.templates.includes(t.name) || t.name === template
-  )
   const { saveSite, exportHtml } = useSiteActions()
   const [deployOpen, setDeployOpen] = useState(false)
   const [aiOpen, setAiOpen] = useState(false)
+  const [toolsOpen, setToolsOpen] = useState(false)
 
   return (
     <header className="z-30 flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border bg-background/95 px-4 py-2.5 backdrop-blur">
@@ -73,24 +68,13 @@ export function EditorToolbar() {
       </span>
 
       <div className="ml-auto flex flex-wrap items-center gap-2">
-        <Select value={archetype.id} onValueChange={(v) => setArchetype(v as ArchetypeId)}>
-          <SelectTrigger className="h-8 w-32" aria-label="内容方向">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {ARCHETYPE_LIST.map((item) => (
-              <SelectItem key={item.id} value={item.id}>
-                {item.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
         <Select value={template} onValueChange={(v) => setTemplate(v as TemplateName)}>
           <SelectTrigger className="h-8 w-40" aria-label="选择模板">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {availableTemplates.map((t) => (
+            {/* 开发编辑器固定陈列十三套开发者版式（方向切换已下线） */}
+            {TEMPLATES.map((t) => (
               <SelectItem key={t.name} value={t.name}>
                 <span className="flex items-center gap-2">
                   <span
@@ -108,6 +92,9 @@ export function EditorToolbar() {
             <Sparkles /> <span className="hidden sm:inline">AI 预填</span>
           </Button>
         )}
+        <Button variant="outline" size="sm" className="h-8" onClick={() => setToolsOpen(true)}>
+          <Stethoscope /> <span className="hidden sm:inline">体检</span>
+        </Button>
         <Button variant="outline" size="sm" className="h-8" onClick={exportHtml}>
           <Download /> <span className="hidden sm:inline">导出 HTML</span>
         </Button>
@@ -126,6 +113,7 @@ export function EditorToolbar() {
       </div>
       <DeployDialog open={deployOpen} onOpenChange={setDeployOpen} />
       {FEATURES.AI_FILL && <AiFillDialog open={aiOpen} onOpenChange={setAiOpen} />}
+      <SiteToolsDialog open={toolsOpen} onOpenChange={setToolsOpen} />
     </header>
   )
 }

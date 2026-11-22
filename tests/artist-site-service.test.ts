@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { createGallerySampleData } from '@/lib/artist/sample-gallery'
 import {
   ArtistSiteNotFoundError,
+  deleteArtistSite,
   getArtistSite,
   listArtistSites,
   saveArtistSite,
@@ -52,5 +53,22 @@ describe('艺术站点服务', () => {
       () => saveArtistSite('another-user', { ...input(), id: saved.id }),
       ArtistSiteNotFoundError
     )
+  })
+
+  it('删除只作用于艺术模板站点：开发站点不会被误删', async () => {
+    const saved = await saveArtistSite(USER_ID, input())
+    const devSite = await prisma.site.create({
+      data: {
+        name: '开发站',
+        template: 'minimal',
+        content: '{}',
+        status: 'draft',
+        userId: USER_ID,
+      },
+    })
+    await assert.rejects(() => deleteArtistSite(USER_ID, devSite.id), ArtistSiteNotFoundError)
+    await deleteArtistSite(USER_ID, saved.id)
+    assert.equal(await getArtistSite(USER_ID, saved.id), null)
+    assert.ok(await prisma.site.findUnique({ where: { id: devSite.id } }))
   })
 })

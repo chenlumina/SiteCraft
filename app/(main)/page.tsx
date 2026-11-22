@@ -16,6 +16,7 @@ import { Workflow } from '@/components/home/workflow'
 import { MySites } from '@/components/home/my-sites'
 import { SiteFooter } from '@/components/home/site-footer'
 import { ArtistBoard } from '@/components/home/artist-board'
+import { WorkbenchStrip } from '@/components/home/workbench-strip'
 import { PROFILE_KEY, WelcomeScreen, type VisitorProfile } from '@/components/home/welcome-screen'
 
 function DeveloperHome({ visitorName, onReset }: { visitorName: string; onReset: () => void }) {
@@ -27,7 +28,7 @@ function DeveloperHome({ visitorName, onReset }: { visitorName: string; onReset:
       <ScrollProgress />
       <SiteNav onEditProfile={onReset} />
       <main className="relative">
-        <Hero />
+        <Hero notice={<WorkbenchStrip name={visitorName} mode="developer" />} />
         <TemplateGallery visitorName={visitorName} />
         <Playground visitorName={visitorName} />
         <Workflow />
@@ -69,7 +70,11 @@ export default function HomePage() {
     }
   }, [])
 
-  const complete = useCallback((next: VisitorProfile) => setProfile(next), [])
+  const complete = useCallback((next: VisitorProfile) => {
+    setProfile(next)
+    // 交接修复：进入首页总是从顶部开始，避免把欢迎页的滚动位置带过去把标题裁在固定导航下
+    requestAnimationFrame(() => window.scrollTo(0, 0))
+  }, [])
   const reset = useCallback(() => {
     window.localStorage.removeItem(PROFILE_KEY)
     setProfile(null)

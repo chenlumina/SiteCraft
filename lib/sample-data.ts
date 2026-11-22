@@ -5,6 +5,8 @@
 import type { SiteData } from '@/types'
 
 export const SAMPLE_SITE_DATA: SiteData = {
+  // 开发世界数据显式声明方向；旧数据库/旧快照缺省时仍由 getArchetype 回退技术人
+  archetype: 'developer',
   name: 'Lead',
   title: '全栈开发学习者 · Java / Web',
   status: '正在寻找 2027 届实习机会',

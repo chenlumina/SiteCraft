@@ -70,6 +70,12 @@
     background: rgba(27, 25, 23, 0.9);
     color: hsl(45 36% 96%);
   }
+
+  /* 键盘焦点可见：全站统一墨色 outline，替代浏览器默认描边 */
+  :focus-visible {
+    outline: 2px solid hsl(40 10% 12% / 0.55);
+    outline-offset: 2px;
+  }
 }
 
 @layer components {

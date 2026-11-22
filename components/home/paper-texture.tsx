@@ -226,13 +226,13 @@ function CmykBar({ className }: { className?: string }) {
   ]
   return (
     <div className={`flex-col gap-1.5 ${className ?? ''}`}>
-      <span className="mb-1 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+      <span className="mb-1 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
         Process
       </span>
       {swatches.map(([label, color]) => (
         <span key={label} className="flex items-center gap-1.5">
           <span className="h-6 w-3.5 border border-foreground/10" style={{ background: color }} />
-          <span className="font-mono text-[9px] text-muted-foreground">{label}</span>
+          <span className="font-mono text-[11px] text-muted-foreground">{label}</span>
         </span>
       ))}
     </div>

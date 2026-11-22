@@ -1,4 +1,4 @@
-/** Gallery 完整 HTML 门面：艺术编辑器预览与导出共用，保证所见即所得 */
+/** 艺术版式 HTML 门面：艺术编辑器预览与导出共用，保证所见即所得（七套版式） */
 import type { ArtistSiteData } from '@/types/artist'
 import { esc } from '../escape'
 import type { ArtistTemplateName } from '@/types/artist'
@@ -10,7 +10,7 @@ import { STUDIO_CSS, renderStudioBody } from './studio'
 import { SCROLL_CSS, renderScrollBody } from './scroll'
 import { POSTER_CSS, renderPosterBody } from './poster'
 
-/** 按模板取片段：艺术方向的两套版式共用同一份数据契约 */
+/** 按模板取片段：七套版式共用同一份数据契约 */
 export function renderArtistFragment(
   data: ArtistSiteData,
   template: ArtistTemplateName = 'gallery'
@@ -31,11 +31,6 @@ export function renderArtistFragment(
     default:
       return { css: renderGalleryCSS(data), body: renderGalleryBody(data) }
   }
-}
-
-/** 兼容旧调用：默认画廊 */
-export function renderGalleryFragment(data: ArtistSiteData): { css: string; body: string } {
-  return renderArtistFragment(data, 'gallery')
 }
 
 export function generateArtistSiteHTML(

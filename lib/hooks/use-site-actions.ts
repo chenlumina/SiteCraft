@@ -9,6 +9,7 @@ import { useCallback } from 'react'
 import { toast } from 'sonner'
 import type { ApiResponse, SiteData, SiteRecord } from '@/types'
 import { useEditorStore } from '@/lib/stores/editor-store'
+import { track } from '@/lib/analytics'
 import { DEFAULT_AVATAR_PATH, generateSiteHTML } from '@/lib/generators/html-generator'
 import { downloadTextFile, safeFileName } from '@/lib/utils'
 
@@ -57,6 +58,8 @@ export function useSiteActions() {
         return null
       }
       markSaved(json.data.id)
+      // 只在首次创建时上报；之后每次保存都算 site_created 会把转化数据撑爆
+      if (!siteId) track('site_created', { template })
       toast.success('站点已保存', { description: `「${json.data.name}」已写入数据库` })
       return json.data
     } catch {

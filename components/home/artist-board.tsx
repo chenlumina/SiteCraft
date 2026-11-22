@@ -15,6 +15,9 @@ import {
   SlidersHorizontal,
 } from 'lucide-react'
 import { SiteNav } from '@/components/home/site-nav'
+import { WorkbenchStrip } from '@/components/home/workbench-strip'
+import { ArtistSites } from '@/components/home/artist-sites'
+import { SiteFooter } from '@/components/home/site-footer'
 import { TemplateGallery } from '@/components/home/template-gallery'
 import { ArtistPlayground } from '@/components/home/artist-playground'
 import { cn } from '@/lib/utils'
@@ -144,7 +147,7 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
       <main className="mx-auto max-w-[1600px] px-5 pb-16 pt-28 sm:px-8 lg:pt-32">
         <div className="grid items-end gap-6 lg:grid-cols-[1fr_360px]">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-black/50">
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-black/50">
               Post-Impressionism · 1853–1890 · Selected works
             </p>
             <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
@@ -152,9 +155,12 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
             </h1>
           </div>
           <p className="max-w-md text-sm leading-7 text-black/55 lg:justify-self-end">
-            {name}
-            的作品正在这里展出。图像先开口，创作说明退到边缘；你也可以进入策展模式，重新安排观众遇见它们的顺序。
+            先把这间展厅当作样板：示例人物文森特·梵高的《星月夜》与《麦田》正在这里展出。图像先开口，创作说明退到边缘；你也可以进入策展模式，重新安排观众遇见它们的顺序。
           </p>
+        </div>
+
+        <div className="mt-8">
+          <WorkbenchStrip name={name} mode="artist" />
         </div>
 
         <ArtistPlayground visitorName={name} />
@@ -224,13 +230,13 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
             className="hero-swap-in grid gap-5 border-b border-black/10 py-6 md:grid-cols-[1fr_auto] md:items-start"
           >
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-black/45">
+              <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-black/45">
                 {active.series} · {active.year}
               </p>
               <h2 className="mt-2 font-display text-2xl font-bold sm:text-3xl">{active.title}</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-black/60">{active.note}</p>
             </div>
-            <p className="text-xs text-black/50 md:border-l md:border-black/10 md:pl-6">
+            <p className="text-xs text-black/60 md:border-l md:border-black/10 md:pl-6">
               {active.medium}
             </p>
           </div>
@@ -243,7 +249,7 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
         >
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-xs font-semibold">{curating ? '调整观众观看顺序' : '展厅索引'}</h3>
-            <p className="text-[11px] text-black/45">
+            <p className="text-[11px] text-black/55">
               {curating ? '拖动作品，或使用箭头微调' : '点击缩略图，直接抵达作品'}
             </p>
           </div>
@@ -282,7 +288,7 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
                   </span>
                   <span className="block px-3 py-3">
                     <span className="block truncate text-xs font-semibold">{artwork.title}</span>
-                    <span className="mt-1 block font-mono text-[9px] uppercase tracking-wider text-black/45">
+                    <span className="mt-1 block font-mono text-[11px] uppercase tracking-wider text-black/45">
                       {String(index + 1).padStart(2, '0')} · {artwork.medium}
                     </span>
                   </span>
@@ -316,21 +322,29 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
         </section>
 
         <TemplateGallery scope="artist" visitorName={name} />
-        <section className="mt-16 grid gap-8 border-t border-black/10 pt-8 md:grid-cols-2">
-          <div className="flex gap-4">
+
+        <ArtistSites />
+
+        <section className="mt-16 border-t border-black/10 pt-8" aria-label="两种观看方式">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-black/50">
+            Two ways to view
+          </p>
+          <div className="mt-5 flex gap-4">
             <Layers className="h-5 w-5 flex-none text-black/40" strokeWidth={1.5} />
             <div>
               <h2 className="font-display text-lg font-bold">两种看法：画册与动线</h2>
-              <p className="mt-2 max-w-md text-sm leading-7 text-black/50">
+              <p className="mt-2 max-w-md text-sm leading-7 text-black/60">
                 画廊版竖排可扫，展览版横向一面墙一件——同一份作品，两种观看节奏。
               </p>
             </div>
           </div>
         </section>
-        <div className="mt-10 flex items-center gap-2 text-[11px] text-black/40">
-          <Images className="h-3.5 w-3.5" /> Gallery 交互原型 · 示例作品为程序绘制的占位视觉
+        <div className="mt-10 flex items-center gap-2 text-xs text-black/50">
+          <Images className="h-3.5 w-3.5" /> 示例作品：文森特·梵高 · 公有领域名画副本（出处见
+          public/images/artworks/van-gogh/sources.json）
         </div>
       </main>
+      <SiteFooter mode="artist" />
     </div>
   )
 }

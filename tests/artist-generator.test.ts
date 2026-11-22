@@ -7,7 +7,7 @@ import { inlineArtistAssets as inlineArtistAssetsImpl } from '@/lib/artist/inlin
 import { createGallerySampleData } from '@/lib/artist/sample-gallery'
 import {
   generateArtistSiteHTML,
-  renderGalleryFragment,
+  renderArtistFragment,
 } from '@/lib/generators/artist/html-generator'
 
 /** 用桩 fetch 跑内联：Node 里没有站点静态服务 */
@@ -43,7 +43,7 @@ describe('Gallery 真实渲染器', () => {
   })
 
   it('重点作品优先，完整作品与联系信息出现', () => {
-    const { body } = renderGalleryFragment(createGallerySampleData())
+    const { body } = renderArtistFragment(createGallerySampleData(), 'gallery')
     assert.ok(body.indexOf('星月夜') < body.indexOf('向日葵'))
     assert.ok(body.includes('全部作品'))
     assert.ok(body.includes('vincent@example.com'))

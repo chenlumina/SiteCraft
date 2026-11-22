@@ -9,7 +9,6 @@ import { useRef, useState } from 'react'
 import { ChevronDown, ChevronUp, GripVertical, Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useEditorStore } from '@/lib/stores/editor-store'
-import { getArchetype } from '@/lib/archetypes'
 import { MAX_SKILL_COUNT } from '@/lib/validators/site-schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -82,9 +81,6 @@ export function SkillInput() {
   const updateSkill = useEditorStore((s) => s.updateSkill)
   const removeSkill = useEditorStore((s) => s.removeSkill)
   const moveSkill = useEditorStore((s) => s.moveSkill)
-  const archetype = useEditorStore((s) => getArchetype(s.data.archetype))
-  const showLevel = archetype.fields.skillLevel === 'bar'
-  const itemName = archetype.id === 'artist' ? '媒介' : '技能'
 
   // 拖拽源索引用 ref 而非 state：dragover 高频触发，用 state 会导致整列表反复重渲染
   const dragFrom = useRef<number | null>(null)
@@ -110,9 +106,7 @@ export function SkillInput() {
   return (
     <div className="space-y-2">
       <p className="text-xs text-muted-foreground">
-        {showLevel
-          ? '拖动左侧手柄或使用箭头调整顺序，熟练度实时反映在预览的技能条上。'
-          : `按创作习惯排列${itemName}，可拖动手柄或使用箭头调整顺序。`}
+        拖动左侧手柄或使用箭头调整顺序，熟练度实时反映在预览的技能条上。
       </p>
       <ul className="space-y-2">
         {skills.map((skill, index) => (
@@ -148,24 +142,20 @@ export function SkillInput() {
               onChange={(e) => updateSkill(skill.id, { name: e.target.value })}
               className="h-8 min-w-0 flex-1 basis-full sm:basis-auto"
             />
-            {showLevel && (
-              <>
-                <Slider
-                  value={[skill.level]}
-                  min={0}
-                  max={100}
-                  step={1}
-                  aria-label={`技能 ${skill.name} 熟练度`}
-                  onValueChange={([value]) => updateSkill(skill.id, { level: value })}
-                  className="w-full shrink-0 sm:w-24"
-                />
-                <LevelField
-                  skillName={skill.name || `第 ${index + 1} 项`}
-                  value={skill.level}
-                  onChange={(level) => updateSkill(skill.id, { level })}
-                />
-              </>
-            )}
+            <Slider
+              value={[skill.level]}
+              min={0}
+              max={100}
+              step={1}
+              aria-label={`技能 ${skill.name} 熟练度`}
+              onValueChange={([value]) => updateSkill(skill.id, { level: value })}
+              className="w-full shrink-0 sm:w-24"
+            />
+            <LevelField
+              skillName={skill.name || `第 ${index + 1} 项`}
+              value={skill.level}
+              onChange={(level) => updateSkill(skill.id, { level })}
+            />
             <div className="order-last ml-auto flex shrink-0 gap-1 sm:order-none sm:ml-0 sm:flex-col sm:gap-0">
               <button
                 type="button"
@@ -201,7 +191,7 @@ export function SkillInput() {
       </ul>
       {skills.length === 0 && (
         <p className="rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground">
-          还没有{itemName}，点击下方按钮添加第一项
+          还没有技能，点击下方按钮添加第一项
         </p>
       )}
       <Button
@@ -211,7 +201,7 @@ export function SkillInput() {
         disabled={skills.length >= MAX_SKILL_COUNT}
         onClick={addSkill}
       >
-        <Plus /> 添加{itemName}（{skills.length}/{MAX_SKILL_COUNT}）
+        <Plus /> 添加技能（{skills.length}/{MAX_SKILL_COUNT}）
       </Button>
     </div>
   )

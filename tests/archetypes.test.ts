@@ -36,9 +36,9 @@ describe('archetype 配置：引用与示例数据必须完整', () => {
     }
   })
 
-  it('艺术示例携带方向标识，技术人示例缺省以保持旧快照兼容', () => {
+  it('示例数据显式声明方向：艺术为 artist，技术人为 developer', () => {
     assert.equal(ARCHETYPES.artist.createSample().archetype, 'artist')
-    assert.equal(ARCHETYPES.developer.createSample().archetype, undefined)
+    assert.equal(ARCHETYPES.developer.createSample().archetype, 'developer')
   })
 
   it('示例每次返回独立深拷贝，编辑一个站点不会串改其他站点', () => {

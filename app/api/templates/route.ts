@@ -7,6 +7,9 @@ import { prisma } from '@/lib/prisma'
 import { failFrom, ok } from '@/lib/api'
 import type { TemplateMeta } from '@/types'
 
+// 数据来自 SQLite：默认 GET 路由会在构建期被静态缓存，种子/模板更新后接口仍是旧数据
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const templates = await prisma.template.findMany({ orderBy: { createdAt: 'asc' } })

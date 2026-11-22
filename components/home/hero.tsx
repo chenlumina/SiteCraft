@@ -9,7 +9,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, LayoutTemplate } from 'lucide-react'
-import { TEMPLATES } from '@/lib/templates'
 import { InkBlob } from '@/components/home/ink-blob'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -36,7 +35,7 @@ function HeadlineLines({ h, ghost = false }: { h: (typeof HEADLINES)[number]; gh
   )
 }
 
-export function Hero() {
+export function Hero({ notice }: { notice?: React.ReactNode }) {
   // 中英标语轮换：idxRef 保存当前索引，prevIdx 让旧句以 hero-swap-out 退场
   const idxRef = useRef(0)
   const [hi, setHi] = useState(0)
@@ -62,11 +61,12 @@ export function Hero() {
     <section className="relative mx-auto max-w-6xl px-5 pb-24 pt-32 lg:pt-40">
       <InkBlob />
       <div className="relative">
+        {notice && <div className="mb-6">{notice}</div>}
         <p
           className="inline-flex animate-fade-up items-center gap-3 font-mono text-[11px] uppercase tracking-[0.32em] text-muted-foreground"
           style={{ animationDelay: '0.05s' }}
         >
-          SiteCraft — 个人官网生成器
+          SiteCraft · 个人官网生成器
           <span aria-hidden="true" className="inline-block h-px w-12 bg-foreground/40" />
         </p>
         <h1
@@ -97,8 +97,8 @@ export function Hero() {
           className="mt-6 max-w-md animate-fade-up text-base leading-relaxed text-muted-foreground"
           style={{ animationDelay: '0.25s' }}
         >
-          填写资料、挑选模板、实时预览——三分钟生成一个完全属于你的个人官网。 一键导出静态
-          HTML，或直接部署到 GitHub Pages。往下滚，画廊与试衣间可以直接玩。
+          把你的简历或作品介绍粘进去，AI
+          先排成草稿；挑一套版式，改到满意，随时导出单文件或一键发布。不用注册，先试再说。往下滚，样册和试衣间都能直接玩。
         </p>
         <div
           className="mt-8 flex animate-fade-up flex-wrap gap-3"
@@ -106,7 +106,7 @@ export function Hero() {
         >
           <Button asChild size="lg" className="gap-2">
             <Link href="/editor">
-              立即创建官网 <ArrowRight />
+              开始做我的官网 <ArrowRight />
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="bg-background hover:bg-accent">
@@ -119,7 +119,7 @@ export function Hero() {
         <div className="relative mt-10 animate-fade-up" style={{ animationDelay: '0.45s' }}>
           <dl className="flex items-center gap-6 text-sm">
             {[
-              { value: TEMPLATES.length, suffix: '', label: '套独立版式' },
+              { value: 13, suffix: '', label: '套开发者版式' },
               { value: 100, suffix: '%', label: '响应式布局' },
               { value: 1, suffix: ' 键', label: '导出与部署' },
             ].map((stat, i) => (
@@ -133,7 +133,7 @@ export function Hero() {
             style={{ clipPath: 'circle(0px at 0 0)' }}
           >
             {[
-              { value: String(TEMPLATES.length), suffix: '', label: '套独立版式' },
+              { value: '13', suffix: '', label: '套开发者版式' },
               { value: '100', suffix: '%', label: '响应式布局' },
               { value: '1', suffix: ' 键', label: '导出与部署' },
             ].map((stat, i) => (

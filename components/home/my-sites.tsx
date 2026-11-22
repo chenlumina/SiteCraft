@@ -215,7 +215,8 @@ export function MySites() {
             我的站点
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            站点保存在本地 SQLite 数据库，随时回来继续编辑。
+            站点保存在本地 SQLite
+            数据库，随时回来继续编辑；带「示例」标签的站点来自种子数据，可直接删除。
           </p>
         </div>
         <Button asChild>
@@ -370,6 +371,11 @@ export function MySites() {
                   <Badge variant={site.status === 'published' ? 'success' : 'warning'}>
                     {site.status === 'published' ? '已发布' : '草稿'}
                   </Badge>
+                  {site.id.startsWith('seed-site-') && (
+                    <Badge variant="outline" className="text-[11px] text-muted-foreground">
+                      示例
+                    </Badge>
+                  )}
                 </div>
                 <div className="mt-4 flex items-center gap-2">
                   <Button asChild variant="outline" size="sm" className="flex-1">

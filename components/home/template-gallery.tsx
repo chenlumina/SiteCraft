@@ -1,9 +1,11 @@
 /**
- * 模板画廊 —— 「样册」式浏览（取代十五张同构卡片的堆砌）：
+ * 模板画廊 —— 「样册」式浏览（取代同构卡片的堆砌），按身份分开陈列：
+ * 开发者首页只列 13 套开发者版式，艺术首页只列 7 套艺术作品集版式，
+ * 不再把两个方向的版式混在同一张索引里（此前 14 号起混入艺术版式，容易误导）。
  * 左：当前样张的真实渲染（SiteFrame + 缩放），装进印刷 Plate 框——
- *     双细线框 + 四角裁切规线 + 「PLATE nn / 15」铭牌，全视口 sticky 随索引滚动常驻；
- * 右：十五行编辑索引（编号 / 色点 / 衬线名 / 斜体标语 / 深浅标签），
- *     悬停 / 聚焦 / 点击即换左側样张（plate-in 落定动效），行级阶梯入场。
+ *     双细线框 + 四角裁切规线 + 「PLATE nn / 总数」铭牌，全视口 sticky 随索引滚动常驻；
+ * 右：编辑索引（编号 / 色点 / 衬线名 / 斜体标语 / 深浅标签），
+ *     悬停 / 聚焦 / 点击即换左侧样张（plate-in 落定动效），行级阶梯入场。
  * 缩放关键：内层固定 1280px 宽 + transform scale 且 absolute 定位——
  * transform 不改变布局盒，留在文档流会撑爆列宽；plate-in 动效放在外层包装上，
  * 避免动画 transform 覆盖内层的 scale。
@@ -26,8 +28,8 @@ import { cn } from '@/lib/utils'
 import { useReveal } from '@/lib/hooks/use-reveal'
 
 /**
- * 展品清单：13 套开发版式 + 2 套艺术版式。
- * 艺术版式不放进 TEMPLATES（那是开发方向的模板表），但访客应该看得见。
+ * 艺术版式清单：只出现在艺术首页的样册里。
+ * 艺术版式不放进 TEMPLATES（那是开发方向的模板表）。
  */
 const ARTIST_SHOWCASE = [
   {
@@ -86,14 +88,13 @@ const ArtistSiteFrame = dynamic(
     ssr: false,
     // 艺术版式只在用户点到时才下载，首屏包体不背它
     loading: () => (
-      <div className="grid h-full place-items-center font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+      <div className="grid h-full place-items-center font-mono text-[11px] uppercase tracking-[0.2em] text-black/50">
         载入版式…
       </div>
     ),
   }
 )
 // 艺术版式与开发版式同样跟随访客名字（此前写死示例人物，两个入口内容不一致）
-const SHOWCASE_COUNT = TEMPLATES.length + ARTIST_SHOWCASE.length
 
 type ShowcaseItem = {
   kind: 'dev' | 'artist'
@@ -141,11 +142,11 @@ function CropMarks() {
 
 export function TemplateGallery({
   visitorName = '',
-  scope = 'all',
+  scope = 'developer',
 }: {
   visitorName?: string
-  /** 'all' 给开发首页（13 开发 + 7 艺术），'artist' 只列 7 套艺术版式 */
-  scope?: 'all' | 'artist'
+  /** 'developer'（默认）只列开发者版式，'artist' 只列艺术作品集版式 */
+  scope?: 'developer' | 'artist'
 }) {
   // 自己解锁 .reveal：本组件会被开发首页与艺术首页两处挂载，
   // 不能依赖父页面调用 useReveal（艺术首页此前就没有调用，导致整块空白）
@@ -167,13 +168,40 @@ export function TemplateGallery({
   }, [])
 
   const items = useMemo(
-    () => (scope === 'artist' ? SHOWCASE.filter((item) => item.kind === 'artist') : SHOWCASE),
+    () =>
+      scope === 'artist'
+        ? SHOWCASE.filter((item) => item.kind === 'artist')
+        : SHOWCASE.filter((item) => item.kind === 'dev'),
     [scope]
   )
   const current = Math.min(active, items.length - 1)
   const meta = items[current]
   const artistData = useMemo(() => buildArtistPreviewData({ name: visitorName }), [visitorName])
   const isArtist = meta.kind === 'artist'
+  const tone =
+    scope === 'artist'
+      ? {
+          muted: 'text-black/55',
+          subtle: 'text-black/45',
+          strong: 'text-[#171917]',
+          border: 'border-black/10',
+          borderStrong: 'border-black/15',
+          panel: 'border-black/15 bg-white shadow-black/5',
+          activeBg: 'bg-black/[0.05]',
+          hoverBg: 'hover:bg-black/[0.04]',
+          accent: 'text-[#171917]',
+        }
+      : {
+          muted: 'text-muted-foreground',
+          subtle: 'text-muted-foreground',
+          strong: 'text-foreground',
+          border: 'border-border',
+          borderStrong: 'border-border',
+          panel: 'border-border bg-card shadow-black/5',
+          activeBg: 'bg-secondary/60',
+          hoverBg: 'hover:bg-secondary/40',
+          accent: 'accent-mark',
+        }
   const data = useMemo<SiteData>(
     () => ({
       ...SAMPLE_SITE_DATA,
@@ -187,16 +215,16 @@ export function TemplateGallery({
   return (
     <section id="templates" className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-20">
       <div className="reveal mb-10 max-w-xl">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+        <p className={cn('font-mono text-xs uppercase tracking-[0.3em]', tone.muted)}>
           {scope === 'artist' ? 'Portfolio templates' : 'Templates'}
         </p>
         <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          {scope === 'artist' ? '七套版式，七种看法' : '二十套版式，二十种性格'}
+          {scope === 'artist' ? '七套版式，七种看法' : '十三套版式，十三种性格'}
         </h2>
-        <p className="mt-3 text-muted-foreground">
+        <p className={cn('mt-3', tone.muted)}>
           {scope === 'artist'
             ? '同一批作品，换一种观看方式：画册、动线、选片台、藏品目录、工作台、手卷、海报墙。样张是真实渲染，选中即进入编辑器。'
-            : '像翻样册一样浏览：索引悬停即换，样张为真实渲染——看到的就是选用后得到的。后七套是艺术方向的：画廊、展览、印样、索引、工作室、长卷、海报墙。'}
+            : '像翻样册一样浏览：索引悬停即换，样张全部真实渲染，看到的就是选用后得到的。艺术作品集版式在艺术方向首页单独陈列。'}
         </p>
       </div>
 
@@ -205,11 +233,11 @@ export function TemplateGallery({
 
         {/* 左：样张 Plate（全视口 sticky，翻索引时样张常驻可见） */}
         <div className="reveal sticky top-20 lg:top-24">
-          <div className="relative border border-border bg-card p-3 shadow-lg shadow-black/5">
+          <div className={cn('relative border p-3 shadow-lg', tone.panel)}>
             <CropMarks />
             <div
               ref={boxRef}
-              className="relative overflow-hidden border border-border/60"
+              className={cn('relative overflow-hidden border', tone.borderStrong)}
               style={{ height: PREVIEW_HEIGHT * scale }}
             >
               <div key={meta.name} className="plate-in absolute inset-0">
@@ -233,13 +261,18 @@ export function TemplateGallery({
                 </div>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 pt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-              <span className="text-foreground">
-                Plate {plateNo} / {String(SHOWCASE_COUNT).padStart(2, '0')}
+            <div
+              className={cn(
+                'flex flex-wrap items-center gap-x-3 gap-y-1 px-1 pt-3 font-mono text-[11px] uppercase tracking-[0.18em]',
+                tone.muted
+              )}
+            >
+              <span className={tone.strong}>
+                Plate {plateNo} / {String(items.length).padStart(2, '0')}
               </span>
-              <span aria-hidden="true" className="h-px w-6 bg-foreground/30" />
+              <span aria-hidden="true" className="h-px w-6 bg-current opacity-30" />
               <span>{meta.displayName}</span>
-              <span className="ml-auto rounded-sm border border-border px-1.5 py-0.5">
+              <span className={cn('ml-auto rounded-sm border px-1.5 py-0.5', tone.border)}>
                 {meta.mood === 'dark' ? '深色' : '浅色'}
               </span>
             </div>
@@ -250,16 +283,16 @@ export function TemplateGallery({
                 isArtist ? `/artist-editor?template=${meta.name}` : `/editor?template=${meta.name}`
               }
             >
-              {isArtist ? '用这套布置作品集' : '使用此模板'} <ArrowRight />
+              {isArtist ? '用这套布置作品集' : '用这套开始'} <ArrowRight />
             </Link>
           </Button>
-          <p className="mt-3 text-center font-mono text-[11px] text-muted-foreground">
+          <p className={cn('mt-3 text-center font-mono text-[11px]', tone.subtle)}>
             悬停 / 聚焦 / 点按索引即可换张
           </p>
         </div>
 
         {/* 右：样册索引 */}
-        <ol className="border-t border-border">
+        <ol className={cn('border-t', tone.border)}>
           {items.map((t, index) => {
             const isActive = index === current
             return (
@@ -272,14 +305,15 @@ export function TemplateGallery({
                   onMouseEnter={() => setActive(index)}
                   onFocus={() => setActive(index)}
                   className={cn(
-                    'group grid w-full grid-cols-[2.2rem_1fr_auto] items-center gap-x-3 border-b border-border px-2 py-3 text-left transition-all duration-200 sm:grid-cols-[2.2rem_1.2fr_1fr_auto]',
-                    isActive ? 'bg-secondary/60' : 'hover:bg-secondary/40'
+                    'group grid w-full grid-cols-[2.2rem_1fr_auto] items-center gap-x-3 border-b px-2 py-3 text-left transition-all duration-200 sm:grid-cols-[2.2rem_1.2fr_1fr_auto]',
+                    tone.border,
+                    isActive ? tone.activeBg : tone.hoverBg
                   )}
                 >
                   <span
                     className={cn(
                       'font-mono text-xs transition-colors',
-                      isActive ? 'accent-mark font-bold' : 'text-muted-foreground'
+                      isActive ? cn(tone.accent, 'font-bold') : tone.muted
                     )}
                   >
                     {String(index + 1).padStart(2, '0')}
@@ -287,7 +321,7 @@ export function TemplateGallery({
                   <span className="flex min-w-0 items-center gap-2.5">
                     <span
                       aria-hidden="true"
-                      className="h-2.5 w-2.5 flex-none rounded-full border border-foreground/20"
+                      className={cn('h-2.5 w-2.5 flex-none rounded-full border', tone.borderStrong)}
                       style={{ backgroundColor: t.defaultColor }}
                     />
                     <span
@@ -299,18 +333,25 @@ export function TemplateGallery({
                       {t.displayName}
                     </span>
                   </span>
-                  <span className="hidden truncate font-display text-sm italic text-muted-foreground sm:block">
+                  <span
+                    className={cn(
+                      'hidden truncate font-display text-sm italic sm:block',
+                      tone.muted
+                    )}
+                  >
                     {t.tagline}
                   </span>
                   <span className="flex items-center gap-2">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <span
+                      className={cn('font-mono text-[11px] uppercase tracking-wider', tone.muted)}
+                    >
                       {t.mood === 'dark' ? 'Dark' : 'Light'}
                     </span>
                     <ArrowRight
                       className={cn(
                         'h-3.5 w-3.5 transition-all duration-200',
                         isActive
-                          ? 'accent-mark translate-x-0 opacity-100'
+                          ? cn(tone.accent, 'translate-x-0 opacity-100')
                           : '-translate-x-1 opacity-0'
                       )}
                     />

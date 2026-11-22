@@ -1,7 +1,6 @@
 /**
- * 内容方向（archetype）配置单一来源：编辑器词汇、字段显隐、推荐版式与新建示例。
- * 与视觉模板正交：方向只改变内容如何被组织和编辑，SiteData 骨架保持不变。
- * AI 管道后续也从这里生成提示词，避免界面与 AI 对同一方向使用两套说法。
+ * 内容方向（archetype）配置单一来源：AI 预填管道、版式渲染（熟练度显隐）与示例数据共用。
+ * 编辑器词汇已分家：开发编辑器固定技术人、艺术编辑器使用独立数据模型，均不再读取此配置。
  */
 import type { ArchetypeId, SiteData, TemplateName } from '@/types'
 import { createSampleData } from '@/lib/sample-data'
@@ -17,10 +16,8 @@ export interface Archetype {
     experience: string
   }
   fields: {
-    /** 艺术方向隐藏掌握度百分比，由编辑器与版式共同消费 */
+    /** 艺术方向隐藏掌握度百分比，由版式渲染共同消费 */
     skillLevel: 'bar' | 'none'
-    repo: boolean
-    github: boolean
   }
   /** 新建与模板选择时优先暴露的版式；用户已有站点不被强制改写 */
   templates: TemplateName[]
@@ -33,7 +30,7 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
     label: '技术人',
     description: '项目作品、技术栈与开发经历',
     copy: { skills: '技能', projects: '项目', experience: '经历' },
-    fields: { skillLevel: 'bar', repo: true, github: true },
+    fields: { skillLevel: 'bar' },
     templates: [
       'minimal',
       'tech',
@@ -56,7 +53,7 @@ export const ARCHETYPES: Record<ArchetypeId, Archetype> = {
     label: '艺术创作人员',
     description: '创作媒介、作品系列与创作历程',
     copy: { skills: '创作媒介', projects: '作品与系列', experience: '创作历程' },
-    fields: { skillLevel: 'none', repo: false, github: false },
+    fields: { skillLevel: 'none' },
     templates: ['minimal', 'creative', 'aurora', 'editorial', 'gold', 'vapor', 'swiss', 'kraft'],
     createSample: createArtistSampleData,
   },

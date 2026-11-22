@@ -14,7 +14,6 @@ import { useEffect, useState } from 'react'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type {
-  ArchetypeId,
   DeviceMode,
   Experience,
   Project,
@@ -72,8 +71,7 @@ interface EditorState {
   updateExperience: (id: string, patch: Partial<Omit<Experience, 'id'>>) => void
   removeExperience: (id: string) => void
   moveExperience: (from: number, to: number) => void
-  newSite: (template?: TemplateName, archetype?: ArchetypeId) => void
-  setArchetype: (archetype: ArchetypeId) => void
+  newSite: (template?: TemplateName) => void
   applyAiDraft: (data: SiteData, template: TemplateName) => void
   loadSite: (record: SiteRecord) => void
   markSaved: (id: string) => void
@@ -199,15 +197,15 @@ export const useEditorStore = create<EditorState>()(
           data: { ...state.data, experience: moveItem(state.data.experience, from, to) },
         })),
 
-      /** 新建：重置为示例内容但保留当前模板选择；dirty=false 因为尚未相对数据库产生差异 */
-      newSite: (template, archetype = 'developer') => {
+      /** 新建：重置为开发者示例内容但保留当前模板选择；艺术方向请走独立艺术编辑器 */
+      newSite: (template) => {
         const chosen = template ?? get().template
         set({
           siteId: null,
           siteName: '我的个人官网',
           template: chosen,
           data: {
-            ...createArchetypeSample(archetype),
+            ...createArchetypeSample('developer'),
             theme: { primaryColor: getTemplate(chosen).defaultColor },
           },
           dirty: false,
@@ -215,17 +213,12 @@ export const useEditorStore = create<EditorState>()(
           contentVersion: get().contentVersion + 1,
         })
       },
-      /** 切换内容方向只改变编辑语义，不重写用户已填写的内容 */
-      setArchetype: (archetype) =>
-        set((state) => ({
-          dirty: true,
-          data: { ...state.data, archetype },
-        })),
       /** AI 草稿经用户确认后整体替换；递增版本号让 RHF 从 store 重新初始化 */
       applyAiDraft: (data, template) =>
         set((state) => ({
           template,
-          data,
+          // 方向归类已从开发编辑器下线：草稿入口统一收敛为技术人，避免词汇/字段错位
+          data: { ...data, archetype: 'developer' },
           dirty: true,
           contentVersion: state.contentVersion + 1,
         })),
@@ -235,7 +228,8 @@ export const useEditorStore = create<EditorState>()(
           siteId: record.id,
           siteName: record.name,
           template: record.template,
-          data: record.content,
+          // 开发编辑器只承载技术人内容；旧记录可能残留 artist 方向，读入时统一矫正
+          data: { ...record.content, archetype: 'developer' },
           dirty: false,
           lastSavedAt: new Date(record.updatedAt).getTime(),
           contentVersion: get().contentVersion + 1,
@@ -247,17 +241,26 @@ export const useEditorStore = create<EditorState>()(
       name: 'sitecraft-editor',
       // v2：示例身份由「张亮」换成「Lead」。浏览器里存着旧快照的话，
       // 改源码是没用的——预览读的是 localStorage，必须靠迁移把它换掉。
-      version: 2,
+      // v3：两个编辑器分家后开发编辑器不再提供方向切换；旧快照残留的 artist
+      // 方向会把板块词汇渲染成「创作媒介」等，启动时统一矫正回技术人。
+      version: 3,
       migrate: (persisted, version) => {
         const next = (persisted ?? {}) as Partial<EditorSnapshot>
-        if (version >= 2 || !next.data) return next as EditorSnapshot
-        // 判定逻辑在 lib/sample-data.migrateLegacySample，纯函数、可单测
-        const data = migrateLegacySample(next.data)
-        const patched: Partial<EditorSnapshot> = { ...next, data }
-        if (next.siteName && next.siteName.includes('张亮')) {
-          patched.siteName = next.siteName.replace('张亮', data.name)
+        if (!next.data) return next as EditorSnapshot
+        let data = next.data
+        let siteName = next.siteName
+        if (version < 2) {
+          // 判定逻辑在 lib/sample-data.migrateLegacySample，纯函数、可单测
+          data = migrateLegacySample(data)
+          if (siteName && siteName.includes('张亮')) {
+            siteName = siteName.replace('张亮', data.name)
+          }
         }
-        return patched as EditorSnapshot
+        // 与版本无关的兜底：无论从哪个旧版本升上来，都不允许残留艺术家方向
+        if (data.archetype !== 'developer') {
+          data = { ...data, archetype: 'developer' }
+        }
+        return { ...next, data, siteName } as EditorSnapshot
       },
       // 只持久化数据字段：函数不可序列化，saving 这类瞬时 UI 状态也不应跨会话保留
       partialize: (state) => ({

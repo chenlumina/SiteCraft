@@ -11,7 +11,6 @@ import { ArrowRight, Palette, RotateCcw } from 'lucide-react'
 import { toast } from 'sonner'
 import { useEditorStore } from '@/lib/stores/editor-store'
 import { TEMPLATES, getTemplate } from '@/lib/templates'
-import { getArchetype } from '@/lib/archetypes'
 import { isValidHexColor } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { contrastInk } from '@/lib/generators/color'
@@ -24,7 +23,6 @@ export function ThemePanel() {
   const template = useEditorStore((s) => s.template)
   const primaryColor = useEditorStore((s) => s.data.theme.primaryColor)
   const setPrimaryColor = useEditorStore((s) => s.setPrimaryColor)
-  const archetype = useEditorStore((s) => getArchetype(s.data.archetype))
   const meta = getTemplate(template)
 
   const [hexDraft, setHexDraft] = useState(primaryColor)
@@ -160,33 +158,31 @@ export function ThemePanel() {
 
       <FormSection title="模板风格" description="十三套模板各自拥有独立的版式与气质">
         <div className="grid grid-cols-2 gap-2">
-          {TEMPLATES.filter((t) => archetype.templates.includes(t.name) || t.name === template).map(
-            (t) => {
-              const active = template === t.name
-              return (
-                <button
-                  key={t.name}
-                  type="button"
-                  onClick={() => useEditorStore.getState().setTemplate(t.name)}
-                  className={cn(
-                    'rounded-lg border p-3 text-left transition-all',
-                    active
-                      ? 'border-primary bg-primary/10'
-                      : 'border-border bg-background hover:border-muted-foreground'
-                  )}
-                >
-                  <span className="flex items-center gap-2">
-                    <span
-                      className="h-3 w-3 rounded-full"
-                      style={{ backgroundColor: t.defaultColor }}
-                    />
-                    <span className="text-xs font-semibold">{t.displayName}</span>
-                  </span>
-                  <span className="mt-1 block text-[11px] text-muted-foreground">{t.tagline}</span>
-                </button>
-              )
-            }
-          )}
+          {TEMPLATES.map((t) => {
+            const active = template === t.name
+            return (
+              <button
+                key={t.name}
+                type="button"
+                onClick={() => useEditorStore.getState().setTemplate(t.name)}
+                className={cn(
+                  'rounded-lg border p-3 text-left transition-all',
+                  active
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-background hover:border-muted-foreground'
+                )}
+              >
+                <span className="flex items-center gap-2">
+                  <span
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: t.defaultColor }}
+                  />
+                  <span className="text-xs font-semibold">{t.displayName}</span>
+                </span>
+                <span className="mt-1 block text-[11px] text-muted-foreground">{t.tagline}</span>
+              </button>
+            )
+          })}
         </div>
         <p className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <Palette className="h-3.5 w-3.5" />

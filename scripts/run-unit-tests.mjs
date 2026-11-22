@@ -39,6 +39,7 @@ const result = spawnSync(
     'tests/site-service.test.ts',
     'tests/archetypes.test.ts',
     'tests/ai-pipeline.test.ts',
+    'tests/checkup.test.ts',
     'tests/artist-schema.test.ts',
     'tests/artist-generator.test.ts',
     'tests/artist-site-service.test.ts',

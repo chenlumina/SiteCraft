@@ -10,8 +10,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Briefcase, Eye, FilePlus2, FolderGit2, Palette, Sparkles, User } from 'lucide-react'
 import { toast } from 'sonner'
-import type { ApiResponse, ArchetypeId, SiteRecord, TemplateName } from '@/types'
-import { ARCHETYPE_LIST, getArchetype } from '@/lib/archetypes'
+import type { ApiResponse, SiteRecord, TemplateName } from '@/types'
 import { useEditorHydrated, useEditorStore } from '@/lib/stores/editor-store'
 import { isTemplateName } from '@/lib/templates'
 import { EditorToolbar } from '@/components/editor/editor-toolbar'
@@ -55,12 +54,13 @@ function EditorSkeleton() {
 function NewSiteButton() {
   const dirty = useEditorStore((s) => s.dirty)
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [archetype, setArchetype] = useState<ArchetypeId>('developer')
 
   function createNew() {
-    useEditorStore.getState().newSite(undefined, archetype)
+    useEditorStore.getState().newSite()
     setConfirmOpen(false)
-    toast.success('已创建新站点', { description: '已预填对应方向的示例内容，直接修改即可' })
+    toast.success('已创建新站点', {
+      description: '已预填开发者示例内容，直接修改即可；作品集请从首页切换到艺术工作台',
+    })
   }
 
   return (
@@ -79,32 +79,10 @@ function NewSiteButton() {
             <DialogTitle>新建站点</DialogTitle>
             <DialogDescription>
               {dirty
-                ? '当前站点有未保存的修改，新建后将无法恢复。请选择新站点的内容方向。'
-                : '选择内容方向，新建后会预填一套可直接改写的示例。'}
+                ? '当前站点有未保存的修改，新建后将无法恢复。'
+                : '新建后会预填一套开发者示例，直接改写即可。'}
             </DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="内容方向">
-            {ARCHETYPE_LIST.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                role="radio"
-                aria-checked={archetype === item.id}
-                onClick={() => setArchetype(item.id)}
-                className={cn(
-                  'rounded-lg border p-3 text-left transition-colors',
-                  archetype === item.id
-                    ? 'border-primary bg-primary/5'
-                    : 'hover:border-muted-foreground/40'
-                )}
-              >
-                <span className="block text-sm font-semibold">{item.label}</span>
-                <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-                  {item.description}
-                </span>
-              </button>
-            ))}
-          </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setConfirmOpen(false)}>
               继续编辑
@@ -210,7 +188,6 @@ function EditorInner() {
   const [loadingSite, setLoadingSite] = useState(false)
   const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit')
   const siteId = useEditorStore((s) => s.siteId)
-  const archetype = useEditorStore((s) => getArchetype(s.data.archetype))
   const contentVersion = useEditorStore((s) => s.contentVersion)
 
   useEffect(() => {
@@ -296,26 +273,14 @@ function EditorInner() {
               <TabsTrigger className="min-h-11 sm:min-h-0" value="profile" aria-label="资料">
                 <User /> <span className="hidden xl:inline">资料</span>
               </TabsTrigger>
-              <TabsTrigger
-                className="min-h-11 sm:min-h-0"
-                value="skills"
-                aria-label={archetype.copy.skills}
-              >
-                <Sparkles /> <span className="hidden xl:inline">{archetype.copy.skills}</span>
+              <TabsTrigger className="min-h-11 sm:min-h-0" value="skills" aria-label="技能">
+                <Sparkles /> <span className="hidden xl:inline">技能</span>
               </TabsTrigger>
-              <TabsTrigger
-                className="min-h-11 sm:min-h-0"
-                value="projects"
-                aria-label={archetype.copy.projects}
-              >
-                <FolderGit2 /> <span className="hidden xl:inline">{archetype.copy.projects}</span>
+              <TabsTrigger className="min-h-11 sm:min-h-0" value="projects" aria-label="项目">
+                <FolderGit2 /> <span className="hidden xl:inline">项目</span>
               </TabsTrigger>
-              <TabsTrigger
-                className="min-h-11 sm:min-h-0"
-                value="experience"
-                aria-label={archetype.copy.experience}
-              >
-                <Briefcase /> <span className="hidden xl:inline">{archetype.copy.experience}</span>
+              <TabsTrigger className="min-h-11 sm:min-h-0" value="experience" aria-label="经历">
+                <Briefcase /> <span className="hidden xl:inline">经历</span>
               </TabsTrigger>
               <TabsTrigger className="min-h-11 sm:min-h-0" value="theme" aria-label="主题">
                 <Palette /> <span className="hidden xl:inline">主题</span>
@@ -323,7 +288,7 @@ function EditorInner() {
             </TabsList>
             <TabsContent value="profile">
               {/* key=siteId：加载/新建站点时重挂载表单，defaultValues 重新取自 store */}
-              <BasicInfoForm key={`${siteId ?? 'new'}-${archetype.id}-${contentVersion}`} />
+              <BasicInfoForm key={`${siteId ?? 'new'}-${contentVersion}`} />
             </TabsContent>
             <TabsContent value="skills">
               <SkillInput />

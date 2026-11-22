@@ -92,13 +92,13 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
     <section id="playground" className="mt-14 scroll-mt-24" aria-label="作品集试玩">
       <div className="reveal mb-6 flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-xl">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-black/45">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-black/45">
             Playground
           </p>
           <h2 className="mt-3 font-display text-2xl font-bold sm:text-3xl">
             先试后建 · 作品集试衣间
           </h2>
-          <p className="mt-2 text-sm leading-7 text-black/55">
+          <p className="mt-2 text-sm leading-7 text-black/60">
             填上你的称呼、方向与城市，点一套版式——右边立刻就是你的作品集。满意就带着这套配置进编辑器。
           </p>
         </div>
@@ -123,7 +123,7 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
                   )}
                 >
                   <span className="block text-xs font-semibold">{item.label}</span>
-                  <span className="mt-0.5 block text-[10px] opacity-70">{item.note}</span>
+                  <span className="mt-0.5 block text-[11px] opacity-70">{item.note}</span>
                 </button>
               ))}
             </div>
@@ -203,7 +203,7 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
               用这套开始 <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
-          <p className="text-center text-[11px] leading-5 text-black/40">
+          <p className="text-center text-[11px] leading-5 text-black/50">
             示例作品为程序绘制的占位视觉，进编辑器后可换成你自己的图片。
           </p>
         </div>
@@ -225,7 +225,7 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
               />
             </div>
           </div>
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[0.16em] text-black/45">
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] uppercase tracking-[0.16em] text-black/45">
             <span className="text-black">{TEMPLATES.find((t) => t.id === template)?.label}</span>
             <span aria-hidden="true" className="h-px w-5 bg-black/20" />
             <span>{device === 'desktop' ? '1440 桌面' : '390 手机'}</span>

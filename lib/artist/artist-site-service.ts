@@ -82,3 +82,12 @@ export async function saveArtistSite(
   })
   return artistSiteToRecord(site)
 }
+
+/** 删除艺术站点：先按用户 + 艺术模板范围确认归属，再删，避免误删开发站点 */
+export async function deleteArtistSite(userId: string, id: string): Promise<void> {
+  const existing = await prisma.site.findFirst({
+    where: { id, userId, template: { in: ARTIST_TEMPLATES } },
+  })
+  if (!existing) throw new ArtistSiteNotFoundError()
+  await prisma.site.delete({ where: { id } })
+}

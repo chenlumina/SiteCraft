@@ -1,6 +1,6 @@
 /**
  * 「模板试衣间」——首页的核心交互区：
- * 改名字、换主题色、切十三套版式、切桌面/手机视口，大图实时所见即所得；
+ * 改名字、换主题色、切十三套开发者版式、切桌面/手机视口，大图实时所见即所得；
  * 「用这套开始编辑」直接带 ?template= 跳进编辑器，试完即建站。
  * 预览复用 SiteFrame（与导出/编辑器同一渲染源），缩放策略与画廊卡片一致：
  * 固定内层宽度 + ResizeObserver 实测容器 + transform scale，绝对定位防撑爆。
@@ -83,7 +83,7 @@ export function Playground({ visitorName = '' }: { visitorName?: string }) {
           先试后建 · 模板试衣间
         </h2>
         <p className="mt-3 text-muted-foreground">
-          改个名字、换个主题色、点一套版式——右边立刻就是「你的官网」。满意就带着这套配置进编辑器。
+          改个名字、换个主题色、点一套版式，右边立刻就是「你的官网」。满意就带着这套配置进编辑器。
         </p>
       </div>
 
@@ -92,7 +92,7 @@ export function Playground({ visitorName = '' }: { visitorName?: string }) {
         <div className="space-y-5 rounded-xl border bg-card p-5">
           <div>
             <p className="mb-2 text-xs font-semibold text-muted-foreground">
-              ① 版式（{TEMPLATES.length} 套）
+              ① 开发者版式（{TEMPLATES.length} 套）
             </p>
             <div className="grid grid-cols-3 gap-2">
               {TEMPLATES.map((t) => (
@@ -132,7 +132,7 @@ export function Playground({ visitorName = '' }: { visitorName?: string }) {
 
           <div>
             <p className="mb-2 text-xs font-semibold text-muted-foreground">
-              ③ 主题色 <span className="font-mono text-[10px] normal-case">{color}</span>
+              ③ 主题色 <span className="font-mono text-[11px] normal-case">{color}</span>
             </p>
             <div className="grid grid-cols-6 gap-2">
               {meta.swatches.map((c) => (
@@ -228,7 +228,7 @@ export function Playground({ visitorName = '' }: { visitorName?: string }) {
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-card to-transparent" />
           </div>
           <p className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-            <SparkleHint /> 与编辑器/导出同一渲染源——试衣间里看到什么，建站后就是什么
+            <SparkleHint /> 与编辑器/导出同一渲染源，试衣间里看到什么，建站后就是什么
           </p>
         </div>
       </div>
