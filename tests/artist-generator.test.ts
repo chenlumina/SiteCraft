@@ -3,11 +3,26 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, it } from 'node:test'
+import { inlineArtistAssets as inlineArtistAssetsImpl } from '@/lib/artist/inline-assets'
 import { createGallerySampleData } from '@/lib/artist/sample-gallery'
 import {
   generateArtistSiteHTML,
   renderGalleryFragment,
 } from '@/lib/generators/artist/html-generator'
+
+/** 用桩 fetch 跑内联：Node 里没有站点静态服务 */
+async function inlineArtistAssetsWith(
+  data: ReturnType<typeof createGallerySampleData>,
+  fetchImpl: typeof fetch
+) {
+  const original = globalThis.fetch
+  globalThis.fetch = fetchImpl as typeof fetch
+  try {
+    return await inlineArtistAssetsImpl(data)
+  } finally {
+    globalThis.fetch = original
+  }
+}
 
 const ALL_ARTIST = [
   'gallery',
@@ -32,7 +47,7 @@ describe('Gallery 真实渲染器', () => {
     assert.ok(body.indexOf('星月夜') < body.indexOf('向日葵'))
     assert.ok(body.includes('全部作品'))
     assert.ok(body.includes('vincent@example.com'))
-    assert.ok(body.includes('data:image/svg+xml;base64,'), '作品封面应内联为 data URI')
+    assert.ok(body.includes('/images/artworks/van-gogh/'), '作品封面应指向站内图片')
   })
 
   it('拒绝危险媒体 URL 与文本注入', () => {
@@ -64,12 +79,20 @@ describe('Gallery 真实渲染器', () => {
     assert.ok(!html.includes('src="data:text/html'))
   })
 
-  it('导出产物自包含：不引用站点相对图片路径，作品图为 data URI', () => {
-    const html = generateArtistSiteHTML(createGallerySampleData())
-    assert.ok(!html.includes('/images/artworks'), '不应残留 /images/ 相对路径')
-    assert.equal((html.match(/<script/g) || []).length, 0, '不应包含 <script>')
-    const dataUri = (html.match(/data:image\/svg\+xml;base64,/g) || []).length
-    assert.ok(dataUri >= 4, '四张示例作品应内联为 data URI，实际 ' + dataUri)
+  it('渲染阶段引用站内图源，导出阶段由 inlineArtistAssets 内联为 data URI', async () => {
+    const raw = generateArtistSiteHTML(createGallerySampleData())
+    assert.ok(raw.includes('/images/artworks/van-gogh/'), '渲染产物应引用站内图片')
+    assert.equal((raw.match(/<script/g) || []).length, 0, '不应包含 <script>')
+
+    // 导出前内联：把站内路径转成 data URI（沙箱内没有 HTTP 服务，用桩替代 fetch）
+    const data = createGallerySampleData()
+    const stubbed = await inlineArtistAssetsWith(
+      data,
+      async () => new Response('IMG', { status: 200, headers: { 'content-type': 'image/jpeg' } })
+    )
+    const html = generateArtistSiteHTML(stubbed)
+    assert.ok(!html.includes('/images/artworks'), '内联后不应残留站内路径')
+    assert.ok(html.includes('data:'), '内联后应出现 data URI')
   })
 
   it('作品尺寸与展览履历进入产物，且导航出现展览入口', () => {
@@ -88,7 +111,7 @@ describe('Gallery 真实渲染器', () => {
     assert.ok(html.includes('id="cv"'), '应有展览履历区块')
     assert.ok(html.includes('73.7 × 92.1 cm'), '尺寸应出现在展览版式')
     assert.equal((html.match(/<script/g) || []).length, 0, '展览版式同样零脚本')
-    assert.ok(!html.includes('/images/artworks'), '展览版式同样自包含')
+    assert.ok(html.includes('/images/artworks/van-gogh/'), '展览版式引用站内图源（导出时内联）')
   })
 
   it('七套艺术版式共用同一份数据，各自产出不同结构', () => {
@@ -99,8 +122,8 @@ describe('Gallery 真实渲染器', () => {
       const html = outputs[index]
       assert.ok(html.includes('site-root'), tpl + ' 应有 site-root 契约')
       assert.equal((html.match(/<script/g) || []).length, 0, tpl + ' 不应含脚本')
-      assert.ok(!html.includes('/images/artworks'), tpl + ' 应自包含')
-      assert.ok(html.includes('data:image'), tpl + ' 图片应内联')
+      assert.equal((html.match(/<script/g) || []).length, 0, tpl + ' 零脚本')
+      assert.ok(html.includes('/images/artworks/van-gogh/'), tpl + ' 图片应指向站内图源')
     }
   })
 

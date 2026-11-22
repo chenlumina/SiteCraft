@@ -1,0 +1,92 @@
+[
+  {
+    "key": "starry",
+    "file": "public/images/artworks/van-gogh/starry.jpg",
+    "kb": 184,
+    "w": 1000,
+    "h": 800,
+    "ratio": 1.25,
+    "expected": 1.25,
+    "avg": [
+      40,
+      74,
+      112
+    ],
+    "source": "http://alioss.gcores.com/uploads/image/79cdd7ac-ec64-4f35-b19a-415c9b627777_watermark.jpg"
+  },
+  {
+    "key": "sunflowers",
+    "file": "public/images/artworks/van-gogh/sunflowers.jpg",
+    "kb": 535,
+    "w": 1200,
+    "h": 1484,
+    "ratio": 0.75,
+    "expected": 0.79,
+    "avg": [
+      208,
+      150,
+      34
+    ],
+    "source": "http://www.022meishu.com/uploadfile/20140209161750375.jpg"
+  },
+  {
+    "key": "irises",
+    "file": "public/images/artworks/van-gogh/irises.jpg",
+    "kb": 329,
+    "w": 1200,
+    "h": 933,
+    "ratio": 1.29,
+    "expected": 1.27,
+    "avg": [
+      85,
+      92,
+      79
+    ],
+    "source": "https://bkimg.cdn.bcebos.com/pic/c83d70cf3bc79f3d61f5f55fbea1cd11728b294c?x-bce-process=image/format,f_auto/resize,m_lfit,limit_1,h_995"
+  },
+  {
+    "key": "bedroom",
+    "file": "public/images/artworks/van-gogh/bedroom.jpg",
+    "kb": 271,
+    "w": 1200,
+    "h": 948,
+    "ratio": 1.27,
+    "expected": 1.26,
+    "avg": [
+      156,
+      168,
+      162
+    ],
+    "source": "https://n.sinaimg.cn/sinacn20117/691/w1280h1011/20190419/46b1-hvvuiyn2252810.jpg"
+  },
+  {
+    "key": "wheatfield",
+    "file": "public/images/artworks/van-gogh/wheatfield.jpg",
+    "kb": 176,
+    "w": 1100,
+    "h": 529,
+    "ratio": 2.08,
+    "expected": 2.04,
+    "avg": [
+      96,
+      96,
+      87
+    ],
+    "source": "https://so1.360tres.com/t017ba81bd74fe51afe.jpg"
+  },
+  {
+    "key": "portrait",
+    "file": "public/images/artworks/van-gogh/portrait.jpg",
+    "kb": 189,
+    "w": 707,
+    "h": 854,
+    "ratio": 0.83,
+    "expected": 0.83,
+    "avg": [
+      163,
+      119,
+      68
+    ],
+    "source": "https://p7.itc.cn/images01/20220629/c6703d842d4a4fee912ad7257c3c8f40.png"
+  }
+]

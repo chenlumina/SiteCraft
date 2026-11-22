@@ -5,13 +5,16 @@ async function inlineUrl(url: string): Promise<string> {
   try {
     const response = await fetch(url)
     if (!response.ok) return url
-    const blob = await response.blob()
-    return await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(String(reader.result))
-      reader.onerror = () => reject(new Error('媒体读取失败'))
-      reader.readAsDataURL(blob)
-    })
+    // 不用 FileReader：Node（测试、SSR）里没有这个 API，arrayBuffer + btoa 两处都能跑
+    const buffer = await response.arrayBuffer()
+    const bytes = new Uint8Array(buffer)
+    let binary = ''
+    const chunk = 0x8000
+    for (let i = 0; i < bytes.length; i += chunk) {
+      binary += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunk)))
+    }
+    const type = response.headers.get('content-type')?.split(';')[0] || 'application/octet-stream'
+    return `data:${type};base64,${btoa(binary)}`
   } catch {
     return url
   }
