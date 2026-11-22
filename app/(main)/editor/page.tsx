@@ -232,6 +232,9 @@ function EditorInner() {
         .finally(() => setLoadingSite(false))
     } else if (templateParam && isTemplateName(templateParam)) {
       useEditorStore.getState().newSite(templateParam as TemplateName)
+      // 首页试玩里改过的名字要一起带进来，否则"看到的名字"和"编辑器的名字"不一致
+      const previewName = searchParams.get('name')?.trim()
+      if (previewName) useEditorStore.getState().updateData({ name: previewName })
     }
     // 仅在挂载时根据 URL 初始化一次；searchParams 变化不应重置用户正在编辑的内容
     // eslint-disable-next-line react-hooks/exhaustive-deps

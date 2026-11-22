@@ -61,8 +61,17 @@ function ArtistEditorInner() {
       'scroll',
       'poster',
     ]
+    const previewName = params.get('name') ?? ''
+    const previewTitle = params.get('title') ?? ''
+    const previewLocation = params.get('location') ?? ''
     if (templateParam && validTemplates.includes(templateParam as ArtistTemplateName)) {
       setTemplate(templateParam as ArtistTemplateName)
+      // 与首页试玩/版式展区同源初始化：看到什么就编辑什么
+      useArtistEditorStore.getState().usePreviewData({
+        name: previewName,
+        title: previewTitle,
+        location: previewLocation,
+      })
     }
     if (id) {
       fetch(`/api/artist/sites/${id}`)

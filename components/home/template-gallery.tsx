@@ -16,7 +16,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import type { SiteData } from '@/types'
 import { SAMPLE_SITE_DATA } from '@/lib/sample-data'
-import { createGallerySampleData } from '@/lib/artist/sample-gallery'
+import { buildArtistPreviewData } from '@/lib/artist/preview-data'
 import dynamic from 'next/dynamic'
 import type { ArtistTemplateName } from '@/types/artist'
 import { TEMPLATES } from '@/lib/templates'
@@ -92,7 +92,7 @@ const ArtistSiteFrame = dynamic(
     ),
   }
 )
-const ARTIST_SAMPLE = createGallerySampleData()
+// 艺术版式与开发版式同样跟随访客名字（此前写死示例人物，两个入口内容不一致）
 const SHOWCASE_COUNT = TEMPLATES.length + ARTIST_SHOWCASE.length
 
 type ShowcaseItem = {
@@ -172,6 +172,7 @@ export function TemplateGallery({
   )
   const current = Math.min(active, items.length - 1)
   const meta = items[current]
+  const artistData = useMemo(() => buildArtistPreviewData({ name: visitorName }), [visitorName])
   const isArtist = meta.kind === 'artist'
   const data = useMemo<SiteData>(
     () => ({
@@ -222,7 +223,7 @@ export function TemplateGallery({
                 >
                   {isArtist ? (
                     <ArtistSiteFrame
-                      data={ARTIST_SAMPLE}
+                      data={artistData}
                       template={meta.name as ArtistTemplateName}
                       className="h-full overflow-hidden"
                     />

@@ -12,6 +12,7 @@ import type {
   ArtistTemplateName,
 } from '@/types/artist'
 import { createGallerySampleData } from '@/lib/artist/sample-gallery'
+import { buildArtistPreviewData } from '@/lib/artist/preview-data'
 import { moveItem, uid } from '@/lib/utils'
 import {
   MAX_ARTWORK_COUNT,
@@ -27,6 +28,8 @@ interface ArtistEditorState {
   dirty: boolean
   saving: boolean
   newArtistSite: (name?: string) => void
+  /** 以首页预览的同一份数据初始化（名字/方向/城市） */
+  usePreviewData: (overrides: { name?: string; title?: string; location?: string }) => void
   loadArtistSite: (record: ArtistSiteRecord) => void
   setSiteName: (name: string) => void
   setTemplate: (template: ArtistTemplateName) => void
@@ -57,12 +60,17 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
       dirty: false,
       saving: false,
 
+      usePreviewData: (overrides) =>
+        set({
+          data: buildArtistPreviewData(overrides),
+          dirty: false,
+        }),
       newArtistSite: (name) =>
         set({
           siteId: null,
           siteName: '我的作品集',
           template: 'gallery',
-          data: { ...createGallerySampleData(), name: name?.trim() || '林墨' },
+          data: { ...createGallerySampleData(), name: name?.trim() || '' },
           dirty: false,
           saving: false,
         }),

@@ -97,6 +97,8 @@ const INITIAL_ARTWORKS: Artwork[] = [
 function ArtworkVisual({ variant }: { variant: Artwork['variant'] }) {
   // 图源与导出共用同一份 data URI，首页与成品像素一致
   return (
+    // 图片已预压到 ≤1200px，用原生 img 直接走静态文件，避免 next/image 再套一层优化
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={ARTWORK_URI[variant]}
       alt=""
@@ -313,7 +315,7 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
           </div>
         </section>
 
-        <TemplateGallery scope="artist" />
+        <TemplateGallery scope="artist" visitorName={name} />
         <section className="mt-16 grid gap-8 border-t border-black/10 pt-8 md:grid-cols-2">
           <div className="flex gap-4">
             <Layers className="h-5 w-5 flex-none text-black/40" strokeWidth={1.5} />

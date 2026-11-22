@@ -11,7 +11,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { ArrowRight, Monitor, Smartphone } from 'lucide-react'
 import type { ArtistSiteData, ArtistTemplateName } from '@/types/artist'
-import { createGallerySampleData } from '@/lib/artist/sample-gallery'
+import { buildArtistPreviewData } from '@/lib/artist/preview-data'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
@@ -71,9 +71,9 @@ function useFitScale(innerW: number, innerH: number) {
 export function ArtistPlayground({ visitorName = '' }: { visitorName?: string }) {
   useReveal()
   const [template, setTemplate] = useState<ArtistTemplateName>('gallery')
-  const [name, setName] = useState(visitorName || '文森特·梵高')
-  const [title, setTitle] = useState('后印象派画家')
-  const [city, setCity] = useState('法国 · 阿尔勒')
+  const [name, setName] = useState(visitorName)
+  const [title, setTitle] = useState('')
+  const [city, setCity] = useState('')
   // 小屏默认预览手机视口，否则整页被缩成一条
   const [device, setDevice] = useState<Device>(() =>
     typeof window !== 'undefined' && window.innerWidth < 1024 ? 'mobile' : 'desktop'
@@ -83,15 +83,10 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
   const innerH = device === 'desktop' ? DESKTOP_H : MOBILE_H
   const { boxRef, scale, boxH } = useFitScale(innerW, innerH)
 
-  const data = useMemo<ArtistSiteData>(() => {
-    const sample = createGallerySampleData()
-    return {
-      ...sample,
-      name: name.trim() || '文森特·梵高',
-      title: title.trim() || '独立创作者',
-      location: city.trim(),
-    }
-  }, [name, title, city])
+  const data = useMemo<ArtistSiteData>(
+    () => buildArtistPreviewData({ name, title, location: city }),
+    [name, title, city]
+  )
 
   return (
     <section id="playground" className="mt-14 scroll-mt-24" aria-label="作品集试玩">
@@ -202,7 +197,9 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
           </div>
 
           <Button asChild className="w-full gap-2 bg-black text-white hover:bg-black/85">
-            <Link href={`/artist-editor?template=${template}`}>
+            <Link
+              href={`/artist-editor?template=${template}&name=${encodeURIComponent(data.name)}&title=${encodeURIComponent(data.title)}&location=${encodeURIComponent(data.location)}`}
+            >
               用这套开始 <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>

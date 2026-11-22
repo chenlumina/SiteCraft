@@ -186,7 +186,7 @@ export function Playground({ visitorName = '' }: { visitorName?: string }) {
           </div>
 
           <Button asChild className="w-full gap-2">
-            <Link href={`/editor?template=${template}`}>
+            <Link href={`/editor?template=${template}&name=${encodeURIComponent(name.trim())}`}>
               用「{meta.displayName.split(' ')[0]}」开始编辑 <ArrowRight />
             </Link>
           </Button>
