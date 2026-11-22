@@ -43,6 +43,11 @@ export default function HomePage() {
   const [profile, setProfile] = useState<VisitorProfile | null | undefined>(undefined)
 
   useEffect(() => {
+    // /?choose=1 强制回到身份选择（已存身份也照做），给"我想换个方向"一个明确入口
+    if (new URLSearchParams(window.location.search).get('choose') === '1') {
+      setProfile(null)
+      return
+    }
     try {
       const raw = window.localStorage.getItem(PROFILE_KEY)
       if (!raw) {

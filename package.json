@@ -10,6 +10,7 @@
   },
   "scripts": {
     "dev": "next dev",
+    "dev:free": "node scripts/free-port.mjs 3000",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",

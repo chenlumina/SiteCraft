@@ -82,7 +82,10 @@ export function SiteNav({
           <Button
             variant="ghost"
             size="sm"
-            onClick={onEditProfile}
+            onClick={() => {
+              onEditProfile()
+              window.location.href = '/?choose=1'
+            }}
             className="hidden text-muted-foreground sm:inline-flex"
           >
             切换身份

@@ -23,6 +23,7 @@ import { TEMPLATES } from '@/lib/templates'
 import { SiteFrame } from '@/components/templates/site-frame'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useReveal } from '@/lib/hooks/use-reveal'
 
 /**
  * 展品清单：13 套开发版式 + 2 套艺术版式。
@@ -146,6 +147,9 @@ export function TemplateGallery({
   /** 'all' 给开发首页（13 开发 + 7 艺术），'artist' 只列 7 套艺术版式 */
   scope?: 'all' | 'artist'
 }) {
+  // 自己解锁 .reveal：本组件会被开发首页与艺术首页两处挂载，
+  // 不能依赖父页面调用 useReveal（艺术首页此前就没有调用，导致整块空白）
+  useReveal()
   const [active, setActive] = useState(0)
   const boxRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(0.4)
