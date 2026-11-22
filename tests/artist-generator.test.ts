@@ -9,6 +9,16 @@ import {
   renderGalleryFragment,
 } from '@/lib/generators/artist/html-generator'
 
+const ALL_ARTIST = [
+  'gallery',
+  'exhibition',
+  'contact',
+  'index',
+  'studio',
+  'scroll',
+  'poster',
+] as const
+
 const snapshotDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '__snapshots__')
 
 describe('Gallery 真实渲染器', () => {
@@ -81,13 +91,33 @@ describe('Gallery 真实渲染器', () => {
     assert.ok(!html.includes('/images/artworks'), '展览版式同样自包含')
   })
 
-  it('两套艺术版式共用同一份数据，产物结构不同', () => {
+  it('七套艺术版式共用同一份数据，各自产出不同结构', () => {
     const data = createGallerySampleData()
-    const gallery = generateArtistSiteHTML(data, 'gallery')
-    const exhibition = generateArtistSiteHTML(data, 'exhibition')
-    assert.notEqual(gallery, exhibition)
-    assert.ok(gallery.includes('artist-gallery'))
-    assert.ok(exhibition.includes('artist-exhibition'))
+    const outputs = ALL_ARTIST.map((tpl) => generateArtistSiteHTML(data, tpl))
+    assert.equal(new Set(outputs).size, ALL_ARTIST.length, '七套产物必须互不相同')
+    for (const [index, tpl] of ALL_ARTIST.entries()) {
+      const html = outputs[index]
+      assert.ok(html.includes('site-root'), tpl + ' 应有 site-root 契约')
+      assert.equal((html.match(/<script/g) || []).length, 0, tpl + ' 不应含脚本')
+      assert.ok(!html.includes('/images/artworks'), tpl + ' 应自包含')
+      assert.ok(html.includes('data:image'), tpl + ' 图片应内联')
+    }
+  })
+
+  it('五套新模板各自的专属结构都在', () => {
+    const data = createGallerySampleData()
+    const expect = {
+      contact: 'cs-strip',
+      index: 'ix-table',
+      studio: 'st-card',
+      scroll: 'sc-axis',
+      poster: 'po-wall',
+    } as const
+    for (const [tpl, marker] of Object.entries(expect)) {
+      const html = generateArtistSiteHTML(data, tpl as (typeof ALL_ARTIST)[number])
+      assert.ok(html.includes(marker), tpl + ' 缺少专属结构 ' + marker)
+      assert.ok(html.includes('artist-' + tpl), tpl + ' 根类名应为 artist-' + tpl)
+    }
   })
 
   it('合作区块：有内容才渲染，接单状态可切换，邮件带主题', () => {

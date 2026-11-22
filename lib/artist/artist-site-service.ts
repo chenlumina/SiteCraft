@@ -5,7 +5,15 @@ import type { SiteStatus } from '@/types'
 import { prisma } from '@/lib/prisma'
 
 /** 艺术方向当前的版式集合：两套共用同一份内容契约，列表查询按这个集合过滤 */
-export const ARTIST_TEMPLATES: ArtistTemplateName[] = ['gallery', 'exhibition']
+export const ARTIST_TEMPLATES: ArtistTemplateName[] = [
+  'gallery',
+  'exhibition',
+  'contact',
+  'index',
+  'studio',
+  'scroll',
+  'poster',
+]
 
 export interface SaveArtistSiteInput {
   id?: string

@@ -18,6 +18,7 @@ import type { SiteData } from '@/types'
 import { SAMPLE_SITE_DATA } from '@/lib/sample-data'
 import { createGallerySampleData } from '@/lib/artist/sample-gallery'
 import dynamic from 'next/dynamic'
+import type { ArtistTemplateName } from '@/types/artist'
 import { TEMPLATES } from '@/lib/templates'
 import { SiteFrame } from '@/components/templates/site-frame'
 import { Button } from '@/components/ui/button'
@@ -40,6 +41,41 @@ const ARTIST_SHOWCASE = [
     displayName: '展览',
     tagline: '横向动线，一面墙一件',
     color: '#191817',
+    mood: 'light' as const,
+  },
+  {
+    id: 'contact',
+    displayName: '印样',
+    tagline: '密排小图，摄影师的选片台',
+    color: '#d8ff3e',
+    mood: 'dark' as const,
+  },
+  {
+    id: 'index',
+    displayName: '索引',
+    tagline: '藏品目录，先清单后单件',
+    color: '#8a1c1c',
+    mood: 'light' as const,
+  },
+  {
+    id: 'studio',
+    displayName: '工作室',
+    tagline: '墙面卡片配摊开的作品',
+    color: '#3c6b4a',
+    mood: 'light' as const,
+  },
+  {
+    id: 'scroll',
+    displayName: '长卷',
+    tagline: '竖向叙事，年份刻度贯穿',
+    color: '#a8461f',
+    mood: 'light' as const,
+  },
+  {
+    id: 'poster',
+    displayName: '海报墙',
+    tagline: '块面强，街头贴纸气质',
+    color: '#c8341f',
     mood: 'light' as const,
   },
 ]
@@ -138,10 +174,10 @@ export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) 
           Templates
         </p>
         <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          十五套版式，十五种性格
+          二十套版式，二十种性格
         </h2>
         <p className="mt-3 text-muted-foreground">
-          像翻样册一样浏览：索引悬停即换，样张为真实渲染——看到的就是选用后得到的。最后两套是艺术方向的画廊与展览。
+          像翻样册一样浏览：索引悬停即换，样张为真实渲染——看到的就是选用后得到的。后七套是艺术方向的：画廊、展览、印样、索引、工作室、长卷、海报墙。
         </p>
       </div>
 
@@ -169,7 +205,7 @@ export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) 
                   {isArtist ? (
                     <ArtistSiteFrame
                       data={ARTIST_SAMPLE}
-                      template={meta.name as 'gallery' | 'exhibition'}
+                      template={meta.name as ArtistTemplateName}
                       className="h-full overflow-hidden"
                     />
                   ) : (

@@ -169,12 +169,12 @@ function ArtistEditorInner() {
           {tab === 'theme' && (
             <div>
               <Label>版式</Label>
-              <div className="mb-5 mt-2 grid grid-cols-2 gap-2">
+              <div className="mb-5 mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
                 <button
                   type="button"
                   onClick={() => setTemplate('gallery')}
                   className={cn(
-                    'rounded-lg border p-3 text-left transition-colors',
+                    'rounded-lg border p-2.5 text-left transition-colors',
                     template === 'gallery'
                       ? 'border-foreground bg-muted/60'
                       : 'border-border text-muted-foreground hover:border-foreground/40'
@@ -187,7 +187,7 @@ function ArtistEditorInner() {
                   type="button"
                   onClick={() => setTemplate('exhibition')}
                   className={cn(
-                    'rounded-lg border p-3 text-left transition-colors',
+                    'rounded-lg border p-2.5 text-left transition-colors',
                     template === 'exhibition'
                       ? 'border-foreground bg-muted/60'
                       : 'border-border text-muted-foreground hover:border-foreground/40'
@@ -195,6 +195,71 @@ function ArtistEditorInner() {
                 >
                   <span className="block text-sm font-medium">展览</span>
                   <span className="mt-0.5 block text-[11px] leading-5">横向动线，一面墙一件</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('contact')}
+                  className={cn(
+                    'rounded-lg border p-2.5 text-left transition-colors',
+                    template === 'contact'
+                      ? 'border-foreground bg-muted/60'
+                      : 'border-border text-muted-foreground hover:border-foreground/40'
+                  )}
+                >
+                  <span className="block text-sm font-medium">印样</span>
+                  <span className="mt-0.5 block text-[11px] leading-5">密排小图，摄影师选片</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('index')}
+                  className={cn(
+                    'rounded-lg border p-2.5 text-left transition-colors',
+                    template === 'index'
+                      ? 'border-foreground bg-muted/60'
+                      : 'border-border text-muted-foreground hover:border-foreground/40'
+                  )}
+                >
+                  <span className="block text-sm font-medium">索引</span>
+                  <span className="mt-0.5 block text-[11px] leading-5">藏品目录，清单先行</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('studio')}
+                  className={cn(
+                    'rounded-lg border p-2.5 text-left transition-colors',
+                    template === 'studio'
+                      ? 'border-foreground bg-muted/60'
+                      : 'border-border text-muted-foreground hover:border-foreground/40'
+                  )}
+                >
+                  <span className="block text-sm font-medium">工作室</span>
+                  <span className="mt-0.5 block text-[11px] leading-5">墙面卡片 + 作品流</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('scroll')}
+                  className={cn(
+                    'rounded-lg border p-2.5 text-left transition-colors',
+                    template === 'scroll'
+                      ? 'border-foreground bg-muted/60'
+                      : 'border-border text-muted-foreground hover:border-foreground/40'
+                  )}
+                >
+                  <span className="block text-sm font-medium">长卷</span>
+                  <span className="mt-0.5 block text-[11px] leading-5">竖向叙事，年份刻度</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('poster')}
+                  className={cn(
+                    'rounded-lg border p-2.5 text-left transition-colors',
+                    template === 'poster'
+                      ? 'border-foreground bg-muted/60'
+                      : 'border-border text-muted-foreground hover:border-foreground/40'
+                  )}
+                >
+                  <span className="block text-sm font-medium">海报墙</span>
+                  <span className="mt-0.5 block text-[11px] leading-5">块面强，街头气质</span>
                 </button>
               </div>
               <Label htmlFor="artist-color">强调色</Label>

@@ -4,15 +4,33 @@ import { esc } from '../escape'
 import type { ArtistTemplateName } from '@/types/artist'
 import { renderGalleryBody, renderGalleryCSS } from './gallery'
 import { renderExhibitionBody, renderExhibitionCSS } from './exhibition'
+import { CONTACT_CSS, renderContactBody } from './contact-sheet'
+import { INDEX_CSS, renderIndexBody } from './index-sheet'
+import { STUDIO_CSS, renderStudioBody } from './studio'
+import { SCROLL_CSS, renderScrollBody } from './scroll'
+import { POSTER_CSS, renderPosterBody } from './poster'
 
 /** 按模板取片段：艺术方向的两套版式共用同一份数据契约 */
 export function renderArtistFragment(
   data: ArtistSiteData,
   template: ArtistTemplateName = 'gallery'
 ): { css: string; body: string } {
-  return template === 'exhibition'
-    ? { css: renderExhibitionCSS(), body: renderExhibitionBody(data) }
-    : { css: renderGalleryCSS(data), body: renderGalleryBody(data) }
+  switch (template) {
+    case 'exhibition':
+      return { css: renderExhibitionCSS(), body: renderExhibitionBody(data) }
+    case 'contact':
+      return { css: CONTACT_CSS, body: renderContactBody(data) }
+    case 'index':
+      return { css: INDEX_CSS, body: renderIndexBody(data) }
+    case 'studio':
+      return { css: STUDIO_CSS, body: renderStudioBody(data) }
+    case 'scroll':
+      return { css: SCROLL_CSS, body: renderScrollBody(data) }
+    case 'poster':
+      return { css: POSTER_CSS, body: renderPosterBody(data) }
+    default:
+      return { css: renderGalleryCSS(data), body: renderGalleryBody(data) }
+  }
 }
 
 /** 兼容旧调用：默认画廊 */

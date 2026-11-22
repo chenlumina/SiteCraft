@@ -4,7 +4,8 @@
  */
 import type { SiteStatus, SiteTheme, SocialLinks } from './index'
 
-export type ArtistTemplateName = 'gallery' | 'exhibition'
+export type ArtistTemplateName =
+  'gallery' | 'exhibition' | 'contact' | 'index' | 'studio' | 'scroll' | 'poster'
 /* 媒体只支持图片：音视频已在产品层放弃（导出单文件无法容纳，外链又会破坏零依赖契约） */
 
 export interface MediaItem {

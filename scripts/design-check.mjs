@@ -29,7 +29,7 @@ const htmlDir = path.join(root, '.design-out')
 fs.mkdirSync(outDir, { recursive: true })
 fs.mkdirSync(htmlDir, { recursive: true })
 
-const ALL = ['minimal', 'tech', 'creative', 'professional', 'ink', 'brutal', 'aurora', 'editorial', 'gold', 'vapor', 'swiss', 'kraft', 'metro', 'gallery', 'exhibition']
+const ALL = ['minimal', 'tech', 'creative', 'professional', 'ink', 'brutal', 'aurora', 'editorial', 'gold', 'vapor', 'swiss', 'kraft', 'metro', 'gallery', 'exhibition', 'contact', 'index', 'studio', 'scroll', 'poster']
 
 /**
  * 每个被检查的对象：标签 + 产物 HTML。
@@ -37,13 +37,18 @@ const ALL = ['minimal', 'tech', 'creative', 'professional', 'ink', 'brutal', 'au
  * 所以它必须吃同一批断言，否则"导出引用外部路径"这种漏网还会再犯。
  */
 function buildCases() {
-  const ARTIST_LABELS = ['gallery', 'exhibition']
+  const ARTIST_LABELS = ['gallery', 'exhibition', 'contact', 'index', 'studio', 'scroll', 'poster']
   const cases = ALL.filter((name) => !ARTIST_LABELS.includes(name)).map((name) => ({
     label: name,
     html: generateSiteHTML(createSampleData(), name),
   }))
   cases.push({ label: 'gallery', html: generateArtistSiteHTML(createGallerySampleData(), 'gallery') })
   cases.push({ label: 'exhibition', html: generateArtistSiteHTML(createGallerySampleData(), 'exhibition') })
+  cases.push({ label: 'contact', html: generateArtistSiteHTML(createGallerySampleData(), 'contact') })
+  cases.push({ label: 'index', html: generateArtistSiteHTML(createGallerySampleData(), 'index') })
+  cases.push({ label: 'studio', html: generateArtistSiteHTML(createGallerySampleData(), 'studio') })
+  cases.push({ label: 'scroll', html: generateArtistSiteHTML(createGallerySampleData(), 'scroll') })
+  cases.push({ label: 'poster', html: generateArtistSiteHTML(createGallerySampleData(), 'poster') })
   return cases
 }
 const targets = process.argv.slice(2).length ? process.argv.slice(2) : ALL

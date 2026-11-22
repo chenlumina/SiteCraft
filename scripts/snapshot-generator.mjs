@@ -33,9 +33,33 @@ for (const template of [
   process.stdout.write(`snapshot: ${template}.html (${html.length} chars)\n`)
 }
 
-const artistHtml = generateArtistSiteHTML(createGallerySampleData(), 'gallery')
-writeFileSync(path.join(outDir, 'artist-gallery.html'), artistHtml, 'utf-8')
-process.stdout.write(`snapshot: artist-gallery.html (${artistHtml.length} chars)\n`)
+const artistGallery = generateArtistSiteHTML(createGallerySampleData(), 'gallery')
+writeFileSync(path.join(outDir, 'artist-gallery.html'), artistGallery, 'utf-8')
+process.stdout.write(`snapshot: artist-gallery.html (${artistGallery.length} chars)\n`)
+
+const artistExhibition = generateArtistSiteHTML(createGallerySampleData(), 'exhibition')
+writeFileSync(path.join(outDir, 'artist-exhibition.html'), artistExhibition, 'utf-8')
+process.stdout.write(`snapshot: artist-exhibition.html (${artistExhibition.length} chars)\n`)
+
+const artistContact = generateArtistSiteHTML(createGallerySampleData(), 'contact')
+writeFileSync(path.join(outDir, 'artist-contact.html'), artistContact, 'utf-8')
+process.stdout.write(`snapshot: artist-contact.html (${artistContact.length} chars)\n`)
+
+const artistIndex = generateArtistSiteHTML(createGallerySampleData(), 'index')
+writeFileSync(path.join(outDir, 'artist-index.html'), artistIndex, 'utf-8')
+process.stdout.write(`snapshot: artist-index.html (${artistIndex.length} chars)\n`)
+
+const artistStudio = generateArtistSiteHTML(createGallerySampleData(), 'studio')
+writeFileSync(path.join(outDir, 'artist-studio.html'), artistStudio, 'utf-8')
+process.stdout.write(`snapshot: artist-studio.html (${artistStudio.length} chars)\n`)
+
+const artistScroll = generateArtistSiteHTML(createGallerySampleData(), 'scroll')
+writeFileSync(path.join(outDir, 'artist-scroll.html'), artistScroll, 'utf-8')
+process.stdout.write(`snapshot: artist-scroll.html (${artistScroll.length} chars)\n`)
+
+const artistPoster = generateArtistSiteHTML(createGallerySampleData(), 'poster')
+writeFileSync(path.join(outDir, 'artist-poster.html'), artistPoster, 'utf-8')
+process.stdout.write(`snapshot: artist-poster.html (${artistPoster.length} chars)\n`)
 
 const exhibitionHtml = generateArtistSiteHTML(createGallerySampleData(), 'exhibition')
 writeFileSync(path.join(outDir, 'artist-exhibition.html'), exhibitionHtml, 'utf-8')
