@@ -9,11 +9,10 @@ import { useRef, useState } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
-  AudioLines,
   GripVertical,
+  Layers,
   Images,
   SlidersHorizontal,
-  Video,
 } from 'lucide-react'
 import { SiteNav } from '@/components/home/site-nav'
 import { cn } from '@/lib/utils'
@@ -395,20 +394,11 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
 
         <section className="mt-16 grid gap-8 border-t border-black/10 pt-8 md:grid-cols-2">
           <div className="flex gap-4">
-            <Video className="h-5 w-5 flex-none text-black/40" strokeWidth={1.5} />
+            <Layers className="h-5 w-5 flex-none text-black/40" strokeWidth={1.5} />
             <div>
-              <h2 className="font-display text-lg font-bold">Exhibition · 完整展览</h2>
+              <h2 className="font-display text-lg font-bold">两种看法：画册与动线</h2>
               <p className="mt-2 max-w-md text-sm leading-7 text-black/50">
-                下一间展厅：把草图、过程和最终作品连成完整叙事。
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-4">
-            <AudioLines className="h-5 w-5 flex-none text-black/40" strokeWidth={1.5} />
-            <div>
-              <h2 className="font-display text-lg font-bold">Showreel · 暗场放映</h2>
-              <p className="mt-2 max-w-md text-sm leading-7 text-black/50">
-                音频与视频将拥有独立播放空间，不模拟图片画廊。
+                画廊版竖排可扫，展览版横向一面墙一件——同一份作品，两种观看节奏。
               </p>
             </div>
           </div>

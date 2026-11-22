@@ -184,9 +184,7 @@ export const useArtistEditorStore = create<ArtistEditorState>()(
                 return artwork
               const media: MediaItem = {
                 id: uid(),
-                type: 'image',
                 url: seed?.url ?? '',
-                poster: '',
                 title: seed?.title ?? '',
               }
               return { ...artwork, media: [...artwork.media, media] }

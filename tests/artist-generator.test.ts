@@ -29,7 +29,7 @@ describe('Gallery 真实渲染器', () => {
     const data = createGallerySampleData()
     data.name = '<img src=x onerror=alert(1)>'
     data.artworks[0].cover = 'javascript:alert(1)'
-    data.artworks[0].media = [{ id: 'bad', type: 'image', url: 'javascript:alert(1)' }]
+    data.artworks[0].media = [{ id: 'bad', url: 'javascript:alert(1)' }]
     const html = generateArtistSiteHTML(data)
     assert.ok(!html.includes('<img src=x onerror=alert(1)>'))
     assert.ok(!html.includes('src="javascript:alert(1)"'))

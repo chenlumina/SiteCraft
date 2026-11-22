@@ -36,9 +36,7 @@ const optionalMediaUrl = z
 
 export const mediaItemSchema = z.object({
   id: z.string().min(1),
-  type: z.enum(['image', 'audio', 'video']),
   url: mediaUrl,
-  poster: optionalMediaUrl.optional().default(''),
   title: z.string().trim().max(80, '媒体说明最多 80 字').optional().default(''),
 })
 

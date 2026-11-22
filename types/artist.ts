@@ -1,17 +1,15 @@
 /**
  * 艺术作品集数据契约：与开发人员 SiteData 平行，不复用技能/项目/履历语义。
- * Gallery 第一阶段只开放图片编辑，媒体类型预留给后续 Exhibition / Showreel。
+ * 媒体只支持图片：音视频已在产品层放弃（导出单文件容不下，外链又违背零依赖契约）。
  */
 import type { SiteStatus, SiteTheme, SocialLinks } from './index'
 
 export type ArtistTemplateName = 'gallery' | 'exhibition'
-export type MediaType = 'image' | 'audio' | 'video'
+/* 媒体只支持图片：音视频已在产品层放弃（导出单文件无法容纳，外链又会破坏零依赖契约） */
 
 export interface MediaItem {
   id: string
-  type: MediaType
   url: string
-  poster?: string
   title?: string
 }
 

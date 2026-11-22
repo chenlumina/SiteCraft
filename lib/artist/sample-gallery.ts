@@ -34,10 +34,9 @@ export const GALLERY_SAMPLE_DATA: ArtistSiteData = {
       cover: ARTWORK_URI.city,
       featured: true,
       media: [
-        { id: 'md-city-1', type: 'image', url: ARTWORK_URI.city, title: '城市呼吸 No.04 · 完稿' },
+        { id: 'md-city-1', url: ARTWORK_URI.city, title: '城市呼吸 No.04 · 完稿' },
         {
           id: 'md-city-2',
-          type: 'image',
           url: ARTWORK_URI.botanical,
           title: '系列延伸 · 植物的间隙',
         },
@@ -53,9 +52,7 @@ export const GALLERY_SAMPLE_DATA: ArtistSiteData = {
       description: '从叶片之间观看日常。遮挡不是阻碍，而是让视线找到另一条路径。',
       cover: ARTWORK_URI.botanical,
       featured: false,
-      media: [
-        { id: 'md-botanical-1', type: 'image', url: ARTWORK_URI.botanical, title: '植物的间隙' },
-      ],
+      media: [{ id: 'md-botanical-1', url: ARTWORK_URI.botanical, title: '植物的间隙' }],
     },
     {
       id: 'aw-tram',
@@ -67,7 +64,7 @@ export const GALLERY_SAMPLE_DATA: ArtistSiteData = {
       description: '车窗把陌生人的片段连成电影，城市在每个站点短暂地换了一次字幕。',
       cover: ARTWORK_URI.tram,
       featured: false,
-      media: [{ id: 'md-tram-1', type: 'image', url: ARTWORK_URI.tram, title: '夜班电车' }],
+      media: [{ id: 'md-tram-1', url: ARTWORK_URI.tram, title: '夜班电车' }],
     },
     {
       id: 'aw-garden',
@@ -79,7 +76,7 @@ export const GALLERY_SAMPLE_DATA: ArtistSiteData = {
       description: '一组关于生长速度的标本：有些花在开放，有些颜色正在退场。',
       cover: ARTWORK_URI.garden,
       featured: false,
-      media: [{ id: 'md-garden-1', type: 'image', url: ARTWORK_URI.garden, title: '无声花园' }],
+      media: [{ id: 'md-garden-1', url: ARTWORK_URI.garden, title: '无声花园' }],
     },
   ],
   theme: { primaryColor: '#9e2b25' },

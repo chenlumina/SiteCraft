@@ -23,12 +23,12 @@ describe('艺术数据契约', () => {
     assert.equal(
       artworkSchema.safeParse({
         ...artwork,
-        media: [{ id: 'x', type: 'image', url: 'javascript:alert(1)' }],
+        media: [{ id: 'x', url: 'javascript:alert(1)' }],
       }).success,
       false
     )
     assert.equal(
-      artworkSchema.safeParse({ ...artwork, media: [{ id: 'x', type: 'image', url: '' }] }).success,
+      artworkSchema.safeParse({ ...artwork, media: [{ id: 'x', url: '' }] }).success,
       false
     )
   })
@@ -38,7 +38,7 @@ describe('艺术数据契约', () => {
     assert.equal(artworkSchema.safeParse(artwork).success, true)
     const media = Array.from({ length: MAX_MEDIA_PER_ARTWORK + 1 }, (_, index) => ({
       id: `m${index}`,
-      type: 'image',
+
       url: '/images/test.svg',
     }))
     assert.equal(artworkSchema.safeParse({ ...artwork, media }).success, false)

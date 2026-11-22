@@ -32,8 +32,8 @@ const DIRECTIONS = [
     id: 'artist' as const,
     code: 'ART / MEDIA',
     title: '艺术创作人员',
-    description: '让图片、音频和视频成为主角，文字退到作品旁边。',
-    detail: '画廊 · 展览 · 影音作品集',
+    description: '让作品图成为主角，文字退到作品旁边，尺寸与展览履历替你说可信度。',
+    detail: '画廊 · 展览 · 作品履历',
     icon: Palette,
   },
 ]

@@ -1,6 +1,6 @@
 /**
  * Gallery 真实渲染器：艺术作品数据 → 静态展览页。
- * 图片/音频/视频使用原生标签；所有文本与 URL 继续走生成器安全边界。
+ * 媒体只有图片一种；所有文本与 URL 继续走生成器安全边界。
  */
 import type { ArtistSiteData, Artwork, MediaItem } from '@/types/artist'
 import { esc, safeUrl } from '../escape'
@@ -72,21 +72,15 @@ export function safeImageSource(value: string): string {
 }
 
 function artworkCover(artwork: Artwork): string {
-  return (
-    safeImageSource(artwork.cover) ||
-    safeImageSource(artwork.media.find((item) => item.type === 'image')?.url ?? '')
-  )
+  return safeImageSource(artwork.cover) || safeImageSource(artwork.media[0]?.url ?? '')
 }
 
+/** 媒体只有图片一种：音视频已在产品层放弃，所以这里不再有分支 */
 function renderMedia(item: MediaItem, artworkTitle: string): string {
-  const url = item.type === 'image' ? safeImageSource(item.url) : safeUrl(item.url)
+  const url = safeImageSource(item.url)
   if (!url) return ''
-  const title = esc(item.title?.trim() || `${artworkTitle} · ${item.type}`)
-  if (item.type === 'image') return `<img src="${url}" alt="${title}" loading="lazy">`
-  if (item.type === 'audio')
-    return `<audio controls preload="none" src="${url}" aria-label="${title}"></audio>`
-  const poster = safeUrl(item.poster ?? '')
-  return `<video controls preload="none" src="${url}"${poster ? ` poster="${poster}"` : ''} aria-label="${title}"></video>`
+  const title = esc(item.title?.trim() || artworkTitle)
+  return `<img src="${url}" alt="${title}" loading="lazy">`
 }
 
 function renderWork(artwork: Artwork, featured = false): string {
@@ -94,7 +88,7 @@ function renderWork(artwork: Artwork, featured = false): string {
   const description = artwork.description.trim()
   const extraMedia = artwork.media
     .filter((item) => {
-      const source = item.type === 'image' ? safeImageSource(item.url) : safeUrl(item.url)
+      const source = safeImageSource(item.url)
       return source && source !== cover
     })
     .map((item) => renderMedia(item, artwork.title))

@@ -20,7 +20,7 @@ import { safeImageSource } from './gallery'
 const ROLE_LABEL: Record<string, string> = { solo: '个展', group: '群展', other: '其他' }
 
 function coverOf(artwork: Artwork): string {
-  const first = artwork.media.find((item) => item.type === 'image')?.url ?? ''
+  const first = artwork.media[0]?.url ?? ''
   return safeImageSource(artwork.cover) || safeImageSource(first) || ''
 }
 

@@ -25,7 +25,6 @@ export async function inlineArtistAssets(data: ArtistSiteData): Promise<ArtistSi
     artwork.cover = await inlineUrl(artwork.cover)
     for (const media of artwork.media) {
       media.url = await inlineUrl(media.url)
-      if (media.poster) media.poster = await inlineUrl(media.poster)
     }
   }
   return next
