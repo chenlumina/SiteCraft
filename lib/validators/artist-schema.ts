@@ -5,6 +5,9 @@
 import { z } from 'zod'
 import { siteDataSchema } from './site-schema'
 
+/** data URI 会随图片变大：上限按 8MB 图片的 base64 长度留足（约 11MB 字符） */
+export const MAX_MEDIA_URL_LENGTH = 12_000_000
+
 export const MAX_ARTWORK_COUNT = 24
 export const MAX_MEDIA_PER_ARTWORK = 12
 
@@ -12,7 +15,7 @@ const mediaUrl = z
   .string()
   .trim()
   .min(1, '媒体链接不能为空')
-  .max(2048, '链接过长')
+  .max(MAX_MEDIA_URL_LENGTH, '链接过长')
   .refine(
     (v) =>
       /^https?:\/\/[^\s]+$/i.test(v) ||
@@ -24,7 +27,7 @@ const mediaUrl = z
 const optionalMediaUrl = z
   .string()
   .trim()
-  .max(2048, '链接过长')
+  .max(MAX_MEDIA_URL_LENGTH, '链接过长')
   .refine(
     (v) =>
       v === '' ||

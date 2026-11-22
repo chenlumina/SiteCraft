@@ -153,7 +153,7 @@ describe('内容方向渲染：艺术创作媒介不输出掌握度', () => {
   it('艺术方向八套推荐版式只展示媒介名称', () => {
     for (const [template, marker] of levelMarkers) {
       const { body } = renderSiteFragment(createArtistSampleData(), template)
-      assert.ok(body.includes('水彩与综合材料'), template)
+      assert.ok(body.includes('油画厚涂'), template)
       assert.ok(!body.includes(`class="${marker}"`), `${template} 不应出现 ${marker}`)
     }
   })

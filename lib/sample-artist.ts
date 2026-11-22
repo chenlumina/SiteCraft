@@ -1,18 +1,19 @@
 /**
- * 艺术创作方向示例：与技术人共用 SiteData 骨架，内容语义换成
- * 创作媒介、作品系列与创作历程。仅作新建草稿，不代表任何真实人物。
+ * 艺术创作方向示例（SiteData 骨架版）：与技术人共用同一套字段，
+ * 内容换成绘画的媒介、系列与创作历程。示例人物为文森特·梵高（1853–1890），
+ * 史实到年代、地点与作品名，叙述为本产品整理的示例文案。
  */
 import type { SiteData } from '@/types'
 
 export const ARTIST_SAMPLE_SITE_DATA: SiteData = {
   archetype: 'artist',
-  name: '林墨',
-  title: '独立插画师 · 视觉创作者',
-  status: '开放商业插画合作 · 2027 春季档期',
-  bio: '以水彩、综合材料与数字绘画记录城市日常，关注建筑、植物和人的微小情绪。作品涵盖独立出版、编辑插画与展览视觉，持续整理每个系列背后的草图和创作过程。',
+  name: '文森特·梵高',
+  title: '后印象派画家 · 1853–1890',
+  status: '作品现藏于梵高博物馆、MoMA 与奥赛博物馆 · 公共收藏',
+  bio: '1853 年生于荷兰津德尔特，1890 年在法国奥维尔去世。二十七岁转向绘画，此后十年留下约九百幅油画与近千件素描，用厚涂与互补色记录麦田、夜空、卧室与劳作的人。',
   avatar: '/images/avatar-default.svg',
-  location: '浙江 · 杭州',
-  email: 'artist@example.com',
+  location: '法国 · 阿尔勒',
+  email: 'vincent@example.com',
   socials: {
     github: '',
     twitter: '',
@@ -20,66 +21,71 @@ export const ARTIST_SAMPLE_SITE_DATA: SiteData = {
     bilibili: '',
   },
   skills: [
-    { id: 'sk-watercolor', name: '水彩与综合材料', level: 60 },
-    { id: 'sk-digital', name: '数字插画', level: 60 },
-    { id: 'sk-editorial', name: '编辑与版式设计', level: 60 },
-    { id: 'sk-motion', name: '动态海报', level: 60 },
-    { id: 'sk-photo', name: '摄影与图像记录', level: 60 },
+    { id: 'sk-oil', name: '油画厚涂', level: 92 },
+    { id: 'sk-color', name: '互补色研究', level: 88 },
+    { id: 'sk-drawing', name: '素描与速写', level: 80 },
+    { id: 'sk-letter', name: '书信与文稿', level: 74 },
+    { id: 'sk-print', name: '版画与临摹', level: 62 },
   ],
   projects: [
     {
-      id: 'pr-city',
-      name: '《城市呼吸》插画系列',
-      description: '以通勤途中的建筑间隙、窗光与植物为主题的一组水彩和数字绘画。',
-      points: [
-        '包含 24 幅完整作品与过程草图',
-        '记录从现场速写到数字完稿的过程',
-        '部分作品用于独立出版物内页',
-      ],
-      tags: ['插画', '水彩', '城市观察'],
+      id: 'pr-sunflowers',
+      name: '《向日葵》系列',
+      description:
+        '1888 年阿尔勒，为迎接高更到来而画的一组静物，只用黄与赭两种颜色推演盛开到结籽。',
+      points: ['共五幅，分藏伦敦国家美术馆、梵高博物馆等处', '实验同色系内的明度与笔触差异'],
+      tags: ['油画', '静物', '阿尔勒'],
       link: '',
       repo: '',
       highlight: true,
     },
     {
-      id: 'pr-zine',
-      name: '独立杂志《附近》视觉设计',
-      description: '为一期关于街区生活的独立杂志完成封面、栏目插画与内页视觉规范。',
-      points: ['建立整期色彩与插图语言', '封面与 12 幅栏目插画'],
-      tags: ['独立出版', '版式', '编辑插画'],
+      id: 'pr-bedroom',
+      name: '《阿尔勒的卧室》',
+      description: '以黄、蓝、绿三组平涂构成的房间，透视刻意放松，他称之为「以颜色来休息」。',
+      points: ['共三个版本，分藏梵高博物馆与芝加哥艺术博物馆', '平涂与放松透视的自觉选择'],
+      tags: ['油画', '室内', '色彩实验'],
       link: '',
       repo: '',
       highlight: true,
     },
     {
-      id: 'pr-poster',
-      name: '草地音乐会动态海报',
-      description: '把手绘植物元素转译为轻量动态图形，用于演出预告与现场屏幕。',
-      tags: ['动态设计', '海报', '活动视觉'],
+      id: 'pr-wheatfield',
+      name: '《麦田群鸦》',
+      description: '奥维尔时期横幅构图：三条小路从前景分开，群鸦掠过暗下来的天空。',
+      tags: ['油画', '风景', '奥维尔'],
       link: '',
       repo: '',
-      highlight: false,
+      highlight: true,
     },
   ],
   experience: [
     {
-      id: 'ex-independent',
-      role: '独立插画与视觉创作',
-      organization: '个人工作室',
-      period: '2024.06 - 至今',
-      description: '持续进行个人系列创作，并与独立出版、文化活动合作完成视觉内容。',
-      points: ['完成三个长期个人作品系列', '合作覆盖出版与活动视觉'],
+      id: 'ex-arles',
+      role: '绘画创作',
+      organization: '阿尔勒（黄房子）',
+      period: '1888.02 - 1889.05',
+      description: '南法时期的高产阶段：向日葵、卧室、夜间咖啡馆与罗纳河夜景均完成于此。',
+      points: ['完成《向日葵》与《阿尔勒的卧室》', '与高更短期共同工作，随后关系破裂'],
     },
     {
-      id: 'ex-residency',
-      role: '驻留创作者',
-      organization: '地方艺术空间',
-      period: '2025.09 - 2025.11',
-      description: '围绕街区步行与植物观察开展驻留创作，以开放工作室分享草图与过程。',
+      id: 'ex-saintremy',
+      role: '疗养与创作',
+      organization: '圣雷米圣保罗疗养院',
+      period: '1889.05 - 1890.05',
+      description: '在疗养院期间以花园、柏树与夜空为题材，完成《星月夜》《鸢尾花》等作品。',
+      points: ['一年内完成约一百五十幅油画', '以记忆与想象重构窗外风景'],
+    },
+    {
+      id: 'ex-auvers',
+      role: '最后阶段',
+      organization: '奥维尔',
+      period: '1890.05 - 1890.07',
+      description: '在加歇医生处接受照看，持续以麦田、教堂与肖像为题材作画。',
     },
   ],
   theme: {
-    primaryColor: '#ec4899',
+    primaryColor: '#1f4e79',
   },
 }
 

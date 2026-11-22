@@ -18,6 +18,7 @@ import { SiteNav } from '@/components/home/site-nav'
 import { TemplateGallery } from '@/components/home/template-gallery'
 import { ArtistPlayground } from '@/components/home/artist-playground'
 import { cn } from '@/lib/utils'
+import { ARTWORK_URI, type ArtworkKey } from '@/lib/artist/artwork-uris'
 
 interface Artwork {
   id: string
@@ -26,154 +27,82 @@ interface Artwork {
   year: string
   medium: string
   note: string
-  variant: 'city' | 'botanical' | 'tram' | 'garden'
+  variant: ArtworkKey
   background: string
 }
 
 const INITIAL_ARTWORKS: Artwork[] = [
   {
-    id: 'city-breath',
-    title: '城市呼吸 No.04',
-    series: '城市呼吸',
-    year: '2026',
-    medium: '水彩、数字拼贴',
-    note: '把通勤途中那些没有被注意的窗光、墙角与天空，重新拼成一座会呼吸的城市。',
-    variant: 'city',
-    background: '#dedbd2',
+    id: 'aw-starry',
+    title: '星月夜',
+    series: '圣雷米时期',
+    year: '1889',
+    medium: '布面油画 · 73.7 × 92.1 cm',
+    note: '柏树与星云被画成漩涡。只有柏树与远山来自窗外，村庄与教堂尖顶取自荷兰的记忆。',
+    variant: 'starry',
+    background: '#0d2545',
   },
   {
-    id: 'between-leaves',
-    title: '植物的间隙',
-    series: '附近',
-    year: '2026',
-    medium: '综合材料',
-    note: '从叶片之间观看日常。遮挡不是阻碍，而是让视线找到另一条路径。',
-    variant: 'botanical',
-    background: '#dce3d5',
+    id: 'aw-sunflowers',
+    title: '向日葵',
+    series: '阿尔勒时期',
+    year: '1888',
+    medium: '布面油画 · 92.1 × 73 cm',
+    note: '为迎接高更到阿尔勒，他在南法的烈日里画了一整组向日葵，只用黄与赭两种颜色。',
+    variant: 'sunflowers',
+    background: '#e8b93c',
   },
   {
-    id: 'night-tram',
-    title: '夜班电车',
-    series: '城市呼吸',
-    year: '2025',
-    medium: '数字绘画',
-    note: '车窗把陌生人的片段连成电影，城市在每个站点短暂地换了一次字幕。',
-    variant: 'tram',
-    background: '#151d2a',
+    id: 'aw-irises',
+    title: '鸢尾花',
+    series: '圣雷米时期',
+    year: '1889',
+    medium: '布面油画 · 74.3 × 94.3 cm',
+    note: '疗养院花园的第一批画。他说这是被空气与雨水冲洗过的蓝紫色，节奏来自叶片的交叉线。',
+    variant: 'irises',
+    background: '#dfe3cf',
   },
   {
-    id: 'silent-garden',
-    title: '无声花园',
-    series: '柔软标本',
-    year: '2025',
-    medium: '丙烯、纸面',
-    note: '一组关于生长速度的标本：有些花在开放，有些颜色正在退场。',
-    variant: 'garden',
-    background: '#eadde0',
+    id: 'aw-bedroom',
+    title: '阿尔勒的卧室',
+    series: '阿尔勒时期',
+    year: '1888',
+    medium: '布面油画 · 72.4 × 91.4 cm',
+    note: '他称之为以颜色来休息的房间：黄、蓝、绿三组平涂，透视刻意放松，为的是留出睡意。',
+    variant: 'bedroom',
+    background: '#c3cfd6',
+  },
+  {
+    id: 'aw-wheatfield',
+    title: '麦田群鸦',
+    series: '奥维尔时期',
+    year: '1890',
+    medium: '布面油画 · 50.5 × 103 cm',
+    note: '三条小路从前景分开，没有一条通往画面之外；群鸦从暗下来的天空掠过。',
+    variant: 'wheatfield',
+    background: '#2b3d56',
+  },
+  {
+    id: 'aw-portrait',
+    title: '自画像',
+    series: '圣雷米时期',
+    year: '1889',
+    medium: '布面油画 · 65 × 54 cm',
+    note: '四十余幅自画像之一：背景的笔触方向与胡须、外套一体流动，像把人也放进那场漩涡。',
+    variant: 'portrait',
+    background: '#4a7c86',
   },
 ]
 
 function ArtworkVisual({ variant }: { variant: Artwork['variant'] }) {
-  if (variant === 'city') {
-    return (
-      <svg viewBox="0 0 1200 760" className="h-full w-full" aria-hidden="true">
-        <rect width="1200" height="760" fill="#e9e4d8" />
-        <circle cx="930" cy="170" r="116" fill="#d77256" />
-        <rect x="0" y="430" width="1200" height="330" fill="#b7c0b0" />
-        <path d="M0 430L280 280L450 430Z" fill="#f5f0e5" />
-        <path d="M360 430L650 150L820 430Z" fill="#c2bba9" />
-        <rect x="92" y="340" width="196" height="420" fill="#34454a" />
-        <rect x="330" y="455" width="240" height="305" fill="#e8e0d1" />
-        <rect x="620" y="310" width="206" height="450" fill="#7c8d88" />
-        <rect x="850" y="390" width="254" height="370" fill="#e9d8bd" />
-        {[0, 1, 2].map((row) =>
-          [0, 1].map((col) => (
-            <rect
-              key={`${row}-${col}`}
-              x={125 + col * 82}
-              y={390 + row * 102}
-              width="42"
-              height="54"
-              fill="#e8bd78"
-            />
-          ))
-        )}
-        {[0, 1, 2, 3].map((row) => (
-          <rect key={row} x={670} y={360 + row * 86} width="106" height="24" fill="#dfe5df" />
-        ))}
-        <path d="M0 694C240 650 390 736 610 686S1000 640 1200 702V760H0Z" fill="#263b3a" />
-        <path d="M480 760C530 668 620 628 734 650C604 676 574 714 560 760Z" fill="#f2eee4" />
-      </svg>
-    )
-  }
-  if (variant === 'botanical') {
-    return (
-      <svg viewBox="0 0 1200 760" className="h-full w-full" aria-hidden="true">
-        <rect width="1200" height="760" fill="#edf0e5" />
-        <circle cx="580" cy="360" r="210" fill="#d9cdb1" />
-        <path d="M174 760C220 518 318 308 522 62" stroke="#294c3a" strokeWidth="24" fill="none" />
-        <path d="M376 486C232 454 136 350 128 212C278 234 392 328 376 486Z" fill="#648164" />
-        <path d="M430 340C458 188 560 96 706 82C694 238 586 346 430 340Z" fill="#8ca47c" />
-        <path d="M274 624C128 626 46 548 10 438C154 420 266 492 274 624Z" fill="#a6b68d" />
-        <path d="M730 760C756 520 874 302 1070 146" stroke="#48644a" strokeWidth="18" fill="none" />
-        <path d="M858 480C872 326 982 240 1134 240C1090 396 996 478 858 480Z" fill="#607b58" />
-        <path d="M780 608C672 548 632 452 662 344C794 398 846 500 780 608Z" fill="#a2b894" />
-        <path d="M540 760C568 652 660 574 762 588C746 696 664 754 540 760Z" fill="#d07c62" />
-        <circle cx="574" cy="350" r="36" fill="#f4f0e4" />
-      </svg>
-    )
-  }
-  if (variant === 'tram') {
-    return (
-      <svg viewBox="0 0 1200 760" className="h-full w-full" aria-hidden="true">
-        <rect width="1200" height="760" fill="#111923" />
-        <path d="M0 154H1200M0 604H1200" stroke="#354151" strokeWidth="2" />
-        <path d="M90 0L370 760M1080 0L796 760" stroke="#293746" strokeWidth="3" />
-        <rect x="160" y="214" width="880" height="352" rx="22" fill="#263746" />
-        <rect x="194" y="250" width="812" height="244" rx="8" fill="#0b1019" />
-        {[0, 1, 2, 3].map((i) => (
-          <g key={i}>
-            <rect x={224 + i * 198} y="278" width="156" height="174" fill="#d69c61" />
-            <rect x={224 + i * 198} y="278" width="156" height="42" fill="#f0c985" />
-            <path
-              d={`M${238 + i * 198} 452L${292 + i * 198} 344L${350 + i * 198} 452Z`}
-              fill="#5c5b55"
-            />
-          </g>
-        ))}
-        <path d="M0 652C260 594 450 690 660 634C866 580 1024 606 1200 654V760H0Z" fill="#1f303b" />
-        <path d="M70 700H1130" stroke="#e0ad6b" strokeWidth="5" strokeDasharray="62 38" />
-        <circle cx="110" cy="118" r="46" fill="#e9c581" />
-      </svg>
-    )
-  }
+  // 图源与导出共用同一份 data URI，首页与成品像素一致
   return (
-    <svg viewBox="0 0 1200 760" className="h-full w-full" aria-hidden="true">
-      <rect width="1200" height="760" fill="#f0e5e3" />
-      <path d="M0 580C260 492 436 626 650 544C850 468 1018 510 1200 572V760H0Z" fill="#a7b2a2" />
-      <path
-        d="M312 760C322 530 366 362 450 170M764 760C746 526 790 366 902 148"
-        stroke="#475f50"
-        strokeWidth="15"
-        fill="none"
-      />
-      <g transform="translate(448 232)">
-        <ellipse cx="0" cy="-92" rx="60" ry="112" fill="#d47c87" />
-        <ellipse cx="90" cy="-10" rx="112" ry="58" fill="#dc9397" />
-        <ellipse cx="0" cy="82" rx="64" ry="108" fill="#bd687a" />
-        <ellipse cx="-92" cy="-4" rx="106" ry="60" fill="#e0a0a0" />
-        <circle r="58" fill="#d9b65f" />
-      </g>
-      <g transform="translate(890 210)">
-        <ellipse cx="0" cy="-72" rx="48" ry="90" fill="#738da4" />
-        <ellipse cx="72" cy="0" rx="88" ry="46" fill="#91a5b8" />
-        <ellipse cx="0" cy="68" rx="50" ry="84" fill="#657f99" />
-        <ellipse cx="-72" cy="0" rx="86" ry="48" fill="#a7b7c3" />
-        <circle r="44" fill="#e4c87c" />
-      </g>
-      <circle cx="586" cy="510" r="68" fill="#d9b85e" />
-      <path d="M566 760C574 654 592 584 626 522" stroke="#526a57" strokeWidth="12" fill="none" />
-    </svg>
+    <img
+      src={ARTWORK_URI[variant]}
+      alt=""
+      aria-hidden="true"
+      className="h-full w-full object-contain"
+    />
   )
 }
 
@@ -214,10 +143,10 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
         <div className="grid items-end gap-6 lg:grid-cols-[1fr_360px]">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-black/50">
-              Exhibition 001 · Selected works
+              Post-Impressionism · 1853–1890 · Selected works
             </p>
             <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-              城市与植物之间
+              星月夜与麦田
             </h1>
           </div>
           <p className="max-w-md text-sm leading-7 text-black/55 lg:justify-self-end">

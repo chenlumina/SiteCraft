@@ -29,9 +29,9 @@ describe('Gallery 真实渲染器', () => {
 
   it('重点作品优先，完整作品与联系信息出现', () => {
     const { body } = renderGalleryFragment(createGallerySampleData())
-    assert.ok(body.indexOf('城市呼吸 No.04') < body.indexOf('植物的间隙'))
+    assert.ok(body.indexOf('星月夜') < body.indexOf('向日葵'))
     assert.ok(body.includes('全部作品'))
-    assert.ok(body.includes('artist@example.com'))
+    assert.ok(body.includes('vincent@example.com'))
     assert.ok(body.includes('data:image/svg+xml;base64,'), '作品封面应内联为 data URI')
   })
 
@@ -74,7 +74,7 @@ describe('Gallery 真实渲染器', () => {
 
   it('作品尺寸与展览履历进入产物，且导航出现展览入口', () => {
     const html = generateArtistSiteHTML(createGallerySampleData())
-    assert.ok(html.includes('120 × 90 cm'), '作品尺寸应出现在产物中')
+    assert.ok(html.includes('73.7 × 92.1 cm'), '作品尺寸应出现在产物中')
     assert.ok(html.includes('id="exhibitions"'), '应有展览区块')
     assert.ok(html.includes('个展') || html.includes('群展'), '应标注展览类型')
     assert.ok(html.includes('href="#exhibitions"'), '导航应指向展览区块')
@@ -86,7 +86,7 @@ describe('Gallery 真实渲染器', () => {
     assert.ok(html.includes('scroll-snap'), '作品墙应使用 scroll-snap')
     assert.ok(/tabindex="0"/.test(html), '作品墙应可聚焦（键盘左右切换）')
     assert.ok(html.includes('id="cv"'), '应有展览履历区块')
-    assert.ok(html.includes('120 × 90 cm'), '尺寸应出现在展览版式')
+    assert.ok(html.includes('73.7 × 92.1 cm'), '尺寸应出现在展览版式')
     assert.equal((html.match(/<script/g) || []).length, 0, '展览版式同样零脚本')
     assert.ok(!html.includes('/images/artworks'), '展览版式同样自包含')
   })
@@ -121,7 +121,23 @@ describe('Gallery 真实渲染器', () => {
   })
 
   it('合作区块：有内容才渲染，接单状态可切换，邮件带主题', () => {
-    const data = createGallerySampleData()
+    // 示例人物是已故画家，默认不接单：只保留「收藏说明」一行
+    const sample = createGallerySampleData()
+    const sampleHtml = generateArtistSiteHTML(sample, 'gallery')
+    assert.ok(sampleHtml.includes('id="commissions"'), '示例应有合作区块（含收藏说明）')
+    assert.ok(sampleHtml.includes('暂不接单'), '示例默认应显示暂不接单')
+
+    // 正向路径用构造数据：接单中 + 起价 + 邮件主题
+    const data: typeof sample = {
+      ...sample,
+      commissions: {
+        open: true,
+        scope: '编辑插画、书籍封面',
+        process: '邮件说明需求 → 三个工作日回报价',
+        leadTime: '2027 春季',
+        priceFrom: '单张 3,000 元起',
+      },
+    }
     for (const tpl of ['gallery', 'exhibition'] as const) {
       const html = generateArtistSiteHTML(data, tpl)
       assert.ok(html.includes('id="commissions"'), tpl + ' 应有合作区块')

@@ -21,7 +21,7 @@ beforeEach(async () => {
 })
 
 function input() {
-  return { name: '林墨的作品集', template: 'gallery' as const, content: createGallerySampleData() }
+  return { name: '梵高的作品集', template: 'gallery' as const, content: createGallerySampleData() }
 }
 
 describe('艺术站点服务', () => {
@@ -29,7 +29,7 @@ describe('艺术站点服务', () => {
     const saved = await saveArtistSite(USER_ID, input())
     assert.equal(saved.template, 'gallery')
     assert.equal(saved.status, 'draft')
-    assert.equal(saved.content.artworks.length, 4)
+    assert.equal(saved.content.artworks.length, createGallerySampleData().artworks.length)
     const loaded = await getArtistSite(USER_ID, saved.id)
     assert.deepEqual(loaded?.content.artworks[0].media, saved.content.artworks[0].media)
     assert.equal((await listArtistSites(USER_ID)).length, 1)

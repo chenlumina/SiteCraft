@@ -49,7 +49,7 @@ describe('AI 管道：mock 与结构化输出', () => {
     })
     assert.equal(result.archetype, 'artist')
     assert.equal(result.provider, 'mock')
-    assert.equal(result.data.name, '林墨')
+    assert.equal(result.data.name, '文森特·梵高')
     assert.ok(result.data.skills.length > 0)
     assert.equal(result.suggestedTemplate, 'minimal')
   })

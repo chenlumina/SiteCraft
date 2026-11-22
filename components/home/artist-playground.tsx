@@ -71,9 +71,9 @@ function useFitScale(innerW: number, innerH: number) {
 export function ArtistPlayground({ visitorName = '' }: { visitorName?: string }) {
   useReveal()
   const [template, setTemplate] = useState<ArtistTemplateName>('gallery')
-  const [name, setName] = useState(visitorName)
-  const [title, setTitle] = useState('独立插画师')
-  const [city, setCity] = useState('浙江 · 杭州')
+  const [name, setName] = useState(visitorName || '文森特·梵高')
+  const [title, setTitle] = useState('后印象派画家')
+  const [city, setCity] = useState('法国 · 阿尔勒')
   // 小屏默认预览手机视口，否则整页被缩成一条
   const [device, setDevice] = useState<Device>(() =>
     typeof window !== 'undefined' && window.innerWidth < 1024 ? 'mobile' : 'desktop'
@@ -87,7 +87,7 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
     const sample = createGallerySampleData()
     return {
       ...sample,
-      name: name.trim() || '林墨',
+      name: name.trim() || '文森特·梵高',
       title: title.trim() || '独立创作者',
       location: city.trim(),
     }
@@ -152,7 +152,7 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value.slice(0, 16))}
-                placeholder="插画师 / 摄影师"
+                placeholder="后印象派画家"
                 aria-label="创作方向"
                 className="bg-white"
               />
@@ -162,7 +162,7 @@ export function ArtistPlayground({ visitorName = '' }: { visitorName?: string })
               <Input
                 value={city}
                 onChange={(e) => setCity(e.target.value.slice(0, 16))}
-                placeholder="浙江 · 杭州"
+                placeholder="法国 · 阿尔勒"
                 aria-label="所在城市"
                 className="bg-white"
               />

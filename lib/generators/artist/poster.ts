@@ -51,7 +51,7 @@ export const POSTER_CSS = `
 .po-cm-list > div{display:grid;grid-template-columns:52px 1fr;gap:12px}
 .po-cm-list dt{margin:0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--po-mute)}
 .po-cm-list dd{margin:0;line-height:1.8}
-.po-cm-state{margin:12px 0 0;font-size:12px;color:var(--po-accent)}
+.po-cm-state{margin:12px 0 0;font-size:12px;color:#8f2214}
 .po-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--po-accent);margin-right:7px}
 .mail-cta{display:inline-flex;align-items:center;min-height:24px;margin-top:12px;font-size:13px;border-bottom:2px solid var(--po-accent)}
 .po-foot{margin-top:28px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--po-line);padding-top:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--po-mute)}
