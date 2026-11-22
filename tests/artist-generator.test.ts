@@ -145,12 +145,12 @@ describe('Gallery 真实渲染器', () => {
 
   it('索引版式：表头与数据同列，且不使用 table（details 不能放进 tbody）', () => {
     const html = generateArtistSiteHTML(createGallerySampleData(), 'index')
-    assert.ok(html.includes('class="ix-head"'), '应有网格表头')
+    assert.ok(html.includes('class="ix-colhead"'), '应有网格表头')
     assert.ok(html.includes('class="ix-row"'), '应有条目行')
     assert.ok(!html.includes('<table'), '不应使用 table：<details> 会被浏览器移出表格导致列错位')
     assert.ok(!html.includes('<tbody'), '不应出现 tbody')
     // 表头四项与行内四项同序
-    const marker = '<div class="ix-head"'
+    const marker = '<div class="ix-colhead"'
     const head = html.slice(html.indexOf(marker), html.indexOf(marker) + 240)
     for (const label of ['编号', '作品', '系列', '年份'])
       assert.ok(head.includes(label), '表头应含 ' + label)

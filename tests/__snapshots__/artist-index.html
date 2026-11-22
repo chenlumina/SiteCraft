@@ -16,12 +16,13 @@
 .artist-index :where(a,summary):focus-visible{outline:2px solid var(--ix-ink);outline-offset:3px}
 .ix-wrap{max-width:1080px;margin:0 auto;padding:clamp(26px,5vw,60px) clamp(16px,4vw,44px) 48px}
 .ix-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;border-bottom:2px solid var(--ix-ink);padding-bottom:14px}
+.ix-head > div:first-child{min-width:0;flex:1 1 auto}
 .ix-kicker{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ix-mute)}
 @keyframes ix-settle{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.ix-title{margin:10px 0 0;font-weight:400;font-size:clamp(44px,6.4vw,68px);line-height:1.02;letter-spacing:-.01em;animation:ix-settle .7s cubic-bezier(.3,1.1,.64,1) both}
+.ix-title{margin:10px 0 0;font-weight:400;font-size:clamp(44px,6.4vw,68px);line-height:1.02;letter-spacing:-.01em;word-break:keep-all;overflow-wrap:anywhere;animation:ix-settle .7s cubic-bezier(.3,1.1,.64,1) both}
 .ix-lead{max-width:34ch;margin:0;font-size:13.5px;line-height:1.8;color:var(--ix-mute)}
 .ix-list{margin:24px 0 0}
-.ix-head{display:grid;grid-template-columns:44px 1fr 120px 96px;gap:12px;align-items:baseline;padding:0 0 8px;border-bottom:1px solid var(--ix-line);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ix-mute)}
+.ix-colhead{display:grid;grid-template-columns:44px 1fr 120px 96px;gap:12px;align-items:baseline;padding:0 0 8px;border-bottom:1px solid var(--ix-line);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ix-mute)}
 .ix-row{border-bottom:1px solid var(--ix-line)}
 .ix-row summary{display:grid;grid-template-columns:44px 1fr 120px 96px;gap:12px;align-items:baseline;padding:12px 0;cursor:pointer;list-style:none}
 .ix-row summary::-webkit-details-marker{display:none}
@@ -48,7 +49,7 @@
 .ix-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ix-mark);margin-right:7px}
 .mail-cta{display:inline-flex;align-items:center;min-height:24px;margin-top:10px;font-size:13px;border-bottom:1px solid var(--ix-mark)}
 .ix-foot{margin-top:28px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ix-mute)}
-@container (max-width:640px){.ix-head{display:none}.ix-head{flex-direction:column;align-items:flex-start}.ix-row summary{grid-template-columns:36px 1fr}.ix-series,.ix-meta{grid-column:2}.ix-body{grid-template-columns:1fr}.ix-sect{grid-template-columns:1fr}}
+@container (max-width:640px){.ix-colhead{display:none}.ix-head{flex-direction:column;align-items:flex-start}.ix-row summary{grid-template-columns:36px 1fr}.ix-series,.ix-meta{grid-column:2}.ix-body{grid-template-columns:1fr}.ix-sect{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.ix-title{animation:none}.artist-index a{transition:none}}
 </style>
 </head>
@@ -60,7 +61,7 @@
       <h1 class="ix-title">文森特·梵高</h1>
     </div><p class="ix-lead">后印象派画家 · 1853–1890 · 法国 · 阿尔勒</p></header>
     <div class="ix-list">
-      <div class="ix-head" aria-hidden="true"><span>编号</span><span>作品</span><span>系列</span><span>年份</span></div>
+      <div class="ix-colhead" aria-hidden="true"><span>编号</span><span>作品</span><span>系列</span><span>年份</span></div>
 <details class="ix-row"><summary><span class="ix-no">001</span><span class="ix-name">星月夜</span><span class="ix-series">圣雷米时期</span><span class="ix-meta">1889</span></summary><div class="ix-body"><div class="ix-plate"><img src="/images/artworks/van-gogh/starry.jpg" alt="星月夜" loading="lazy"></div><div class="ix-note"><p>布面油画 · 73.7 × 92.1 cm · 1889</p><p>在圣雷米疗养院的窗前，他把夜里看到的柏树与星云画成漩涡。画面是想象的：只有柏树与远山来自窗外，村庄与教堂尖顶取自荷兰的记忆。</p></div></div></details><details class="ix-row"><summary><span class="ix-no">002</span><span class="ix-name">向日葵</span><span class="ix-series">阿尔勒时期</span><span class="ix-meta">1888</span></summary><div class="ix-body"><div class="ix-plate"><img src="/images/artworks/van-gogh/sunflowers.jpg" alt="向日葵" loading="lazy"></div><div class="ix-note"><p>布面油画 · 92.1 × 73 cm · 1888</p><p>为迎接高更到阿尔勒，他在南法的烈日里画了一整组向日葵。花从盛开到结籽，只用黄与赭两种颜色。</p></div></div></details><details class="ix-row"><summary><span class="ix-no">003</span><span class="ix-name">鸢尾花</span><span class="ix-series">圣雷米时期</span><span class="ix-meta">1889</span></summary><div class="ix-body"><div class="ix-plate"><img src="/images/artworks/van-gogh/irises.jpg" alt="鸢尾花" loading="lazy"></div><div class="ix-note"><p>布面油画 · 74.3 × 94.3 cm · 1889</p><p>疗养院花园的第一批画。他说这是「被空气与雨水冲洗过的蓝紫色」，节奏来自叶片的交叉线。</p></div></div></details><details class="ix-row"><summary><span class="ix-no">004</span><span class="ix-name">阿尔勒的卧室</span><span class="ix-series">阿尔勒时期</span><span class="ix-meta">1888</span></summary><div class="ix-body"><div class="ix-plate"><img src="/images/artworks/van-gogh/bedroom.jpg" alt="阿尔勒的卧室" loading="lazy"></div><div class="ix-note"><p>布面油画 · 72.4 × 91.4 cm · 1888</p><p>他自己称之为「以颜色来休息」的房间：黄、蓝、绿三组平涂，透视刻意放松，为的是留出空白与睡意。</p></div></div></details><details class="ix-row"><summary><span class="ix-no">005</span><span class="ix-name">麦田群鸦</span><span class="ix-series">奥维尔时期</span><span class="ix-meta">1890</span></summary><div class="ix-body"><div class="ix-plate"><img src="/images/artworks/van-gogh/wheatfield.jpg" alt="麦田群鸦" loading="lazy"></div><div class="ix-note"><p>布面油画 · 50.5 × 103 cm · 1890</p><p>三条小路从前景分开，没有一条通往画面之外；群鸦从暗下来的天空掠过。常被当作他的最后一件作品，但这一说法没有证据。</p></div></div></details><details class="ix-row"><summary><span class="ix-no">006</span><span class="ix-name">自画像</span><span class="ix-series">圣雷米时期</span><span class="ix-meta">1889</span></summary><div class="ix-body"><div class="ix-plate"><img src="/images/artworks/van-gogh/portrait.jpg" alt="自画像" loading="lazy"></div><div class="ix-note"><p>布面油画 · 65 × 54 cm · 1889</p><p>四十余幅自画像中的一幅：背景的笔触方向与胡须、外套一体流动，像把人也放进了那场漩涡里。</p></div></div></details>
     </div>
     <section class="ix-sect"><h2>展览履历</h2><ul class="ix-cv"><li><span class="cv-year">2016</span><span class="cv-role">个展</span><span class="cv-show">梵高的卧室，芝加哥艺术博物馆</span></li><li><span class="cv-year">1905</span><span class="cv-role">个展</span><span class="cv-show">梵高回顾展，阿姆斯特丹市立博物馆</span></li><li><span class="cv-year">1890</span><span class="cv-role">群展</span><span class="cv-show">二十人展（Les XX），布鲁塞尔</span></li></ul></section>
