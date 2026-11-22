@@ -17,9 +17,13 @@ prisma/dev.db-journal
 *.db
 *.db-journal
 
-# env（.env 仅含非敏感的本地数据库配置，密钥放 .env.local）
+# env（.env 仅为本地开发配置，不提交；模板见 .env.example）
+.env
 .env.local
 .env*.local
+
+# IDE 个人配置不入库（.run/ 运行配置继续跟踪，作为项目命令速查）
+.idea/
 
 # misc
 .DS_Store
