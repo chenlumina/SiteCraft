@@ -29,8 +29,8 @@ export const INDEX_CSS = `
 @keyframes ix-settle{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .ix-title{margin:10px 0 0;font-weight:400;font-size:clamp(44px,6.4vw,68px);line-height:1.02;letter-spacing:-.01em;animation:ix-settle .7s cubic-bezier(.3,1.1,.64,1) both}
 .ix-lead{max-width:34ch;margin:0;font-size:13.5px;line-height:1.8;color:var(--ix-mute)}
-.ix-table{margin:22px 0 0;width:100%;border-collapse:collapse}
-.ix-table thead th{text-align:left;padding:0 10px 8px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ix-mute);font-weight:400;border-bottom:1px solid var(--ix-line)}
+.ix-list{margin:24px 0 0}
+.ix-head{display:grid;grid-template-columns:44px 1fr 120px 96px;gap:12px;align-items:baseline;padding:0 0 8px;border-bottom:1px solid var(--ix-line);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ix-mute)}
 .ix-row{border-bottom:1px solid var(--ix-line)}
 .ix-row summary{display:grid;grid-template-columns:44px 1fr 120px 96px;gap:12px;align-items:baseline;padding:12px 0;cursor:pointer;list-style:none}
 .ix-row summary::-webkit-details-marker{display:none}
@@ -57,7 +57,7 @@ export const INDEX_CSS = `
 .ix-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ix-mark);margin-right:7px}
 .mail-cta{display:inline-flex;align-items:center;min-height:24px;margin-top:10px;font-size:13px;border-bottom:1px solid var(--ix-mark)}
 .ix-foot{margin-top:28px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ix-mute)}
-@container (max-width:640px){.ix-head{flex-direction:column;align-items:flex-start}.ix-row summary{grid-template-columns:36px 1fr}.ix-series,.ix-meta{grid-column:2}.ix-body{grid-template-columns:1fr}.ix-sect{grid-template-columns:1fr}}
+@container (max-width:640px){.ix-head{display:none}.ix-head{flex-direction:column;align-items:flex-start}.ix-row summary{grid-template-columns:36px 1fr}.ix-series,.ix-meta{grid-column:2}.ix-body{grid-template-columns:1fr}.ix-sect{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.ix-title{animation:none}.artist-index a{transition:none}}
 `
 
@@ -107,8 +107,10 @@ export function renderIndexBody(data: ArtistSiteData): string {
       esc(data.title) +
       (data.location ? ' · ' + esc(data.location) : '') +
       '</p></header>',
-    '    <table class="ix-table"><thead><tr><th>编号</th><th>作品</th><th>系列</th><th>年份</th></tr></thead>',
-    '    <tbody>' + rows + '</tbody></table>',
+    '    <div class="ix-list">',
+    '      <div class="ix-head" aria-hidden="true"><span>编号</span><span>作品</span><span>系列</span><span>年份</span></div>',
+    rows,
+    '    </div>',
     cv.length
       ? '    <section class="ix-sect"><h2>展览履历</h2><ul class="ix-cv">' +
         cv.join('') +

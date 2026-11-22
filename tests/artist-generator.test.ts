@@ -131,7 +131,7 @@ describe('Gallery 真实渲染器', () => {
     const data = createGallerySampleData()
     const expect = {
       contact: 'cs-strip',
-      index: 'ix-table',
+      index: 'ix-list',
       studio: 'st-card',
       scroll: 'sc-axis',
       poster: 'po-wall',
@@ -141,6 +141,19 @@ describe('Gallery 真实渲染器', () => {
       assert.ok(html.includes(marker), tpl + ' 缺少专属结构 ' + marker)
       assert.ok(html.includes('artist-' + tpl), tpl + ' 根类名应为 artist-' + tpl)
     }
+  })
+
+  it('索引版式：表头与数据同列，且不使用 table（details 不能放进 tbody）', () => {
+    const html = generateArtistSiteHTML(createGallerySampleData(), 'index')
+    assert.ok(html.includes('class="ix-head"'), '应有网格表头')
+    assert.ok(html.includes('class="ix-row"'), '应有条目行')
+    assert.ok(!html.includes('<table'), '不应使用 table：<details> 会被浏览器移出表格导致列错位')
+    assert.ok(!html.includes('<tbody'), '不应出现 tbody')
+    // 表头四项与行内四项同序
+    const marker = '<div class="ix-head"'
+    const head = html.slice(html.indexOf(marker), html.indexOf(marker) + 240)
+    for (const label of ['编号', '作品', '系列', '年份'])
+      assert.ok(head.includes(label), '表头应含 ' + label)
   })
 
   it('合作区块：有内容才渲染，接单状态可切换，邮件带主题', () => {

@@ -34,3 +34,6 @@ test-results/
 screenshots/
 # 设计门生成的临时 HTML
 .design-out/
+
+# 本地验证用的临时产物（导出测试文件等）
+tmp-art/
