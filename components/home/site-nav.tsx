@@ -20,6 +20,7 @@ const DEVELOPER_NAV_LINKS = [
 ]
 
 const ARTIST_NAV_LINKS = [
+  { href: '#playground', label: '试玩' },
   { href: '#gallery', label: '展厅' },
   { href: '#curation', label: '策展' },
   { href: '#templates', label: '版式' },

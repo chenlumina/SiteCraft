@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { SiteNav } from '@/components/home/site-nav'
 import { TemplateGallery } from '@/components/home/template-gallery'
+import { ArtistPlayground } from '@/components/home/artist-playground'
 import { cn } from '@/lib/utils'
 
 interface Artwork {
@@ -225,11 +226,14 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
           </p>
         </div>
 
-        <section id="gallery" className="mt-10 scroll-mt-24" aria-label="作品展厅">
-          <div className="mb-4 flex items-center justify-between">
+        <ArtistPlayground visitorName={name} />
+
+        {/* 单件查看：点索引缩略图换这里，策展排序仍在下方 */}
+        <section id="gallery" className="mt-8 scroll-mt-24" aria-label="作品查看">
+          <div className="mb-4 flex items-center justify-between gap-3">
             <p className="font-mono text-xs tabular-nums text-black/55">
-              {String(activeIndex + 1).padStart(2, '0')}{' '}
-              <span className="mx-2 text-black/25">/</span>{' '}
+              {String(activeIndex + 1).padStart(2, '0')}
+              <span className="mx-2 text-black/25">/</span>
               {String(artworks.length).padStart(2, '0')}
             </p>
             <div className="flex items-center gap-2">
@@ -269,32 +273,19 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
           </div>
 
           <div
-            ref={trackRef}
             tabIndex={0}
             role="region"
-            aria-label="作品轮播，可使用左右方向键浏览"
+            aria-label="当前作品大图，可用左右方向键切换"
             onKeyDown={(event) => {
               if (event.key === 'ArrowLeft') goTo(activeIndex - 1)
               if (event.key === 'ArrowRight') goTo(activeIndex + 1)
             }}
-            onScroll={(event) => {
-              const track = event.currentTarget
-              const index = Math.round(track.scrollLeft / track.clientWidth)
-              const artwork = artworks[index]
-              if (artwork && artwork.id !== activeId) setActiveId(artwork.id)
-            }}
-            className="flex h-[58vh] min-h-[380px] snap-x snap-mandatory overflow-x-auto scroll-smooth focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black lg:h-[64vh]"
-            style={{ backgroundColor: active.background, scrollbarWidth: 'none' }}
+            className="relative h-[46vh] min-h-[300px] overflow-hidden sm:h-[54vh]"
+            style={{ backgroundColor: active.background }}
           >
-            {artworks.map((artwork) => (
-              <figure
-                key={artwork.id}
-                aria-hidden={activeId !== artwork.id}
-                className="h-full w-full flex-none snap-center"
-              >
-                <ArtworkVisual variant={artwork.variant} />
-              </figure>
-            ))}
+            <figure key={active.id} className="hero-swap-in h-full w-full">
+              <ArtworkVisual variant={active.variant} />
+            </figure>
           </div>
 
           <div
