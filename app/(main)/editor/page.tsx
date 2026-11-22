@@ -240,7 +240,7 @@ function EditorInner() {
   if (!hydrated || loadingSite) return <EditorSkeleton />
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
+    <div className="flex min-h-screen flex-col lg:h-screen lg:overflow-hidden">
       <EditorToolbar />
       <div className="flex items-center justify-between border-b border-border bg-card px-4 py-1.5 lg:hidden">
         <div className="flex gap-1 rounded-lg bg-background p-1">
@@ -274,11 +274,11 @@ function EditorInner() {
           splitRef.current = el
           if (el) setSplitReady(true)
         }}
-        className="flex min-h-0 flex-1"
+        className="flex min-h-0 flex-1 lg:overflow-hidden"
       >
         <aside
           className={cn(
-            'panel-scroll w-full shrink-0 overflow-y-auto bg-card p-4 lg:block',
+            'panel-scroll w-full shrink-0 bg-card p-4 lg:block lg:overflow-y-auto',
             mobileView === 'preview' && 'hidden'
           )}
           style={isLg ? { width: leftWidth } : undefined}

@@ -137,7 +137,7 @@ export function SkillInput() {
               setDragOver(null)
             }}
             className={cn(
-              'flex items-center gap-2 rounded-lg border bg-background p-2 transition-colors',
+              'flex flex-wrap items-center gap-2 rounded-lg border bg-background p-2 transition-colors sm:flex-nowrap',
               dragOver === index && 'border-primary bg-primary/10'
             )}
           >
@@ -146,7 +146,7 @@ export function SkillInput() {
               value={skill.name}
               aria-label={`技能 ${index + 1} 名称`}
               onChange={(e) => updateSkill(skill.id, { name: e.target.value })}
-              className="h-8 min-w-0 flex-1"
+              className="h-8 min-w-0 flex-1 basis-full sm:basis-auto"
             />
             {showLevel && (
               <>
@@ -157,7 +157,7 @@ export function SkillInput() {
                   step={1}
                   aria-label={`技能 ${skill.name} 熟练度`}
                   onValueChange={([value]) => updateSkill(skill.id, { level: value })}
-                  className="w-24 shrink-0"
+                  className="w-full shrink-0 sm:w-24"
                 />
                 <LevelField
                   skillName={skill.name || `第 ${index + 1} 项`}
@@ -166,13 +166,13 @@ export function SkillInput() {
                 />
               </>
             )}
-            <div className="flex shrink-0 flex-col">
+            <div className="order-last ml-auto flex shrink-0 gap-1 sm:order-none sm:ml-0 sm:flex-col sm:gap-0">
               <button
                 type="button"
                 aria-label="上移"
                 disabled={index === 0}
                 onClick={() => moveSkill(index, index - 1)}
-                className="text-muted-foreground transition-colors hover:text-foreground disabled:opacity-30"
+                className="grid h-6 w-6 shrink-0 place-items-center text-muted-foreground transition-colors hover:text-foreground disabled:opacity-30"
               >
                 <ChevronUp className="h-3.5 w-3.5" />
               </button>
@@ -181,7 +181,7 @@ export function SkillInput() {
                 aria-label="下移"
                 disabled={index === skills.length - 1}
                 onClick={() => moveSkill(index, index + 1)}
-                className="text-muted-foreground transition-colors hover:text-foreground disabled:opacity-30"
+                className="grid h-6 w-6 shrink-0 place-items-center text-muted-foreground transition-colors hover:text-foreground disabled:opacity-30"
               >
                 <ChevronDown className="h-3.5 w-3.5" />
               </button>
