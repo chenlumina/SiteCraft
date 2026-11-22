@@ -22,7 +22,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import type { ApiResponse } from '@/types'
-import type { ArtistSiteRecord } from '@/types/artist'
+import type { ArtistSiteRecord, ArtistTemplateName } from '@/types/artist'
 import { BrandLogo } from '@/components/brand-logo'
 import { ArtistSiteFrame } from '@/components/artist-editor/artist-site-frame'
 import { Button } from '@/components/ui/button'
@@ -51,6 +51,19 @@ function ArtistEditorInner() {
 
   useEffect(() => {
     const id = params.get('id')
+    const templateParam = params.get('template')
+    const validTemplates: ArtistTemplateName[] = [
+      'gallery',
+      'exhibition',
+      'contact',
+      'index',
+      'studio',
+      'scroll',
+      'poster',
+    ]
+    if (templateParam && validTemplates.includes(templateParam as ArtistTemplateName)) {
+      setTemplate(templateParam as ArtistTemplateName)
+    }
     if (id) {
       fetch(`/api/artist/sites/${id}`)
         .then((response) => response.json() as Promise<ApiResponse<ArtistSiteRecord>>)

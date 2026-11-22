@@ -15,6 +15,7 @@ import {
   SlidersHorizontal,
 } from 'lucide-react'
 import { SiteNav } from '@/components/home/site-nav'
+import { TemplateGallery } from '@/components/home/template-gallery'
 import { cn } from '@/lib/utils'
 
 interface Artwork {
@@ -392,6 +393,7 @@ export function ArtistBoard({ name, onReset }: { name: string; onReset: () => vo
           </div>
         </section>
 
+        <TemplateGallery scope="artist" />
         <section className="mt-16 grid gap-8 border-t border-black/10 pt-8 md:grid-cols-2">
           <div className="flex gap-4">
             <Layers className="h-5 w-5 flex-none text-black/40" strokeWidth={1.5} />

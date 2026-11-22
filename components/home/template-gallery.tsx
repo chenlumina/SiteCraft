@@ -138,7 +138,14 @@ function CropMarks() {
   )
 }
 
-export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) {
+export function TemplateGallery({
+  visitorName = '',
+  scope = 'all',
+}: {
+  visitorName?: string
+  /** 'all' 给开发首页（13 开发 + 7 艺术），'artist' 只列 7 套艺术版式 */
+  scope?: 'all' | 'artist'
+}) {
   const [active, setActive] = useState(0)
   const boxRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(0.4)
@@ -155,7 +162,12 @@ export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) 
     return () => observer.disconnect()
   }, [])
 
-  const meta = SHOWCASE[active]
+  const items = useMemo(
+    () => (scope === 'artist' ? SHOWCASE.filter((item) => item.kind === 'artist') : SHOWCASE),
+    [scope]
+  )
+  const current = Math.min(active, items.length - 1)
+  const meta = items[current]
   const isArtist = meta.kind === 'artist'
   const data = useMemo<SiteData>(
     () => ({
@@ -165,19 +177,21 @@ export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) 
     }),
     [meta, visitorName]
   )
-  const plateNo = String(active + 1).padStart(2, '0')
+  const plateNo = String(current + 1).padStart(2, '0')
 
   return (
     <section id="templates" className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-20">
       <div className="reveal mb-10 max-w-xl">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
-          Templates
+          {scope === 'artist' ? 'Portfolio templates' : 'Templates'}
         </p>
         <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          二十套版式，二十种性格
+          {scope === 'artist' ? '七套版式，七种看法' : '二十套版式，二十种性格'}
         </h2>
         <p className="mt-3 text-muted-foreground">
-          像翻样册一样浏览：索引悬停即换，样张为真实渲染——看到的就是选用后得到的。后七套是艺术方向的：画廊、展览、印样、索引、工作室、长卷、海报墙。
+          {scope === 'artist'
+            ? '同一批作品，换一种观看方式：画册、动线、选片台、藏品目录、工作台、手卷、海报墙。样张是真实渲染，选中即进入编辑器。'
+            : '像翻样册一样浏览：索引悬停即换，样张为真实渲染——看到的就是选用后得到的。后七套是艺术方向的：画廊、展览、印样、索引、工作室、长卷、海报墙。'}
         </p>
       </div>
 
@@ -226,8 +240,12 @@ export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) 
             </div>
           </div>
           <Button asChild size="lg" className="mt-5 w-full gap-2">
-            <Link href={isArtist ? '/artist-editor' : `/editor?template=${meta.name}`}>
-              {isArtist ? '开始布置作品集' : '使用此模板'} <ArrowRight />
+            <Link
+              href={
+                isArtist ? `/artist-editor?template=${meta.name}` : `/editor?template=${meta.name}`
+              }
+            >
+              {isArtist ? '用这套布置作品集' : '使用此模板'} <ArrowRight />
             </Link>
           </Button>
           <p className="mt-3 text-center font-mono text-[11px] text-muted-foreground">
@@ -237,8 +255,8 @@ export function TemplateGallery({ visitorName = '' }: { visitorName?: string }) 
 
         {/* 右：样册索引 */}
         <ol className="border-t border-border">
-          {SHOWCASE.map((t, index) => {
-            const isActive = index === active
+          {items.map((t, index) => {
+            const isActive = index === current
             return (
               <li key={t.name} className="reveal" style={{ transitionDelay: `${index * 45}ms` }}>
                 <button

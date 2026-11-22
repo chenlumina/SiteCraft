@@ -22,6 +22,7 @@ const DEVELOPER_NAV_LINKS = [
 const ARTIST_NAV_LINKS = [
   { href: '#gallery', label: '展厅' },
   { href: '#curation', label: '策展' },
+  { href: '#templates', label: '版式' },
 ]
 
 export function SiteNav({
