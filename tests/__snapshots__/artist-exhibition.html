@@ -54,6 +54,10 @@
 .ex-year{font-variant-numeric:tabular-nums;font-size:13px;color:var(--ex-mute)}
 .ex-role{font-size:11px;letter-spacing:.08em;color:var(--ex-mute)}
 .ex-show{font-size:14.5px;line-height:1.6}
+.ex-divider{flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;gap:6px;
+  padding:0 clamp(12px,2vw,28px);border-left:1px solid var(--ex-line);align-self:stretch;scroll-snap-align:start}
+.ex-divider span{writing-mode:vertical-rl;font-family:Georgia,serif;font-size:17px;letter-spacing:.08em}
+.ex-divider em{font-style:normal;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.1em;color:var(--ex-mute)}
 .ex-commissions{margin-top:clamp(36px,6vw,72px);border-top:1px solid var(--ex-line);padding-top:26px}
 .ex-cm-state{margin:0 0 14px;font-size:13.5px;color:var(--ex-mute)}
 .ex-cm-list{margin:0;display:grid;gap:10px}
@@ -108,25 +112,25 @@
         <p class="ex-desc">把通勤途中那些没有被注意的窗光、墙角与天空，重新拼成一座会呼吸的城市。</p>
       </figcaption>
     </figure>
-<figure class="ex-piece" aria-label="植物的间隙">
-      <div class="ex-frame"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDc2MCI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNzYwIiBmaWxsPSIjZWRmMGU1Ii8+PGNpcmNsZSBjeD0iNTgwIiBjeT0iMzYwIiByPSIyMTAiIGZpbGw9IiNkOWNkYjEiLz48cGF0aCBkPSJNMTc0IDc2MEMyMjAgNTE4IDMxOCAzMDggNTIyIDYyIiBzdHJva2U9IiMyOTRjM2EiIHN0cm9rZS13aWR0aD0iMjQiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMzc2IDQ4NkMyMzIgNDU0IDEzNiAzNTAgMTI4IDIxMkMyNzggMjM0IDM5MiAzMjggMzc2IDQ4NloiIGZpbGw9IiM2NDgxNjQiLz48cGF0aCBkPSJNNDMwIDM0MEM0NTggMTg4IDU2MCA5NiA3MDYgODJDNjk0IDIzOCA1ODYgMzQ2IDQzMCAzNDBaIiBmaWxsPSIjOGNhNDdjIi8+PHBhdGggZD0iTTI3NCA2MjRDMTI4IDYyNiA0NiA1NDggMTAgNDM4QzE1NCA0MjAgMjY2IDQ5MiAyNzQgNjI0WiIgZmlsbD0iI2E2YjY4ZCIvPjxwYXRoIGQ9Ik03MzAgNzYwQzc1NiA1MjAgODc0IDMwMiAxMDcwIDE0NiIgc3Ryb2tlPSIjNDg2NDRhIiBzdHJva2Utd2lkdGg9IjE4IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTg1OCA0ODBDODcyIDMyNiA5ODIgMjQwIDExMzQgMjQwQzEwOTAgMzk2IDk5NiA0NzggODU4IDQ4MFoiIGZpbGw9IiM2MDdiNTgiLz48cGF0aCBkPSJNNzgwIDYwOEM2NzIgNTQ4IDYzMiA0NTIgNjYyIDM0NEM3OTQgMzk4IDg0NiA1MDAgNzgwIDYwOFoiIGZpbGw9IiNhMmI4OTQiLz48cGF0aCBkPSJNNTQwIDc2MEM1NjggNjUyIDY2MCA1NzQgNzYyIDU4OEM3NDYgNjk2IDY2NCA3NTQgNTQwIDc2MFoiIGZpbGw9IiNkMDdjNjIiLz48Y2lyY2xlIGN4PSI1NzQiIGN5PSIzNTAiIHI9IjM2IiBmaWxsPSIjZjRmMGU0Ii8+PC9zdmc+" alt="植物的间隙" loading="eager"></div>
-      <figcaption>
-        <p class="ex-index">02 · 附近</p>
-        <h3>植物的间隙</h3>
-        <p class="ex-meta">综合材料 · 90 × 60 cm · 2026</p>
-        <p class="ex-desc">从叶片之间观看日常。遮挡不是阻碍，而是让视线找到另一条路径。</p>
-      </figcaption>
-    </figure>
 <figure class="ex-piece" aria-label="夜班电车">
-      <div class="ex-frame"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDc2MCI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNzYwIiBmaWxsPSIjMTExOTIzIi8+PHBhdGggZD0iTTAgMTU0SDEyMDBNMCA2MDRIMTIwMCIgc3Ryb2tlPSIjMzU0MTUxIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNOTAgMEwzNzAgNzYwTTEwODAgMEw3OTYgNzYwIiBzdHJva2U9IiMyOTM3NDYiIHN0cm9rZS13aWR0aD0iMyIvPjxyZWN0IHg9IjE2MCIgeT0iMjE0IiB3aWR0aD0iODgwIiBoZWlnaHQ9IjM1MiIgcng9IjIyIiBmaWxsPSIjMjYzNzQ2Ii8+PHJlY3QgeD0iMTk0IiB5PSIyNTAiIHdpZHRoPSI4MTIiIGhlaWdodD0iMjQ0IiByeD0iOCIgZmlsbD0iIzBiMTAxOSIvPjxnPjxyZWN0IHg9IjIyNCIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjE3NCIgZmlsbD0iI2Q2OWM2MSIvPjxyZWN0IHg9IjQyMiIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjE3NCIgZmlsbD0iI2Q2OWM2MSIvPjxyZWN0IHg9IjYyMCIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjE3NCIgZmlsbD0iI2Q2OWM2MSIvPjxyZWN0IHg9IjgxOCIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjE3NCIgZmlsbD0iI2Q2OWM2MSIvPjwvZz48ZyBmaWxsPSIjZjBjOTg1Ij48cmVjdCB4PSIyMjQiIHk9IjI3OCIgd2lkdGg9IjE1NiIgaGVpZ2h0PSI0MiIvPjxyZWN0IHg9IjQyMiIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjQyIi8+PHJlY3QgeD0iNjIwIiB5PSIyNzgiIHdpZHRoPSIxNTYiIGhlaWdodD0iNDIiLz48cmVjdCB4PSI4MTgiIHk9IjI3OCIgd2lkdGg9IjE1NiIgaGVpZ2h0PSI0MiIvPjwvZz48cGF0aCBkPSJNMjM4IDQ1MkwyOTIgMzQ0TDM1MCA0NTJaTTQzNiA0NTJMNDkwIDM0NEw1NDggNDUyWk02MzQgNDUyTDY4OCAzNDRMNzQ2IDQ1MlpNODMyIDQ1Mkw4ODYgMzQ0TDk0NCA0NTJaIiBmaWxsPSIjNWM1YjU1Ii8+PHBhdGggZD0iTTAgNjUyQzI2MCA1OTQgNDUwIDY5MCA2NjAgNjM0Qzg2NiA1ODAgMTAyNCA2MDYgMTIwMCA2NTRWNzYwSDBaIiBmaWxsPSIjMWYzMDNiIi8+PHBhdGggZD0iTTcwIDcwMEgxMTMwIiBzdHJva2U9IiNlMGFkNmIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWRhc2hhcnJheT0iNjIgMzgiLz48Y2lyY2xlIGN4PSIxMTAiIGN5PSIxMTgiIHI9IjQ2IiBmaWxsPSIjZTljNTgxIi8+PC9zdmc+" alt="夜班电车" loading="lazy"></div>
+      <div class="ex-frame"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDc2MCI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNzYwIiBmaWxsPSIjMTExOTIzIi8+PHBhdGggZD0iTTAgMTU0SDEyMDBNMCA2MDRIMTIwMCIgc3Ryb2tlPSIjMzU0MTUxIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNOTAgMEwzNzAgNzYwTTEwODAgMEw3OTYgNzYwIiBzdHJva2U9IiMyOTM3NDYiIHN0cm9rZS13aWR0aD0iMyIvPjxyZWN0IHg9IjE2MCIgeT0iMjE0IiB3aWR0aD0iODgwIiBoZWlnaHQ9IjM1MiIgcng9IjIyIiBmaWxsPSIjMjYzNzQ2Ii8+PHJlY3QgeD0iMTk0IiB5PSIyNTAiIHdpZHRoPSI4MTIiIGhlaWdodD0iMjQ0IiByeD0iOCIgZmlsbD0iIzBiMTAxOSIvPjxnPjxyZWN0IHg9IjIyNCIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjE3NCIgZmlsbD0iI2Q2OWM2MSIvPjxyZWN0IHg9IjQyMiIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjE3NCIgZmlsbD0iI2Q2OWM2MSIvPjxyZWN0IHg9IjYyMCIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjE3NCIgZmlsbD0iI2Q2OWM2MSIvPjxyZWN0IHg9IjgxOCIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjE3NCIgZmlsbD0iI2Q2OWM2MSIvPjwvZz48ZyBmaWxsPSIjZjBjOTg1Ij48cmVjdCB4PSIyMjQiIHk9IjI3OCIgd2lkdGg9IjE1NiIgaGVpZ2h0PSI0MiIvPjxyZWN0IHg9IjQyMiIgeT0iMjc4IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjQyIi8+PHJlY3QgeD0iNjIwIiB5PSIyNzgiIHdpZHRoPSIxNTYiIGhlaWdodD0iNDIiLz48cmVjdCB4PSI4MTgiIHk9IjI3OCIgd2lkdGg9IjE1NiIgaGVpZ2h0PSI0MiIvPjwvZz48cGF0aCBkPSJNMjM4IDQ1MkwyOTIgMzQ0TDM1MCA0NTJaTTQzNiA0NTJMNDkwIDM0NEw1NDggNDUyWk02MzQgNDUyTDY4OCAzNDRMNzQ2IDQ1MlpNODMyIDQ1Mkw4ODYgMzQ0TDk0NCA0NTJaIiBmaWxsPSIjNWM1YjU1Ii8+PHBhdGggZD0iTTAgNjUyQzI2MCA1OTQgNDUwIDY5MCA2NjAgNjM0Qzg2NiA1ODAgMTAyNCA2MDYgMTIwMCA2NTRWNzYwSDBaIiBmaWxsPSIjMWYzMDNiIi8+PHBhdGggZD0iTTcwIDcwMEgxMTMwIiBzdHJva2U9IiNlMGFkNmIiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWRhc2hhcnJheT0iNjIgMzgiLz48Y2lyY2xlIGN4PSIxMTAiIGN5PSIxMTgiIHI9IjQ2IiBmaWxsPSIjZTljNTgxIi8+PC9zdmc+" alt="夜班电车" loading="eager"></div>
       <figcaption>
-        <p class="ex-index">03 · 城市呼吸</p>
+        <p class="ex-index">02 · 城市呼吸</p>
         <h3>夜班电车</h3>
         <p class="ex-meta">数字绘画 · 160 × 110 cm · 2025</p>
         <p class="ex-desc">车窗把陌生人的片段连成电影，城市在每个站点短暂地换了一次字幕。</p>
       </figcaption>
     </figure>
-<figure class="ex-piece" aria-label="无声花园">
+<div class="ex-divider" role="presentation"><span>附近</span><em>1 件</em></div><figure class="ex-piece" aria-label="植物的间隙">
+      <div class="ex-frame"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDc2MCI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNzYwIiBmaWxsPSIjZWRmMGU1Ii8+PGNpcmNsZSBjeD0iNTgwIiBjeT0iMzYwIiByPSIyMTAiIGZpbGw9IiNkOWNkYjEiLz48cGF0aCBkPSJNMTc0IDc2MEMyMjAgNTE4IDMxOCAzMDggNTIyIDYyIiBzdHJva2U9IiMyOTRjM2EiIHN0cm9rZS13aWR0aD0iMjQiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNMzc2IDQ4NkMyMzIgNDU0IDEzNiAzNTAgMTI4IDIxMkMyNzggMjM0IDM5MiAzMjggMzc2IDQ4NloiIGZpbGw9IiM2NDgxNjQiLz48cGF0aCBkPSJNNDMwIDM0MEM0NTggMTg4IDU2MCA5NiA3MDYgODJDNjk0IDIzOCA1ODYgMzQ2IDQzMCAzNDBaIiBmaWxsPSIjOGNhNDdjIi8+PHBhdGggZD0iTTI3NCA2MjRDMTI4IDYyNiA0NiA1NDggMTAgNDM4QzE1NCA0MjAgMjY2IDQ5MiAyNzQgNjI0WiIgZmlsbD0iI2E2YjY4ZCIvPjxwYXRoIGQ9Ik03MzAgNzYwQzc1NiA1MjAgODc0IDMwMiAxMDcwIDE0NiIgc3Ryb2tlPSIjNDg2NDRhIiBzdHJva2Utd2lkdGg9IjE4IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTg1OCA0ODBDODcyIDMyNiA5ODIgMjQwIDExMzQgMjQwQzEwOTAgMzk2IDk5NiA0NzggODU4IDQ4MFoiIGZpbGw9IiM2MDdiNTgiLz48cGF0aCBkPSJNNzgwIDYwOEM2NzIgNTQ4IDYzMiA0NTIgNjYyIDM0NEM3OTQgMzk4IDg0NiA1MDAgNzgwIDYwOFoiIGZpbGw9IiNhMmI4OTQiLz48cGF0aCBkPSJNNTQwIDc2MEM1NjggNjUyIDY2MCA1NzQgNzYyIDU4OEM3NDYgNjk2IDY2NCA3NTQgNTQwIDc2MFoiIGZpbGw9IiNkMDdjNjIiLz48Y2lyY2xlIGN4PSI1NzQiIGN5PSIzNTAiIHI9IjM2IiBmaWxsPSIjZjRmMGU0Ii8+PC9zdmc+" alt="植物的间隙" loading="lazy"></div>
+      <figcaption>
+        <p class="ex-index">03 · 附近</p>
+        <h3>植物的间隙</h3>
+        <p class="ex-meta">综合材料 · 90 × 60 cm · 2026</p>
+        <p class="ex-desc">从叶片之间观看日常。遮挡不是阻碍，而是让视线找到另一条路径。</p>
+      </figcaption>
+    </figure>
+<div class="ex-divider" role="presentation"><span>柔软标本</span><em>1 件</em></div><figure class="ex-piece" aria-label="无声花园">
       <div class="ex-frame"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAwIDc2MCI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNzYwIiBmaWxsPSIjZjBlNWUzIi8+PHBhdGggZD0iTTAgNTgwQzI2MCA0OTIgNDM2IDYyNiA2NTAgNTQ0Qzg1MCA0NjggMTAxOCA1MTAgMTIwMCA1NzJWNzYwSDBaIiBmaWxsPSIjYTdiMmEyIi8+PHBhdGggZD0iTTMxMiA3NjBDMzIyIDUzMCAzNjYgMzYyIDQ1MCAxNzBNNzY0IDc2MEM3NDYgNTI2IDc5MCAzNjYgOTAyIDE0OCIgc3Ryb2tlPSIjNDc1ZjUwIiBzdHJva2Utd2lkdGg9IjE1IiBmaWxsPSJub25lIi8+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDQ4IDIzMikiPjxlbGxpcHNlIGN5PSItOTIiIHJ4PSI2MCIgcnk9IjExMiIgZmlsbD0iI2Q0N2M4NyIvPjxlbGxpcHNlIGN4PSI5MCIgY3k9Ii0xMCIgcng9IjExMiIgcnk9IjU4IiBmaWxsPSIjZGM5Mzk3Ii8+PGVsbGlwc2UgY3k9IjgyIiByeD0iNjQiIHJ5PSIxMDgiIGZpbGw9IiNiZDY4N2EiLz48ZWxsaXBzZSBjeD0iLTkyIiBjeT0iLTQiIHJ4PSIxMDYiIHJ5PSI2MCIgZmlsbD0iI2UwYTBhMCIvPjxjaXJjbGUgcj0iNTgiIGZpbGw9IiNkOWI2NWYiLz48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODkwIDIxMCkiPjxlbGxpcHNlIGN5PSItNzIiIHJ4PSI0OCIgcnk9IjkwIiBmaWxsPSIjNzM4ZGE0Ii8+PGVsbGlwc2UgY3g9IjcyIiByeD0iODgiIHJ5PSI0NiIgZmlsbD0iIzkxYTViOCIvPjxlbGxpcHNlIGN5PSI2OCIgcng9IjUwIiByeT0iODQiIGZpbGw9IiM2NTdmOTkiLz48ZWxsaXBzZSBjeD0iLTcyIiByeD0iODYiIHJ5PSI0OCIgZmlsbD0iI2E3YjdjMyIvPjxjaXJjbGUgcj0iNDQiIGZpbGw9IiNlNGM4N2MiLz48L2c+PGNpcmNsZSBjeD0iNTg2IiBjeT0iNTEwIiByPSI2OCIgZmlsbD0iI2Q5Yjg1ZSIvPjxwYXRoIGQ9Ik01NjYgNzYwQzU3NCA2NTQgNTkyIDU4NCA2MjYgNTIyIiBzdHJva2U9IiM1MjZhNTciIHN0cm9rZS13aWR0aD0iMTIiIGZpbGw9Im5vbmUiLz48L3N2Zz4=" alt="无声花园" loading="lazy"></div>
       <figcaption>
         <p class="ex-index">04 · 柔软标本</p>

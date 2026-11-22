@@ -5,6 +5,7 @@
 import type { ArtistSiteData, Artwork, MediaItem } from '@/types/artist'
 import { esc, safeUrl } from '../escape'
 import { isValidHexColor } from '@/lib/utils'
+import { groupBySeries } from './series'
 
 export const GALLERY_CSS = `
 .artist-gallery{--ag-bg:#f3f3f0;--ag-fg:#171917;--ag-muted:#666862;--ag-line:rgba(23,25,23,.14);min-height:100%;background:var(--ag-bg);color:var(--ag-fg);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;container-type:inline-size}
@@ -35,6 +36,9 @@ export const GALLERY_CSS = `
 .ag-nav a,.ag-brand{display:inline-flex;min-height:24px;align-items:center;transition:opacity .2s ease,color .2s ease}
 .ag-nav a:hover{opacity:.62}
 @media (prefers-reduced-motion:reduce){.ag-hero-title{animation:none}.ag-work-cover,.ag-hero-media img,.ag-nav a,.ag-brand{transition:none}.ag-work:hover .ag-work-cover{transform:none}}
+.ag-series-list{display:grid;gap:40px}
+.ag-series-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.12)}
+.ag-series-head h3{margin:0;font-family:Georgia,serif;font-size:20px;font-weight:400;letter-spacing:.01em}
 .ag-commissions{padding:56px 0 8px}
 .ag-commissions-state{display:flex;align-items:center;gap:8px;margin:0 0 16px;font-size:13.5px;color:rgba(0,0,0,.62)}
 .ag-dot{width:7px;height:7px;border-radius:50%;background:#2f9e63}
@@ -113,6 +117,8 @@ export function renderGalleryBody(data: ArtistSiteData): string {
   const ordered = [...data.artworks].sort((a, b) => Number(b.featured) - Number(a.featured))
   const featured = ordered[0]
   const rest = featured ? ordered.slice(1) : []
+  // 按系列分组：重点作品已作为首屏，不重复出现在分组里
+  const groups = groupBySeries(rest)
   const mail = data.email.trim()
   const cm = data.commissions
   const commissionRows = cm
@@ -145,7 +151,7 @@ export function renderGalleryBody(data: ArtistSiteData): string {
   <p class="ag-kicker">Selected works · ${esc(data.title)}</p>
   <h1 class="ag-hero-title">${esc(featured?.series || data.name)}</h1>
   ${featured ? `<div class="ag-hero">${renderWork(featured, true)}<div class="ag-caption"><p class="ag-meta">${esc(featured.series)}${featured.year ? ` · ${esc(featured.year)}` : ''}</p><h2>${esc(featured.title)}</h2><p>${esc(featured.medium)}${featured.dimensions ? ` · ${esc(featured.dimensions)}` : ''}</p>${featured.description ? `<p>${esc(featured.description)}</p>` : ''}</div></div>` : ''}
-  ${rest.length ? `<section id="works" class="ag-works"><div class="ag-section-head"><h2>全部作品</h2><span class="ag-kicker">${rest.length} pieces</span></div><div class="ag-grid">${rest.map((artwork) => renderWork(artwork)).join('')}</div></section>` : ''}
+  ${rest.length ? `${rest.length ? `<section id="works" class="ag-works"><div class="ag-section-head"><h2>全部作品</h2><span class="ag-kicker">${rest.length} pieces · ${groups.length} 个系列</span></div><div class="ag-series-list">${groups.map((group: { series: string; works: Artwork[] }) => `<section class="ag-series" id="series-${encodeURIComponent(group.series)}"><div class="ag-series-head"><h3>${esc(group.series)}</h3><span class="ag-kicker">${group.works.length} 件</span></div><div class="ag-grid">${group.works.map((artwork) => renderWork(artwork)).join('')}</div></section>`).join('')}</div></section>` : ''}` : ''}
 ${exhibitions.length ? `<section id="exhibitions" class="ag-exhibitions"><div class="ag-section-head"><h2>展览</h2><span class="ag-kicker">Exhibitions</span></div><ul class="ag-ex-list">${exhibitions}</ul></section>` : ''}
   ${commissionBlock}
   <section id="about" class="ag-about"><div><p class="ag-kicker">About the artist</p><h2>${esc(data.name)}</h2></div><div><p>${esc(data.bio)}</p>${data.location ? `<p style="margin-top:14px">${esc(data.location)}</p>` : ''}${mail ? `<p style="margin-top:14px"><a href="mailto:${esc(mail)}">${esc(mail)}</a></p>` : ''}</div></section>

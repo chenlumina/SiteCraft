@@ -16,6 +16,7 @@
 import type { ArtistSiteData, Artwork } from '@/types/artist'
 import { esc } from '../escape'
 import { safeImageSource } from './gallery'
+import { groupBySeries } from './series'
 
 const ROLE_LABEL: Record<string, string> = { solo: '个展', group: '群展', other: '其他' }
 
@@ -143,7 +144,23 @@ export function renderExhibitionBody(data: ArtistSiteData): string {
     .filter(Boolean)
     .join('')
 
-  const wall = works.map((artwork, index) => renderPiece(artwork, index)).join('\n')
+  // 按系列成段：组间插一块系列牌，观众走到那里就知道换了一个系列
+  const groups = groupBySeries(works)
+  let pieceIndex = 0
+  const wall = groups
+    .map((group, groupIndex) => {
+      const pieces = group.works.map((artwork) => renderPiece(artwork, pieceIndex++)).join('\n')
+      const label =
+        groupIndex === 0
+          ? ''
+          : '<div class="ex-divider" role="presentation"><span>' +
+            esc(group.series) +
+            '</span><em>' +
+            group.works.length +
+            ' 件</em></div>'
+      return label + pieces
+    })
+    .join('\n')
 
   return [
     '<div class="site-root artist-exhibition site-exhibition">',
@@ -233,6 +250,10 @@ export function renderExhibitionCSS(): string {
 .ex-year{font-variant-numeric:tabular-nums;font-size:13px;color:var(--ex-mute)}
 .ex-role{font-size:11px;letter-spacing:.08em;color:var(--ex-mute)}
 .ex-show{font-size:14.5px;line-height:1.6}
+.ex-divider{flex:0 0 auto;display:flex;flex-direction:column;justify-content:center;gap:6px;
+  padding:0 clamp(12px,2vw,28px);border-left:1px solid var(--ex-line);align-self:stretch;scroll-snap-align:start}
+.ex-divider span{writing-mode:vertical-rl;font-family:Georgia,serif;font-size:17px;letter-spacing:.08em}
+.ex-divider em{font-style:normal;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.1em;color:var(--ex-mute)}
 .ex-commissions{margin-top:clamp(36px,6vw,72px);border-top:1px solid var(--ex-line);padding-top:26px}
 .ex-cm-state{margin:0 0 14px;font-size:13.5px;color:var(--ex-mute)}
 .ex-cm-list{margin:0;display:grid;gap:10px}
